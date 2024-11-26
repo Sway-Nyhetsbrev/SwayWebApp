@@ -1,1 +1,1 @@
-footer{margin:30px}footer .container{display:flex;justify-content:space-evenly;align-items:center}
+footer{padding:30px 0px 30px 0px;background-color:#f5f5f7;box-shadow:13px 13px 13px 12px rgba(138,137,137,0.5254901961)}footer .container{display:flex;justify-content:space-evenly;align-items:center}footer .container .footer-text{display:flex;justify-content:center;color:#f53b53}footer .container .footer-text p{color:#0070ad}
