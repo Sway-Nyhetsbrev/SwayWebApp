@@ -8,16 +8,46 @@ header .container {
   justify-content: space-between;
   align-items: center;
 }
-header .container .signIn-btn .btn-signIn {
-  border-color: #2B0A3D;
+header .container .signIn .btn-signIn {
+  border: 1px solid #2B0A3D;
   background-color: #0070AD;
   color: #F5F5F7;
 }
-header .container .signIn-btn .btn-signIn:hover {
+header .container .signIn .btn-signIn:hover {
   background-color: #12ABDB;
   border: 1px solid #F53B53;
   color: white;
 }
+header .container .signIn .btn-signOut {
+  border: 1px solid #2B0A3D;
+  background-color: #F53B53;
+  color: black;
+}
+header .container .signIn .btn-signOut:hover {
+  background-color: #0070AD;
+  color: white;
+}
 header .container .logotype img {
   width: 150px;
+}
+header .menuContent {
+  margin-top: 30px;
+}
+header .menuContent ul {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0;
+  margin: 0;
+}
+header .menuContent ul .btn-menu {
+  border: 1px solid #2B0A3D;
+  background-color: #0070AD;
+  color: #F5F5F7;
+  padding: 5px 10px;
+  text-decoration: none;
+}
+header .menuContent ul .btn-menu:hover {
+  background-color: #12ABDB;
+  border-color: #F53B53;
+  color: white;
 }

@@ -3,8 +3,27 @@
         <div class="logotype">
             <img src="./images/thumbnail_image002.png" alt="logotype">
         </div>
-        <div class="signIn-btn">
-            <a routerLink="/signIn" class="btn btn-signIn">Sign in</a>
+        <div class="signIn">
+            @if(!isLoggedIn) {
+                <a class="btn btn-signIn" (click)="login()">Sign in</a>
+            }
+            @else if(isLoggedIn) {
+                <a class="btn btn-signOut" (click)="logout()">Sign out</a>
+            } 
         </div>
     </div>
+
+    <nav class="menuContent">
+        @if(isLoggedIn) {
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a routerLink="/newsletter" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
+            </li>
+            <li class="nav-item">
+                <a routerLink="/newsletter" class="nav-link active btn btn-menu" aria-current="page">Create Newsletters</a>
+            </li>
+        </ul>
+        }      
+    </nav>
+
 </header>

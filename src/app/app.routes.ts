@@ -1,7 +1,15 @@
 import { Routes } from '@angular/router';
-import { SignInComponent } from './views/sign-in/sign-in.component';
+import { NewsletterComponent } from './views/newsletter/newsletter.component';
+import { HomeComponent } from './views/home/home.component';
 
-export const routes: Routes = [{
-    path: 'signIn',
-    component: SignInComponent
-}];
+export const routes: Routes = [
+    {
+        path:"",
+        component:HomeComponent
+    },
+    {
+        path: "newsletter",
+        component: NewsletterComponent
+    }
+
+];
