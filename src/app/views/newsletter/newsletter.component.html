@@ -1,1 +1,13 @@
-<p>newsletter works!</p>
+@if(users()) {
+    <ul>
+         @for (user of users(); track user.email) {
+            
+        <li>
+          {{user.email}}
+        </li>
+    }
+    </ul>
+}
+@else {
+    <p>Loading users...</p>
+}

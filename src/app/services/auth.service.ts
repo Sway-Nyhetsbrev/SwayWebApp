@@ -1,13 +1,16 @@
-import { Injectable, resolveForwardRef } from '@angular/core';
+import { inject, Injectable, signal} from '@angular/core';
 import { PublicClientApplication, AccountInfo, AuthenticationResult } from '@azure/msal-browser';
+import { User } from '../models/user';
+import { UserService } from './user.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
+  loggedUser = signal<User>({ email: "", userName: ""});
   private msalInstance: PublicClientApplication;
+  userService = inject(UserService)
 
   constructor() {
     // Definiera MSAL-konfigurationen direkt här
@@ -34,11 +37,22 @@ export class AuthService {
       scopes: ['User.Read']
     }).then((response: AuthenticationResult) => {
       console.log('Login success:', response);
+  
+      const userEmail = response.account.username;
+      const userName = response.account.name;
+  
+      if (userEmail) {
+        this.loggedUser.set({
+          email: userEmail,
+          userName: userName
+        });
+
+      }
     }).catch(error => {
       console.error('Login error:', error);
-      throw error; // Kasta vidare felet för att hantera det högre upp
+      throw error;
     });
-  }
+}
 
   // Logga ut användaren
   logout() {
