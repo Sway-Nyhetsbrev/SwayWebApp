@@ -1,1 +1,1 @@
-#homeSection .container{display:flex;justify-content:center;align-items:center}#homeSection .container img{width:100%}
+#homeSection .container .homeShowcase{display:flex;justify-content:center;align-items:center}#homeSection .container .homeShowcase img{width:100%}@media(min-width: 992px){#homeSection .container .homeShowcase img{width:30%}}

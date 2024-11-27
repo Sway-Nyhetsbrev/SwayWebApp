@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -13,13 +13,21 @@ export class HeaderComponent {
   isLoggedIn: boolean = false;
 
   authService = inject(AuthService);
+  router = inject(Router)
 
   ngOnInit() {
     this.checkLoginStatus();
   }
 
   login() {
-    this.authService.login();
+    this.authService.login().then(() => {
+      this.checkLoginStatus();
+      if (this.isLoggedIn) {
+        this.router.navigate(['/newsletter']);
+      }
+    }).catch(err => {
+      console.error('Login failed', err);
+    });
   }
 
   logout() {

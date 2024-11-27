@@ -1,4 +1,5 @@
 header {
+  font-family: "Inter", sans-serif;
   padding: 30px 0px 30px 0px;
   background-color: #F5F5F7;
   box-shadow: 3px 3px 3px 2px rgba(138, 137, 137, 0.5254901961);
@@ -9,6 +10,7 @@ header .container {
   align-items: center;
 }
 header .container .signIn .btn-signIn {
+  text-align: center;
   border: 1px solid #2B0A3D;
   background-color: #0070AD;
   color: #F5F5F7;
@@ -20,15 +22,15 @@ header .container .signIn .btn-signIn:hover {
 }
 header .container .signIn .btn-signOut {
   border: 1px solid #2B0A3D;
-  background-color: #F53B53;
+  background-color: #0070AD;
   color: black;
 }
 header .container .signIn .btn-signOut:hover {
-  background-color: #0070AD;
+  background-color: #F53B53;
   color: white;
 }
 header .container .logotype img {
-  width: 150px;
+  width: 100px;
 }
 header .menuContent {
   margin-top: 30px;

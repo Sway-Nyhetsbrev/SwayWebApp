@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, resolveForwardRef } from '@angular/core';
 import { PublicClientApplication, AccountInfo, AuthenticationResult } from '@azure/msal-browser';
 
 
@@ -29,13 +29,14 @@ export class AuthService {
   }
 
   // Logga in användaren
-  login() {
-    this.msalInstance.loginPopup({
+  login(): Promise<void> {
+    return this.msalInstance.loginPopup({
       scopes: ['User.Read']
     }).then((response: AuthenticationResult) => {
       console.log('Login success:', response);
     }).catch(error => {
       console.error('Login error:', error);
+      throw error; // Kasta vidare felet för att hantera det högre upp
     });
   }
 

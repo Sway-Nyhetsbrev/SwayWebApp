@@ -1,11 +1,17 @@
 #homeSection {
     .container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        img {
-            width: 100%;
+        .homeShowcase {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            img {
+                width: 100%;
+                
+                @media (min-width: 992px) {
+                    width: 30%;
+                }
+            }
         }
     }
 }
