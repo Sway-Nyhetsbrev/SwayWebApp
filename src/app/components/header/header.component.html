@@ -18,11 +18,20 @@
         @if(isLoggedIn) {
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a routerLink="/newsletter" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
+                <a routerLink="/my-newsletters" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
             </li>
             <li class="nav-item">
-                <a routerLink="/newsletter" class="nav-link active btn btn-menu" aria-current="page">Create Newsletters</a>
+                <a routerLink="/latest-newsletter" class="nav-link active btn btn-menu" aria-current="page">Latest Newsletter</a>
             </li>
+            <li class="nav-item">
+                <a routerLink="/create-newsletter" class="nav-link active btn btn-menu" aria-current="page">Create Newsletter</a>
+            </li>
+
+            @if (user()?.role === "Admin") {
+                <li class="nav-item">
+                    <a routerLink="/admin" class="nav-link active btn btn-menu" aria-current="page">Admin</a>
+                </li>
+            }
         </ul>
         }      
     </nav>

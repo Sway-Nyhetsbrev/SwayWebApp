@@ -1,0 +1,20 @@
+
+@if(latestNewsletter()) {
+    <section id="newsletterSection">
+        <div class="container">
+            <p>{{latestNewsletter()?.id}}</p>
+            <p>{{latestNewsletter()?.title}}</p>
+            <p>{{latestNewsletter()?.description}}</p>
+            <p>{{latestNewsletter()?.author}}</p>
+            <p>{{latestNewsletter()?.userId}}</p> 
+            <p>{{latestNewsletter()?.sections}}</p> 
+        </div>
+    </section>
+}
+@else if (isFetching() && !errorMessage()) {
+    <p>Loading latest newsletter...</p>
+}
+
+@else if (errorMessage()) {
+    <p>{{errorMessage()}}</p>
+}

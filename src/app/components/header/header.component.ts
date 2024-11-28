@@ -35,11 +35,11 @@ export class HeaderComponent {
         if (loggedUser) {
           this.userService.createUser(loggedUser).subscribe({
             next: (data: User | undefined) => {
-              console.log('User created successfully:', data);
-              this.router.navigate(['/newsletter']);
+              console.log('User signed in successfully:', data);
+              this.router.navigate(['/latest-newsletter']);
             },
             error: (err) => {
-              console.error('Error creating user:', err);
+              console.error('Error signing in user:', err);
             }
           });
         }
@@ -51,6 +51,7 @@ export class HeaderComponent {
   
   logout() {
     this.authService.logout();
+    this.router.navigate([''])
     this.checkLoginStatus();
   }
 
