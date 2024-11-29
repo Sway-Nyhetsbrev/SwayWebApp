@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 
-
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -15,47 +14,36 @@ import { UserService } from '../../services/user.service';
 export class HeaderComponent {
   isLoggedIn: boolean = false;
   authService = inject(AuthService);
-  userService = inject(UserService)
-  router = inject(Router)
-  user = signal<User | null>(null); 
-  
+  userService = inject(UserService);
+  router = inject(Router);
+  user = signal<User | null>(null);
 
   ngOnInit() {
     this.checkLoginStatus();
+  }
+  
+  checkLoginStatus() {
+    this.isLoggedIn = !!this.authService.getAccount();
+    if (this.isLoggedIn) {
+      const loggedUser = this.authService.getLoggedUser();
+      if (loggedUser) {
+        this.user.set(loggedUser);
+        console.log("User in header:",this.user())
+      }
+    }
   }
 
   login() {
     this.authService.login().then(() => {
       this.checkLoginStatus();
-      if (this.isLoggedIn) {
-
-        const loggedUser = this.authService.loggedUser();
-        this.user.set(loggedUser);
-
-        if (loggedUser) {
-          this.userService.createUser(loggedUser).subscribe({
-            next: (data: User | undefined) => {
-              console.log('User signed in successfully:', data);
-              this.router.navigate(['/latest-newsletter']);
-            },
-            error: (err) => {
-              console.error('Error signing in user:', err);
-            }
-          });
-        }
-      }
     }).catch(err => {
       console.error('Login failed', err);
     });
   }
-  
+
   logout() {
     this.authService.logout();
-    this.router.navigate([''])
+    this.router.navigate(['']);
     this.checkLoginStatus();
-  }
-
-  checkLoginStatus() {
-    this.isLoggedIn = !!this.authService.getAccount();
   }
 }
