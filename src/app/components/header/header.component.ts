@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { User } from '../../models/user';
@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit{
   isLoggedIn: boolean = false;
   authService = inject(AuthService);
   userService = inject(UserService);
@@ -25,10 +25,16 @@ export class HeaderComponent {
   checkLoginStatus() {
     this.isLoggedIn = !!this.authService.getAccount();
     if (this.isLoggedIn) {
-      const loggedUser = this.authService.getLoggedUser();
-      if (loggedUser) {
-        this.user.set(loggedUser);
-        console.log("User in header:",this.user())
+      // Försök att hämta användardata från localStorage
+      const storedUser = localStorage.getItem('loggedUser');
+      if (storedUser) {
+        const userData: User = JSON.parse(storedUser);
+        this.user.set(userData);
+      } else {
+        const loggedUser = this.authService.getLoggedUser();
+        if (loggedUser) {
+          this.user.set(loggedUser);
+        }
       }
     }
   }

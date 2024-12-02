@@ -1,0 +1,12 @@
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.sectionContent ul {
+  list-style-type: none;
+}
+.sectionContent ul li {
+  list-style-type: none;
+}

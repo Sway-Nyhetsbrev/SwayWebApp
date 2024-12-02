@@ -7,7 +7,6 @@ import { LatestNewsletterComponent } from './views/newsletter/latest-newsletter/
 import { AdminPortalComponent } from './views/admin/admin-portal/admin-portal.component';
 import { RoleGuard } from './guards/role.guard';
 
-
 export const routes: Routes = [
     {
         path:"",
@@ -23,7 +22,7 @@ export const routes: Routes = [
     },
     {
         path: "create-newsletter",
-        component: CreateNewsletterComponent
+        component: CreateNewsletterComponent,
     },
     {
         path: "all-newsletters",
@@ -36,5 +35,4 @@ export const routes: Routes = [
         component: AdminPortalComponent,
         canActivate: [RoleGuard]
       }
-
 ];

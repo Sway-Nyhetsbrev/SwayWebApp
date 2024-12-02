@@ -1,9 +1,10 @@
 export interface newsletter {
-    id: string;
+    id?: string;
     title: string;
     description?: string;
     author?: string;
     createdAt?: Date;
+    releaseDate: Date;
     userId: string;
     sections: newsletterSection[]
 }

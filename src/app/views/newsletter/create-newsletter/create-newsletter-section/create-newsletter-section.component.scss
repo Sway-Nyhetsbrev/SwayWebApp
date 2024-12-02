@@ -1,0 +1,13 @@
+.sectionContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    
+    ul {
+        list-style-type: none;
+        li{
+            list-style-type: none;
+        }
+    }
+}

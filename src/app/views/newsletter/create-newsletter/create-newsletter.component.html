@@ -1,1 +1,50 @@
-<p>create-newsletter works!</p>
+<section id="createNewsletterSection">
+    <div class="container">
+        <h1>Create Newsletter</h1>
+        <form ngSubmit="">
+            <div class="form-group">
+                <label for="Title" class="form-label"></label>
+                <input type="text" class="form-control" placeholder="Title">
+            </div>
+            <div class="form-group">
+                <label for="Description" class="form-label"></label>
+                <textarea type="text" class="form-control" placeholder="Description"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="Author" class="form-label"></label>
+                <input type="text" class="form-control" placeholder="Author">
+            </div>
+            <div class="form-group" id="releaseDate">
+                <label for="Release date" class="form-label">Release date:</label>
+                <input class="form-control" type="date">
+            </div>
+            <h2>Sections</h2>
+            @if (showSection && newsletter.sections != null) {
+                <div class="sectionContent">
+                    <ul>
+                        @for (newsletterSection of newsletter.sections; track newsletterSection.header) {
+                        <li>
+                            <h3>{{newsletterSection.header}}</h3>
+                            <p>{{newsletterSection.content}}</p>
+                        </li>
+                        }
+                    </ul>
+                   
+                    <app-create-newsletter-section (sectionCreated)="addSection($event)"/>
+                </div>
+                }
+            @else if (!showSection)
+            {
+                @for (newsletterSection of newsletter.sections; track newsletterSection.header) {
+                    <li>
+                        <h3>{{newsletterSection.header}}</h3>
+                        <p>{{newsletterSection.content}}</p>
+                    </li>
+                    }
+
+                <button type="button" class="btn btn-success" (click)="toggleSection()">Add Section</button>
+            }
+           
+        </form>
+    </div>
+</section>

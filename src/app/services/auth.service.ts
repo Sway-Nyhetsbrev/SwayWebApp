@@ -41,12 +41,16 @@ export class AuthService {
         const data = await this.userService.getOneUser(userEmail).toPromise();
         if (data) {
           this.loggedUser.set(data);
+          // Spara användardata i localStorage
+          localStorage.setItem('loggedUser', JSON.stringify(data));
           this.router.navigate(['/latest-newsletter']);
         } else {
           const user: User = { email: userEmail, userName };
           const createdUser = await this.userService.createUser(user).toPromise();
           if (createdUser) {
             this.loggedUser.set(createdUser);
+            // Spara användardata i localStorage
+            localStorage.setItem('loggedUser', JSON.stringify(createdUser));
             this.router.navigate(['/latest-newsletter']);
           }
         }
@@ -64,12 +68,13 @@ export class AuthService {
         account: account
       }).then(() => {
         console.log('Logged out successfully');
+        // Rensa localStorage vid utloggning
+        localStorage.removeItem('loggedUser');
       }).catch(error => {
         console.error('Logout error:', error);
       });
     }
   }
-
   // Hämta den autentiserade användaren
   getAccount() {
     return this.msalInstance.getAllAccounts()[0] || null;
