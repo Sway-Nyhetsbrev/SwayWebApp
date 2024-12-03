@@ -1,1 +1,1 @@
-.sectionContent{display:flex;flex-direction:column;justify-content:center;text-align:center}.sectionContent ul{list-style-type:none}.sectionContent ul li{list-style-type:none}
+#newsletterSection,.quillEditor,button{width:100%;margin-top:10px}#newsletterSection button,.quillEditor button,button button{margin:10px 0px 10px 0px}

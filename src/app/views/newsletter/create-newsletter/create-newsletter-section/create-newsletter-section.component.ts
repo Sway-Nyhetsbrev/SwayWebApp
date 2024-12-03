@@ -1,34 +1,47 @@
-import { Component, EventEmitter, Output, output } from '@angular/core';
-import { newsletterSection } from '../../../../models/newsletter';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { newsletterSection, newsletterSectionImages } from '../../../../models/newsletter';
 import { FormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
-import { CreateNewsletterSectionImageComponent } from "../create-newsletter-section-image/create-newsletter-section-image.component";
 
 @Component({
   selector: 'app-create-newsletter-section',
   standalone: true,
-  imports: [FormsModule, QuillModule, CreateNewsletterSectionImageComponent],
+  imports: [FormsModule, QuillModule],
   templateUrl: './create-newsletter-section.component.html',
   styleUrl: './create-newsletter-section.component.scss'
 })
 export class CreateNewsletterSectionComponent {
-  @Output() sectionCreated = new EventEmitter<newsletterSection>();
-
-  newsletterSection: newsletterSection = {
-    header: '',
+  @Input() newsletterSection: newsletterSection = {
     content: '',
-    newsletterSectionImages: [],
-  }
+    newsletterSectionImages: []
+  };
 
-  addSectionImage() {
-    this.newsletterSection.newsletterSectionImages.push({
-      url: '',
-      alt: '',
-    })
+  @Output() save = new EventEmitter<newsletterSection>();
+
+  section: newsletterSection = {
+    content: '',
+    newsletterSectionImages: []
+  };
+
+  newsletterSectionImage: newsletterSectionImages = {
+    url: '',
+    alt: '',
+  };
+
+  saveSection() {
+    if (this.section.content) {
+      this.save.emit(this.section);
+    }
   }
   
-  addSection() {
-    this.sectionCreated.emit({ ...this.newsletterSection });
-    this.newsletterSection = {header:'', content: '', newsletterSectionImages: []}
-  }
+  editorModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline'], // Stilering
+      [{ list: 'ordered' }, { list: 'bullet' }], // Listor
+      ['link', 'image'], // Länkar och bilder
+      [{ 'background': [] }], // Bakgrundsfärg
+    ],
+  };
+
 }

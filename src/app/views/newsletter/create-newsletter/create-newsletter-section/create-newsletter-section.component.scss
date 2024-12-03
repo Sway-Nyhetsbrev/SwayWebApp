@@ -1,13 +1,8 @@
-.sectionContent {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+#newsletterSection, .quillEditor, button {
+    width: 100%;
+    margin-top: 10px;
     
-    ul {
-        list-style-type: none;
-        li{
-            list-style-type: none;
-        }
+    button {
+        margin: 10px 0px 10px 0px;
     }
 }

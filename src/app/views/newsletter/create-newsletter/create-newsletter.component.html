@@ -1,50 +1,53 @@
 <section id="createNewsletterSection">
     <div class="container">
         <h1>Create Newsletter</h1>
-        <form ngSubmit="">
+        <form (ngSubmit)="saveNewsletter()" [ngClass]="selectedTheme">
             <div class="form-group">
                 <label for="Title" class="form-label"></label>
-                <input type="text" class="form-control" placeholder="Title">
+                <input type="text" class="form-control" placeholder="Title" name="title" required [(ngModel)]="newsletter.title">
             </div>
-            <div class="form-group">
-                <label for="Description" class="form-label"></label>
-                <textarea type="text" class="form-control" placeholder="Description"></textarea>
-            </div>
-            <div class="form-group">
-                <label for="Author" class="form-label"></label>
-                <input type="text" class="form-control" placeholder="Author">
-            </div>
+
             <div class="form-group" id="releaseDate">
                 <label for="Release date" class="form-label">Release date:</label>
-                <input class="form-control" type="date">
+                <input class="form-control" type="date" name="releaseDate" [(ngModel)]="newsletter.releaseDate">
             </div>
-            <h2>Sections</h2>
-            @if (showSection && newsletter.sections != null) {
-                <div class="sectionContent">
-                    <ul>
-                        @for (newsletterSection of newsletter.sections; track newsletterSection.header) {
-                        <li>
-                            <h3>{{newsletterSection.header}}</h3>
-                            <p>{{newsletterSection.content}}</p>
-                        </li>
-                        }
-                    </ul>
-                   
-                    <app-create-newsletter-section (sectionCreated)="addSection($event)"/>
-                </div>
-                }
-            @else if (!showSection)
-            {
-                @for (newsletterSection of newsletter.sections; track newsletterSection.header) {
-                    <li>
-                        <h3>{{newsletterSection.header}}</h3>
-                        <p>{{newsletterSection.content}}</p>
-                    </li>
-                    }
 
-                <button type="button" class="btn btn-success" (click)="toggleSection()">Add Section</button>
-            }
-           
+            <div class="form-group" id="theme">
+                <label for="theme" class="form-label">Theme:</label>
+                <select class="form-control" [(ngModel)]="selectedTheme" name="theme">
+                    <option value="default-theme">Default</option>
+                    <option value="light-theme">Light</option>
+                    <option value="blue-to-pink">Blue to Pink</option>
+                    <option value="purple-to-blue">Purple to Blue</option>
+                    <option value="red-to-orange">Red to Orange</option>
+                    <option value="green-to-blue">Green to Blue</option>
+                    <option value="yellow-to-red">Yellow to Red</option>
+                    <option value="blue-to-turquoise">Blue to Turquoise</option>
+                    <option value="pink-to-purple">Pink to Purple</option>
+                    <option value="orange-to-yellow">Orange to Yellow</option>
+                    <option value="blue-to-green">Blue to Green</option>
+                    <option value="dark-purple-to-red">Dark Purple to Red</option>
+                </select>
+              </div>
+            <div class="sectionContent">
+                @if(newsletter.sections.length > 0) {
+                    @for (section of newsletter.sections; track section) {
+                        <div [innerHTML]="getSanitizedContent(section.content)"></div>
+                    }
+                }
+                
+                @if(showSection) {
+                    <app-create-newsletter-section (save)="saveSection($event)">   
+                    </app-create-newsletter-section>
+                }
+    
+                <button class="btn btn-main" type="button" (click)="toggleSection()">Add Section</button>
+                @if(newsletter.title != null && newsletter.releaseDate != null) {
+                    <button class="btn btn-main" type="submit">Save newsletter</button> 
+                }
+            </div>
+
+
         </form>
     </div>
 </section>

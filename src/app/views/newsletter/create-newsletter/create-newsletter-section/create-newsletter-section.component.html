@@ -1,23 +1,10 @@
-<div class="sectionContent">
-    <div class="form-group">
-      <label for="Header" class="form-label"></label>
-      <input id="Header" type="text" class="form-control" [(ngModel)]="newsletterSection.header" placeholder="Header" name="header" />
-    </div>
-    <div class="form-group">
-      <label for="Content" class="form-label"></label>
-      <input class="form-control" [(ngModel)]="newsletterSection.content" placeholder="Content"/>
-    </div>
-    <div class="form-group">
-      <h3>Images</h3>
-      <ul>
-        @for (image of newsletterSection.newsletterSectionImages; track $index) {
-            <li>
-                <app-create-newsletter-section-image />
-            </li>
-        }
-      </ul>
-      <button type="button" class="btn btn-secondary" (click)="addSectionImage()">Add Image</button>
-    </div>
-    <button type="button" class="btn btn-success" (click)="addSection()">Save Section</button>
-</div>
+<div id="newsletterSection">
+    <quill-editor 
+        [(ngModel)]="section.content" name="content" 
+        [modules]="editorModules" 
+        [placeholder]="'Skriv sektionens innehåll här...'"
+        class="quillEditor">
+    </quill-editor>
 
+    <button type="button" class="btn btn-main" (click)="saveSection()">Save Section</button>
+</div>

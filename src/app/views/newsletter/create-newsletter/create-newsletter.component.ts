@@ -1,21 +1,25 @@
-import { Component } from '@angular/core';
-import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
+import { Component, inject } from '@angular/core';
 import { newsletter, newsletterSection } from '../../../models/newsletter';
 import { FormsModule } from '@angular/forms'
+import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
+import { NgClass } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-create-newsletter',
   standalone: true,
-  imports: [CreateNewsletterSectionComponent, FormsModule],
+  imports: [FormsModule, CreateNewsletterSectionComponent, NgClass],
   templateUrl: './create-newsletter.component.html',
   styleUrl: './create-newsletter.component.scss'
 })
 export class CreateNewsletterComponent {
   showSection = false;
+  selectedTheme = 'default-theme'; 
 
+  sanitizer = inject(DomSanitizer)
+  
   newsletter: newsletter = {
     title: '',
-    description: '',
     author: '',
     releaseDate: new Date(),
     userId: '',
@@ -23,18 +27,17 @@ export class CreateNewsletterComponent {
   }
 
   toggleSection() {
-    if(!this.showSection) {this.showSection = true}
-    else {
-      this.showSection = false;
-    }
+    this.showSection = !this.showSection;
     console.log(this.showSection)
   }
-  
-  addSection(section: newsletterSection) {
-    if(section.header != null && section.content != null) {
-      this.newsletter.sections.push(section);
-      this.showSection = false;
-      console.log(this.showSection, this.newsletter.sections)
+
+  saveSection(section: newsletterSection) {
+    if (section.content) {
+      this.newsletter.sections.push(section);  // Lägg till sektionen i listan
+      console.log('Sektioner:', this.newsletter.sections);
+      this.showSection = false;  // Dölj formuläret efter att sektionen sparats
+    } else {
+      console.log('Sektionen är inte fullständig.');
     }
   }
 
@@ -42,5 +45,8 @@ export class CreateNewsletterComponent {
     console.log('Saved Newsletter:', this.newsletter);
     // Skicka data till backend.
   }
-  
+
+  getSanitizedContent(content: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(content);
+  }
 }

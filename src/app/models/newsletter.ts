@@ -10,7 +10,6 @@ export interface newsletter {
 }
 
 export interface newsletterSection {
-    header: string;
     content: string;
     newsletterSectionImages: newsletterSectionImages[]
 }
