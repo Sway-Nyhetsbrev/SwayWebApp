@@ -1,8 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700;9..40,900&display=swap");
 html,
 body {
-  font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: 400px;
 }
@@ -21,6 +18,10 @@ img {
   object-fit: contain;
 }
 
+.alert {
+  text-align: center;
+}
+
 .btn-main {
   text-align: center;
   border: 1px solid #2B0A3D;
@@ -34,12 +35,12 @@ img {
 }
 
 .default-theme {
-  background-color: white;
+  background-color: #F5F5F7;
   color: black;
 }
 
 .light-theme {
-  background-color: #f9f9f9;
+  background-color: white;
   color: #333;
 }
 

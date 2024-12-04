@@ -45,7 +45,7 @@ export class AuthService {
           localStorage.setItem('loggedUser', JSON.stringify(data));
           this.router.navigate(['/latest-newsletter']);
         } else {
-          const user: User = { email: userEmail, userName };
+          const user: User = { email: userEmail, userName: userName, id: '' };
           const createdUser = await this.userService.createUser(user).toPromise();
           if (createdUser) {
             this.loggedUser.set(createdUser);
@@ -81,7 +81,15 @@ export class AuthService {
   }
 
   // Hämta användardata (senaste användaren)
+  
   getLoggedUser(): User | null {
+    // Om loggedUser inte är satt, försök att hämta den från localStorage
+    if (!this.loggedUser()) {
+      const storedUser = localStorage.getItem('loggedUser');
+      if (storedUser) {
+        this.loggedUser.set(JSON.parse(storedUser));
+      }
+    }
     return this.loggedUser();
   }
 

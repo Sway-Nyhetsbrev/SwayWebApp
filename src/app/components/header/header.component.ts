@@ -25,7 +25,6 @@ export class HeaderComponent implements OnInit{
   checkLoginStatus() {
     this.isLoggedIn = !!this.authService.getAccount();
     if (this.isLoggedIn) {
-      // Försök att hämta användardata från localStorage
       const storedUser = localStorage.getItem('loggedUser');
       if (storedUser) {
         const userData: User = JSON.parse(storedUser);

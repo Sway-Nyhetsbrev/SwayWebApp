@@ -36,11 +36,13 @@ export class CreateNewsletterSectionComponent {
   
   editorModules = {
     toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline'], // Stilering
+      [{ font: [] }],
+      [{ header: [1, 2, 3, false] }], // Rubriknivåer
+      ['bold', 'italic', 'underline', 'strike'], // Textstilar
       [{ list: 'ordered' }, { list: 'bullet' }], // Listor
-      ['link', 'image'], // Länkar och bilder
-      [{ 'background': [] }], // Bakgrundsfärg
+      [{ align: [] }],
+      [{ 'color': [] }],
+      ['link', 'image'],
     ],
   };
 
