@@ -1,4 +1,4 @@
-import { inject, Injectable, OnInit } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { newsletter } from '../models/newsletter';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
@@ -25,8 +25,7 @@ private httpClient = inject(HttpClient);
   }
 
   getLatestNewsletter() {
-    return this.httpClient
-      .get<any>('https://localhost:7264/api/Newsletter/latestNewsletter')
+    return this.httpClient.get<any>('https://localhost:7264/api/Newsletter/latestNewsletter')
   }
 
   getOneUsersNewsletters(userId: string) {

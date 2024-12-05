@@ -2,11 +2,12 @@
 @if(latestNewsletter()) {
     <section id="newsletterSection">
         <div class="container">
-            <p>{{latestNewsletter()?.id}}</p>
             <p>{{latestNewsletter()?.title}}</p>
             <p>{{latestNewsletter()?.author}}</p>
-            <p>{{latestNewsletter()?.userId}}</p> 
-            <p>{{latestNewsletter()?.sections}}</p> 
+            @for (newsletterSection of latestNewsletter()?.sections; track newsletterSection) {
+                {{newsletterSection.content}}
+            }
+             
         </div>
     </section>
 }

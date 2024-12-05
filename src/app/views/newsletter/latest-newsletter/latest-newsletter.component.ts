@@ -25,7 +25,7 @@ export class LatestNewsletterComponent implements OnInit{
       },
       error: (error) => {
         console.error('Error fetching latest newsletter:', error);
-        this.errorMessage.set('Error fetching latest newsletter')
+        this.errorMessage.set(error.error)
       },
       complete: () => {
         console.log('Latest newsletter has been fetched');

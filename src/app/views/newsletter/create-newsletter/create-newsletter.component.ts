@@ -65,8 +65,7 @@ export class CreateNewsletterComponent {
 
     // Kontrollera att nyhetsbrevstiteln och releaseDate är ifyllda
     if (this.newsletter.title && this.newsletter.releaseDate) {
-      const subscription = this.newsletterService
-        .createNewsletter(this.newsletter)
+      const subscription = this.newsletterService.createNewsletter(this.newsletter)
         .subscribe({
           next: (response) => {
             this.statusMessage = 'Newsletter was created!';
