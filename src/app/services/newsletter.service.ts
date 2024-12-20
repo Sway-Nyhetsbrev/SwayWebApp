@@ -10,7 +10,7 @@ export class NewsletterService {
 private httpClient = inject(HttpClient);
 
 
-  createNewsletter(newsletter: newsletter): Observable<newsletter | undefined>  {
+  createNewsletter(newsletter: any): Observable<any>  {
     return this.httpClient.post<newsletter>('https://localhost:7264/api/Newsletter/create', newsletter)
     .pipe(
       catchError((error) => {

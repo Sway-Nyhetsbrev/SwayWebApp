@@ -15,5 +15,5 @@ export interface newsletterSection {
 
 export interface newsletterSectionImages {
     url: string;
-    alt: string;
+    altText: string;
 }

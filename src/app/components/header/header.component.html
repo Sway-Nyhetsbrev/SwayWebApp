@@ -8,7 +8,6 @@
                 <a class="btn btn-signIn" (click)="login()">Sign in <i class="fa-solid fa-right-to-bracket"></i></a>
             }
             @else if(isLoggedIn) {
-                <p>{{ user()?.role }}</p>
                 <a class="btn btn-signOut" (click)="logout()">Sign out <i class="fa-solid fa-right-to-bracket"></i></a>
             } 
         </div>

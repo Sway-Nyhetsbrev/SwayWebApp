@@ -6,6 +6,7 @@ import { NgClass } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { AuthService } from '../../../services/auth.service';
+import { FileService } from '../../../services/file.service';
 
 @Component({
   selector: 'app-create-newsletter',
@@ -21,6 +22,7 @@ export class CreateNewsletterComponent {
   private authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
   private destroyRef = inject(DestroyRef);
+  private fileService = inject(FileService)
 
   statusMessage: string = '';
   statusClass: string = '';
@@ -87,7 +89,37 @@ export class CreateNewsletterComponent {
     }
   }
 
-  getSanitizedContent(content: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(content);
+  saveAsPdf() {
+    // Kontrollera om nyhetsbrevets titel och sektioner är ifyllda
+    if (this.newsletter.title && this.newsletter.sections.length > 0) {
+      const sectionsContent = this.newsletter.sections.map(section => section.content);  // Extrahera innehållet från varje sektion
+      const sectionsImages = this.newsletter.sections.map(section => section.newsletterSectionImages);  // Extrahera bilder från varje sektion
+      
+      this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme)
+        .subscribe({
+          next: (pdfUrl) => {
+            // Om uppladdningen lyckas, visa URL för den uppladdade PDF:en
+            this.statusMessage = `PDF uploaded successfully! You can view it at: ${pdfUrl}`;
+            this.statusClass = 'alert alert-success';
+            console.log('PDF uploaded:', pdfUrl);
+          },
+          error: (error) => {
+            // Logga fel och ge mer detaljerad feedback
+            this.statusMessage = 'Error uploading PDF!';
+            this.statusClass = 'alert alert-danger';
+            console.error('Error uploading PDF:', error);
+            if (error.status) {
+              console.error('Error Status:', error.status); // Statuskod från servern
+            }
+            if (error.error) {
+              console.error('Error Message:', error.error); // Felmeddelande från servern
+            }
+          }
+        });
+    } else {
+      // Om titeln eller sektionerna saknas, visa ett felmeddelande
+      this.statusMessage = 'Please ensure the newsletter has a title and at least one section.';
+      this.statusClass = 'alert alert-warning';
+    }
   }
 }

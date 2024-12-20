@@ -3,8 +3,9 @@
         [(ngModel)]="section.content" name="content" 
         [modules]="editorModules" 
         [placeholder]="'Skriv sektionens innehåll här...'"
+        format="text"
         class="quillEditor">
+        
     </quill-editor>
-
     <button type="button" class="btn btn-main" (click)="saveSection()">Save Section</button>
 </div>
