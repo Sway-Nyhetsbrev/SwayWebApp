@@ -94,11 +94,14 @@ export class AuthService {
   }
   // Hämta användardata (senaste användaren)
   getLoggedUser(): User | null {
-    // Om loggedUser inte är satt, försök att hämta den från localStorage
     if (!this.loggedUser()) {
       const storedUser = localStorage.getItem('loggedUser');
       if (storedUser) {
-        this.loggedUser.set(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser) as User;
+        if (!parsedUser.role) {
+          parsedUser.role = { id: '', role: '' };
+        }
+        this.loggedUser.set(parsedUser);
       }
     }
     return this.loggedUser();

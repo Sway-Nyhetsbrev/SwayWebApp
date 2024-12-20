@@ -8,6 +8,7 @@
                 <a class="btn btn-signIn" (click)="login()">Sign in <i class="fa-solid fa-right-to-bracket"></i></a>
             }
             @else if(isLoggedIn) {
+
                 <a class="btn btn-signOut" (click)="logout()">Sign out <i class="fa-solid fa-right-to-bracket"></i></a>
             } 
         </div>
@@ -26,7 +27,7 @@
                 <a routerLink="/create-newsletter" class="nav-link active btn btn-menu" aria-current="page">Create Newsletter</a>
             </li>
 
-            @if (user()?.role === "Admin") {
+            @if (user()?.role?.role === "Admin") {
                 <li class="nav-item">
                     <a routerLink="/admin-portal" class="nav-link active btn btn-menu" aria-current="page">Admin</a>
                 </li>

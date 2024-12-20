@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
     }
 
     // Om användaren har rollen 'Admin', tillåt åtkomst, annars omdirigera
-    if (loggedUser?.role === 'Admin') {
+    if (loggedUser?.role?.role === 'Admin') {
       return true;
     } else {
       this.router.navigate(['']);
