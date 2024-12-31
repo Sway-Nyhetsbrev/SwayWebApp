@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { Observable } from 'rxjs';
+import * as pdfjsLib from 'pdfjs-dist';
 import { ThemeColors } from '../models/themecolor'
 import { newsletterSectionImages } from '../models/newsletter';
 
@@ -10,10 +11,9 @@ import { newsletterSectionImages } from '../models/newsletter';
 })
 export class FileService {
   private httpClient = inject(HttpClient);
-  savedNewsletter = new Uint8Array
 
   // Skapa PDF med tema och ladda upp den via extern API
-  async createAndUploadPdf(title: string, sections: string[], images: newsletterSectionImages[][], theme: string): Promise<Observable<string>> {
+  async createAndUploadPdf(title: string, sections: string[], images: newsletterSectionImages[][], theme: string, newsletterId: string): Promise<Observable<string>> {
     return new Observable<string>((observer) => {
       (async () => {
         try {
@@ -82,15 +82,13 @@ export class FileService {
           const pdfBytes = await pdfDoc.save();
           console.log('Generated PDF bytes:', pdfBytes);
 
-          // Spara PDF-filen i en variabel
-          this.savedNewsletter = new Uint8Array(pdfBytes);
-
           // Create FormData and append PDF file
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
           const fileName = `${title.replace(/\s+/g, '-').toLowerCase()}.pdf`;
           formData.append('file', fileBlob, fileName);
-
+          formData.append('newsletterId', newsletterId);
+          
           // Upload PDF to server
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {

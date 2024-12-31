@@ -25,7 +25,7 @@ private httpClient = inject(HttpClient);
   }
 
   getLatestNewsletter() {
-    return this.httpClient.get<any>('http://localhost:7126/api/latest-newsletter')
+    return this.httpClient.get<any>('http://localhost:7126/api/latest-file')
   }
 
   getOneUsersNewsletters(userId: string) {

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { FileService } from '../../../services/file.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NewsletterService } from '../../../services/newsletter.service';
 
 @Component({
   selector: 'app-latest-newsletter',
@@ -10,32 +10,32 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./latest-newsletter.component.scss']
 })
 export class LatestNewsletterComponent implements OnInit {
-  fileService = inject(FileService);
-  sanitizer = inject(DomSanitizer);  // Inject DomSanitizer
-  latestNewsletter = signal<Uint8Array | null>(null);
+  newsletterService = inject(NewsletterService);
+  sanitizer = inject(DomSanitizer);
+  latestNewsletter = signal<SafeResourceUrl | null>(null);
   isFetching = signal(false);
   errorMessage = signal('');
-  pdfSrc: SafeResourceUrl | null = null;  // Use SafeResourceUrl
 
   ngOnInit() {
     this.isFetching.set(true);
-    
-    // Check if the saved newsletter exists
-    const savedNewsletter = this.fileService.savedNewsletter;
-    if (savedNewsletter && savedNewsletter.length > 0) {
-      this.latestNewsletter.set(savedNewsletter);
-      this.pdfSrc = this.createPdfSrc(savedNewsletter); // Create a blob URL for the PDF
-    } else {
-      this.errorMessage.set('No saved newsletter available.');
+    this.newsletterService.getLatestNewsletter().subscribe({
+    next: (value: any) => {
+      console.log("Value:", value);
+      if (value && value.fileUri) {
+        const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(value.fileUri);
+        this.latestNewsletter.set(safeUrl);
+      } else {
+        console.error('Invalid fileUri received:', value);
+        this.errorMessage.set('Invalid fileUri received.');
+      }
+    },
+    error: (err) => {
+      console.error('Error fetching newsletter:', err);
+      this.errorMessage.set('Failed to fetch the latest newsletter');
+    },
+    complete: () => {
+      this.isFetching.set(false);
     }
-
-    this.isFetching.set(false);
-  }
-
-  // Method to convert saved Uint8Array to a SafeResourceUrl
-  private createPdfSrc(savedNewsletter: Uint8Array): SafeResourceUrl {
-    const blob = new Blob([savedNewsletter], { type: 'application/pdf' });
-    const blobUrl = URL.createObjectURL(blob);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl);  // Sanitize the URL
+    });
   }
 }

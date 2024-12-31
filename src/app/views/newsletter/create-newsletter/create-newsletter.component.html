@@ -66,7 +66,7 @@
           <button class="btn btn-main" type="button" (click)="toggleSection()">
             Add Section
           </button>
-          <button class="btn btn-main" type="submit" (click)="saveAsPdf()">Save newsletter</button>
+          <button class="btn btn-main" type="submit" (click)="saveAsPdf(newsletter.id)">Save newsletter</button>
   
           @if(statusMessage) {
           <div [ngClass]="statusClass" class="{{ statusClass }}" role="alert">

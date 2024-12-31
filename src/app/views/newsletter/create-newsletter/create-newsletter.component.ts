@@ -73,6 +73,9 @@ export class CreateNewsletterComponent {
             this.statusMessage = 'Newsletter was created!';
             this.statusClass = 'alert alert-success';
             console.log('Newsletter was created!', response);
+
+            this.newsletter.id = response.id; // Här sparar vi ID:t från backend
+            this.saveAsPdf(this.newsletter.id);  // Skicka ID till saveAsPdf
           },
           error: (error) => {
             this.statusMessage = 'Newsletter was not created!';
@@ -89,7 +92,7 @@ export class CreateNewsletterComponent {
     }
   }
 
-  async saveAsPdf() {
+  async saveAsPdf(newsletterId: string) {
     // Check if the newsletter's title and sections are filled
     if (this.newsletter.title && this.newsletter.sections.length > 0) {
       const sectionsContent = this.newsletter.sections.map(section => section.content);  // Extract content from each section
@@ -97,7 +100,7 @@ export class CreateNewsletterComponent {
       
       try {
         // Await the promise returned by createAndUploadPdf, which will resolve to an Observable
-        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme);
+        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme, newsletterId);
         
         // Now, subscribe to the Observable to get the actual result
         pdfUrl$.subscribe({
