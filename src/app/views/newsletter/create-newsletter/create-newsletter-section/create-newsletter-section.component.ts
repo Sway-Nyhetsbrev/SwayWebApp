@@ -81,7 +81,8 @@ export class CreateNewsletterSectionComponent {
           });
         });
       },
-      accepts: ['png', 'jpg', 'jpeg', 'jfif']
+      accepts: ['png', 'jpg', 'jpeg', 'jfif'],
+      allowDrop: true,
     }    
   };
 }

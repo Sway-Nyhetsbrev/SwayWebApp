@@ -89,35 +89,40 @@ export class CreateNewsletterComponent {
     }
   }
 
-  saveAsPdf() {
-    // Kontrollera om nyhetsbrevets titel och sektioner är ifyllda
+  async saveAsPdf() {
+    // Check if the newsletter's title and sections are filled
     if (this.newsletter.title && this.newsletter.sections.length > 0) {
-      const sectionsContent = this.newsletter.sections.map(section => section.content);  // Extrahera innehållet från varje sektion
-      const sectionsImages = this.newsletter.sections.map(section => section.newsletterSectionImages);  // Extrahera bilder från varje sektion
+      const sectionsContent = this.newsletter.sections.map(section => section.content);  // Extract content from each section
+      const sectionsImages = this.newsletter.sections.map(section => section.newsletterSectionImages);  // Extract images from each section
       
-      this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme)
-        .subscribe({
+      try {
+        // Await the promise returned by createAndUploadPdf, which will resolve to an Observable
+        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme);
+        
+        // Now, subscribe to the Observable to get the actual result
+        pdfUrl$.subscribe({
           next: (pdfUrl) => {
-            // Om uppladdningen lyckas, visa URL för den uppladdade PDF:en
+            // If successful, update the status message
             this.statusMessage = `PDF uploaded successfully! You can view it at: ${pdfUrl}`;
             this.statusClass = 'alert alert-success';
             console.log('PDF uploaded:', pdfUrl);
           },
           error: (error) => {
-            // Logga fel och ge mer detaljerad feedback
+            // Catch any errors and handle them
             this.statusMessage = 'Error uploading PDF!';
             this.statusClass = 'alert alert-danger';
             console.error('Error uploading PDF:', error);
-            if (error.status) {
-              console.error('Error Status:', error.status); // Statuskod från servern
-            }
-            if (error.error) {
-              console.error('Error Message:', error.error); // Felmeddelande från servern
-            }
           }
         });
+        
+      } catch (error) {
+        // Catch any errors that occur when creating the PDF
+        this.statusMessage = 'Error creating PDF!';
+        this.statusClass = 'alert alert-danger';
+        console.error('Error creating PDF:', error);
+      }
     } else {
-      // Om titeln eller sektionerna saknas, visa ett felmeddelande
+      // If title or sections are missing, show a warning
       this.statusMessage = 'Please ensure the newsletter has a title and at least one section.';
       this.statusClass = 'alert alert-warning';
     }
