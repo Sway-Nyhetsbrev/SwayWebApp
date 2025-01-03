@@ -1,1 +1,42 @@
-<p>my-newsletters works!</p>
+<section id="myNewsletters">
+    <div class="container">
+        @if (userNewsletters() != null) {
+            @for (newsletter of currentNewsletters; track newsletter.id) 
+            {
+                <div class="myNewslettersShowcase">
+                    <a routerLink="/newsletter-details" aria-current="page">
+                        <h4>{{newsletter.title}}</h4>
+                        @if (newsletter.sections.length > 0 ) {
+
+                            @if (newsletter.sections[0].newsletterSectionImages.length > 0 ) 
+                            {
+                                <img [src]="newsletter.sections[0].newsletterSectionImages[0].url" 
+                                [alt]="newsletter.sections[0].newsletterSectionImages[0].alttext">
+                            }  
+                        }
+                    </a>        
+                </div>
+            }
+        }
+    </div>
+    @if(totalPages > 1) {
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+                </li>
+
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+                </li>
+            </ul>
+        </nav>
+    }
+
+    @else 
+    {
+        <div class="errorMessage">
+            {{errorMessage()}}
+        </div>
+    } 
+</section>

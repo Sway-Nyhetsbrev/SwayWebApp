@@ -28,8 +28,8 @@ private httpClient = inject(HttpClient);
     return this.httpClient.get<any>('http://localhost:7126/api/latest-file')
   }
 
-  getOneUsersNewsletters(userId: string) {
-    
+  getOneUsersNewsletters(userId: string, page: number, pageSize: number) {
+    return this.httpClient.get<any>(`https://localhost:7264/api/Newsletter/usersNewsletters/${userId}?page=${page}&pageSize=${pageSize}`);
   }
 
   getAllNewsletters() {

@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { Observable } from 'rxjs';
-import * as pdfjsLib from 'pdfjs-dist';
 import { ThemeColors } from '../models/themecolor'
 import { newsletterSectionImages } from '../models/newsletter';
 
@@ -88,7 +87,7 @@ export class FileService {
           const fileName = `${title.replace(/\s+/g, '-').toLowerCase()}.pdf`;
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
-          
+
           // Upload PDF to server
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {

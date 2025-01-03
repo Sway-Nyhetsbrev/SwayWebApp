@@ -6,6 +6,7 @@ import { AllNewslettersComponent } from './views/newsletter/all-newsletters/all-
 import { LatestNewsletterComponent } from './views/newsletter/latest-newsletter/latest-newsletter.component';
 import { AdminPortalComponent } from './views/admin/admin-portal/admin-portal.component';
 import { RoleGuard } from './guards/role.guard';
+import { NewsletterDetailsComponent } from './views/newsletter/newsletter-details/newsletter-details.component';
 
 export const routes: Routes = [
     {
@@ -18,7 +19,11 @@ export const routes: Routes = [
     },
     {
         path: "my-newsletters",
-        component: MyNewslettersComponent
+        component: MyNewslettersComponent,
+        children: [{
+            path: "newsletter-details",
+            component: NewsletterDetailsComponent
+        }]
     },
     {
         path: "create-newsletter",
@@ -26,11 +31,14 @@ export const routes: Routes = [
     },
     {
         path: "all-newsletters",
-        component: AllNewslettersComponent
+        component: AllNewslettersComponent,
+        children: [{
+            path: "newsletter-details",
+            component: NewsletterDetailsComponent
+        }]
     },
     {
-        // Skydda admin-portal med RoleGuard
-        
+        // Skydda admin-portal med RoleGuard     
         path: 'admin-portal',
         component: AdminPortalComponent,
         canActivate: [RoleGuard]

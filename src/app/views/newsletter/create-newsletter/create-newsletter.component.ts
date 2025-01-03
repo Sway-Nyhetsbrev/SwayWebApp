@@ -75,7 +75,7 @@ export class CreateNewsletterComponent {
             console.log('Newsletter was created!', response);
 
             this.newsletter.id = response.id; // Här sparar vi ID:t från backend
-            this.saveAsPdf(this.newsletter.id);  // Skicka ID till saveAsPdf
+            this.saveAsPdf(this.newsletter.id);  // Skicka ID till saveAsPdf       
           },
           error: (error) => {
             this.statusMessage = 'Newsletter was not created!';
@@ -130,4 +130,5 @@ export class CreateNewsletterComponent {
       this.statusClass = 'alert alert-warning';
     }
   }
+  
 }
