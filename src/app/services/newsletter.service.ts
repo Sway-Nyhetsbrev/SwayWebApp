@@ -19,12 +19,12 @@ private httpClient = inject(HttpClient);
     );
   }
 
-  getOneNewsletter(id: string) {
+  getOneNewsletter(newsletterId: string) {
 
   }
 
-  getOneNewsletterPdf(id: string) {
-    
+  getOneNewsletterPdf(newsletterId: string) {
+    return this.httpClient.get<any>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`);
   }
 
   getLatestNewsletter() {

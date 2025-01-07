@@ -1,9 +1,8 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NewsletterService } from '../../../services/newsletter.service';
-import { newsletter } from '../../../models/newsletter';
-import { User } from '../../../models/user';
 import { UserService } from '../../../services/user.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-newsletter-details',
@@ -16,10 +15,12 @@ export class NewsletterDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   newsletterService = inject(NewsletterService)
   userService = inject(UserService)
+  sanitizer = inject(DomSanitizer);
+  newsletter = signal<SafeResourceUrl | null>(null);
   newsletterId: string = "";
-  newsletterDetails: newsletter | undefined;
   userId: string = "";
-  user: User | undefined;
+  isFetching = signal(false);
+  errorMessage = signal('');
 
   userRole = computed( () => {
     const users = this.userService.users();
@@ -35,6 +36,21 @@ export class NewsletterDetailsComponent implements OnInit {
   }
 
   loadNewsletterDetails() {
-    
+    this.isFetching.set(true);
+    this.newsletterService.getOneNewsletterPdf(this.newsletterId).subscribe({
+      next: (response) => {
+        console.log("response:" + response)
+        if (response && response.fileUri) {
+          const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(response.fileUri);
+          this.newsletter.set(safeUrl);
+      }},
+      error: (err) => {
+        console.error("Error fetching newsletter:", err);
+        this.errorMessage.set('Failed to fetch the newsletter!');
+      },
+      complete: () => {
+        this.isFetching.set(false);
+      },
+    });
   }
 }

@@ -1,1 +1,20 @@
-<p>newsletter-details works!</p>
+@if(newsletter()) {
+    <section id="newsletterSection">
+        <div class="container">
+            <iframe
+                [src]="newsletter()" 
+                width="100%" 
+                height="600px" 
+                frameborder="0" 
+                title="Latest Newsletter" 
+            ></iframe>
+          </div>
+    </section>
+}
+@else if (isFetching() && !errorMessage()) {
+    <p>Loading newsletter...</p>
+}
+
+@else if (errorMessage()) {
+    <p>{{errorMessage()}}</p>
+}
