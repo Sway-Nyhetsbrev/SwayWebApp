@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, OnInit, signal } from '@angular/core';
 import { User } from '../models/user';
 import { catchError, Observable, throwError } from 'rxjs';
 
@@ -8,6 +8,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class UserService {
   httpClient = inject(HttpClient)
+  users = signal<User[] | undefined>(undefined);
 
   // Skapa användare - returnerar ett Observable
   createUser(user: User): Observable<User | undefined> {
@@ -27,7 +28,15 @@ export class UserService {
 
   // Hämta alla användare
   getAllUsers() {
-    return this.httpClient.get<User[]>('https://localhost:7270/api/Users/GetAllUsers')
+    this.httpClient.get<User[] | undefined>('https://localhost:7270/api/Users/GetAllUsers')
+      .subscribe({
+        next: (fetchedUsers) => {
+          this.users.set(fetchedUsers);
+        },
+        error: (error) => {
+          console.error('Error fetching all users:', error);
+        }
+      });
   }
 
   // Uppdatera användare

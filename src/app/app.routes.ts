@@ -18,12 +18,12 @@ export const routes: Routes = [
         component: LatestNewsletterComponent
     },
     {
-        path: "my-newsletters",
-        component: MyNewslettersComponent,
-        children: [{
-            path: "newsletter-details",
-            component: NewsletterDetailsComponent
-        }]
+        path: "my-newsletters/:userId",
+        component: MyNewslettersComponent
+    },
+    {
+        path: "newsletter-details/:userId/:newsletterId",
+        component: NewsletterDetailsComponent
     },
     {
         path: "create-newsletter",
@@ -31,11 +31,7 @@ export const routes: Routes = [
     },
     {
         path: "all-newsletters",
-        component: AllNewslettersComponent,
-        children: [{
-            path: "newsletter-details",
-            component: NewsletterDetailsComponent
-        }]
+        component: AllNewslettersComponent
     },
     {
         // Skydda admin-portal med RoleGuard     

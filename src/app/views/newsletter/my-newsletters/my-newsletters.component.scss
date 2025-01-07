@@ -1,6 +1,13 @@
 #myNewsletters {
     padding: 50px;
-
+    text-align: center;
+    
+    h2 {
+        padding-bottom: 30px;
+        padding-right: 30px;
+        font-style: italic;
+        text-shadow:#12ABDB 1px 1px 2px;
+    }
     .container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;

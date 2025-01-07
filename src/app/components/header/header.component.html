@@ -18,7 +18,7 @@
         @if(isLoggedIn) {
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a routerLink="/my-newsletters" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
+                <a [routerLink]="'/my-newsletters/' + user()?.id" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
             </li>
             <li class="nav-item">
                 <a routerLink="/latest-newsletter" class="nav-link active btn btn-menu" aria-current="page">Latest Newsletter</a>

@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { NewsletterService } from '../../../services/newsletter.service';
-import { AuthService } from '../../../services/auth.service';
 import { RouterLink } from '@angular/router';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-my-newsletters',
@@ -12,7 +12,8 @@ import { RouterLink } from '@angular/router';
 })
 export class MyNewslettersComponent implements OnInit {
   newsletterService = inject(NewsletterService);
-  authService = inject(AuthService);
+  userService = inject(UserService)
+  userId = input.required<string>();
   errorMessage = signal('');
   userNewsletters = signal<any[]>([]);
   currentNewsletters: any[] = [];
@@ -21,27 +22,32 @@ export class MyNewslettersComponent implements OnInit {
   totalNewsletters = 0;
   totalPages = 0;
 
+  userName = computed( () => {
+    const users = this.userService.users();
+    return users?.find(u => u.id === this.userId())?.userName || users?.find(u => u.id === this.userId())?.email
+  })
+
   ngOnInit() {
-    const loggedUser = this.authService.getLoggedUser();
-    this.loadNewsletters(loggedUser!.id, this.currentPage);
+    this.userService.getAllUsers();
+    this.loadNewsletters(this.userId(), this.currentPage);
   }
 
   loadNewsletters(userId: string, page: number) {
     this.newsletterService.getOneUsersNewsletters(userId, page, this.pageSize).subscribe({
       next: (response) => {
         console.log("Received response:", response);
-        if (response && Array.isArray(response)) {
-          this.userNewsletters.set(response);
-
-          this.totalNewsletters = response.length;
+  
+        if (response && Array.isArray(response.newsletters)) {
+          this.userNewsletters.set(response.newsletters);
+          this.totalNewsletters = response.totalCount;
           this.totalPages = Math.ceil(this.totalNewsletters / this.pageSize);
-
-          const startIdx = (page - 1) * this.pageSize;
-          const endIdx = startIdx + this.pageSize;
-          this.currentNewsletters = response.slice(startIdx, endIdx);
-
+  
+          console.log('Total newsletters:', this.totalNewsletters);
+          console.log('Total pages:', this.totalPages);
+  
+          this.currentNewsletters = response.newsletters; 
+  
           console.log("User newsletters (current page):", this.currentNewsletters);
-          console.log("Total pages:", this.totalPages);
         } else {
           this.errorMessage.set("No newsletters found");
         }
@@ -56,16 +62,14 @@ export class MyNewslettersComponent implements OnInit {
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      const loggedUser = this.authService.getLoggedUser();
-      this.loadNewsletters(loggedUser!.id, this.currentPage);
+      this.loadNewsletters(this.userId(), this.currentPage);
     }
   }
 
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
-      const loggedUser = this.authService.getLoggedUser();
-      this.loadNewsletters(loggedUser!.id, this.currentPage);
+      this.loadNewsletters(this.userId(), this.currentPage);
     }
   }
 }

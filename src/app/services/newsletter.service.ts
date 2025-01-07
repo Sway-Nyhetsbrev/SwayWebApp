@@ -9,7 +9,6 @@ import { catchError, Observable, throwError } from 'rxjs';
 export class NewsletterService {
 private httpClient = inject(HttpClient);
 
-
   createNewsletter(newsletter: any): Observable<any>  {
     return this.httpClient.post<newsletter>('https://localhost:7264/api/Newsletter/create', newsletter)
     .pipe(
@@ -21,6 +20,10 @@ private httpClient = inject(HttpClient);
   }
 
   getOneNewsletter(id: string) {
+
+  }
+
+  getOneNewsletterPdf(id: string) {
     
   }
 

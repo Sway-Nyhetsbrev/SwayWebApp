@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { Observable } from 'rxjs';
 import { ThemeColors } from '../models/themecolor'
