@@ -23,6 +23,7 @@
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.2",
     "jspdf": "^2.5.2",
+    "jszip": "^3.10.1",
     "ngx-quill": "^27.0.0",
     "ngx-quill-upload": "^2.0.0",
     "pdf-lib": "^1.17.1",

@@ -24,7 +24,9 @@ private httpClient = inject(HttpClient);
   }
 
   getOneNewsletterPdf(newsletterId: string) {
-    return this.httpClient.get<any>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`);
+    return this.httpClient.get<Blob>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`, {
+      responseType: 'blob' as 'json',
+    });
   }
 
   getLatestNewsletter() {

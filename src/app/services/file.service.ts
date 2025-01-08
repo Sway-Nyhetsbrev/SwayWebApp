@@ -18,27 +18,56 @@ export class FileService {
         try {
           const pdfDoc = await PDFDocument.create();
           let page = pdfDoc.addPage([600, 800]);
-          let yOffset = 700;  // Start position for content
-
+          let yOffset = 700; // Start position for content
+  
           // Get theme colors
           const { backgroundStart, backgroundEnd, textColor } = this.getThemeColors(theme);
-          const gradientSteps = 20;
-          const stepHeight = page.getHeight() / gradientSteps;
-
+          const gradientSteps = 100;
+  
           // Add gradient background to the first page
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-
+  
           // Add title
           const [rTitle, gTitle, bTitle] = this.hexToRgb(textColor).map(val => val / 255);
           page.drawText(title, { x: 50, y: 750, size: 24, color: rgb(rTitle, gTitle, bTitle) });
-
+  
           // Loop through sections and images
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
+  
+            // Calculate the total height needed for the section (text + images)
+            let sectionHeight = 40; // Initial height for the text (40 px)
+  
+            if (images[i]) {
+              for (const image of images[i]) {
+                if (image.url) {
+                  const imageBuffer = await this.httpClient.get(image.url, { responseType: 'arraybuffer' }).toPromise();
+                  if (!imageBuffer) {
+                    console.error(`Failed to load image from URL ${image.url}`);
+                    continue;
+                  }
+  
+                  const embeddedImage = await pdfDoc.embedJpg(imageBuffer);
+                  const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
+                  sectionHeight += imgDims.height + 20; // Add the height of the image + spacing
+                }
+              }
+            }
+  
+            // Check if the section fits on the current page
+            if (yOffset - sectionHeight < 50) { // If not enough space, add a new page
+              page = pdfDoc.addPage([600, 800]); // Add a new page
+              yOffset = 700; // Reset yOffset for the new page
+  
+              // Reapply the gradient background on the new page
+              this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
+            }
+  
+            // Draw the text for the section
             page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
             yOffset -= 40;
-
-            // Add images for this section
+  
+            // Draw images for this section
             if (images[i]) {
               for (const image of images[i]) {
                 if (image.url) {
@@ -48,27 +77,18 @@ export class FileService {
                       console.error(`Failed to load image from URL ${image.url}`);
                       continue;
                     }
-
+  
                     const embeddedImage = await pdfDoc.embedJpg(imageBuffer);
-                    const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);  // Fit image within the page
-
-                    // Check if we need to add a new page if content exceeds current page
-                    if (yOffset - imgDims.height < 50) {  // 50 is the threshold for new page
-                      page = pdfDoc.addPage([600, 800]);  // Add new page
-                      yOffset = 700;  // Reset yOffset for new page
-
-                      // Reapply the theme gradient on the new page
-                      this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-                    }
-
+                    const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
+  
                     page.drawImage(embeddedImage, {
                       x: 50,
                       y: yOffset - imgDims.height,
                       width: imgDims.width,
                       height: imgDims.height,
                     });
-
-                    yOffset -= imgDims.height + 20;
+  
+                    yOffset -= imgDims.height + 20; // Add spacing after the image
                   } catch (imageError) {
                     console.error(`Error embedding image from URL ${image.url}:`, imageError);
                   }
@@ -76,19 +96,19 @@ export class FileService {
               }
             }
           }
-
+  
           // Save PDF as bytes
           const pdfBytes = await pdfDoc.save();
           console.log('Generated PDF bytes:', pdfBytes);
-
-          // Create FormData and append PDF file
+  
+          // Create FormData and append the PDF file
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
           const fileName = `${title.replace(/\s+/g, '-').toLowerCase()}.pdf`;
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
-
-          // Upload PDF to server
+  
+          // Upload the PDF to the server
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {
               const fileUrl = response ? (response as any).filePath : '';
@@ -129,27 +149,40 @@ export class FileService {
 
   // Method to add gradient to the page, ensuring it fills the entire page
   private addGradientToPage(page: any, backgroundStart: string, backgroundEnd: string, gradientSteps: number): void {
-  const startColor = this.hexToRgb(backgroundStart);
-  const endColor = this.hexToRgb(backgroundEnd);
-
-  // Calculate stepHeight based on the number of gradient steps
-  const stepHeight = page.getHeight() / gradientSteps;
-
-  // Loop through each step and draw a rectangle with a gradient color
-  for (let i = 0; i < gradientSteps; i++) {
-    const r = startColor[0] + ((endColor[0] - startColor[0]) / gradientSteps) * i;
-    const g = startColor[1] + ((endColor[1] - startColor[1]) / gradientSteps) * i;
-    const b = startColor[2] + ((endColor[2] - startColor[2]) / gradientSteps) * i;
-
+    const startColor = this.hexToRgb(backgroundStart);
+    const endColor = this.hexToRgb(backgroundEnd);
+  
+    const pageHeight = page.getHeight();
+    const stepHeight = pageHeight / gradientSteps;
+  
+    for (let i = 0; i < gradientSteps; i++) {
+      const r = startColor[0] + ((endColor[0] - startColor[0]) / gradientSteps) * i;
+      const g = startColor[1] + ((endColor[1] - startColor[1]) / gradientSteps) * i;
+      const b = startColor[2] + ((endColor[2] - startColor[2]) / gradientSteps) * i;
+  
+      // Justera höjden och lägg till en liten överlappning mellan stegen
+      const yStart = pageHeight - (i + 1) * stepHeight;
+      const adjustedHeight = stepHeight + 1; // Lägg till 1 pixel för att säkerställa överlappning
+  
+      page.drawRectangle({
+        x: 0,
+        y: yStart,
+        width: page.getWidth(),
+        height: adjustedHeight, // Gör rektangeln något högre
+        color: rgb(r / 255, g / 255, b / 255),
+      });
+    }
+  
+    // Säkerställ att vi fyller längst ner
+    const finalColor = rgb(endColor[0] / 255, endColor[1] / 255, endColor[2] / 255);
     page.drawRectangle({
       x: 0,
-      y: page.getHeight() - (i + 1) * stepHeight,  // Adjust position to fill the page
+      y: 0, // Längst ner
       width: page.getWidth(),
-      height: stepHeight,
-      color: rgb(r / 255, g / 255, b / 255),
+      height: 1, // 1 pixel extra för att täcka allt
+      color: finalColor,
     });
   }
-}
   
   createAndUploadImage(newsletterSectionImage: BlobPart): Observable<string> {
     return new Observable<string>((observer) => {
