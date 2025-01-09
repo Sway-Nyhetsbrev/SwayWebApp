@@ -1,9 +1,19 @@
 @if(newsletters()) {
     <section id="newsletterSection">
         <div class="container">
-            @for (image of newsletters(); track image) {
-                <img [src]="image" alt="Newsletter page"/>
-            }
+            <div class="newsletterContent">
+                @for (image of newsletters(); track image) {
+                    <img [src]="image" alt="Newsletter page"/>
+                }
+            </div>
+            <div class="newsletterInformation">
+                @if(newsletter()) {
+                    <h6>Author: {{newsletter()?.author}}</h6>
+                    <h6>Created: {{newsletter()?.createdAt | date}}</h6>
+                    <h6>Release date: {{newsletter()?.releaseDate | date}}</h6>
+                    <h6>Sections: {{newsletter()?.sections?.length}}</h6>                  
+                }
+            </div>
           </div>
     </section>
 }

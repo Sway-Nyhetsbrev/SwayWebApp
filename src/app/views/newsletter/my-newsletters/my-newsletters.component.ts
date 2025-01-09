@@ -15,6 +15,7 @@ export class MyNewslettersComponent implements OnInit {
   userService = inject(UserService)
   userId = input.required<string>();
   errorMessage = signal('');
+  isFetching = signal(false);
   userNewsletters = signal<any[]>([]);
   currentNewsletters: any[] = [];
   currentPage = 1;
@@ -33,6 +34,7 @@ export class MyNewslettersComponent implements OnInit {
   }
 
   loadNewsletters(userId: string, page: number) {
+    this.isFetching.set(true);
     this.newsletterService.getOneUsersNewsletters(userId, page, this.pageSize).subscribe({
       next: (response) => {
         console.log("Received response:", response);
@@ -55,7 +57,10 @@ export class MyNewslettersComponent implements OnInit {
       error: (err) => {
         console.error("Error fetching newsletters:", err);
         this.errorMessage.set("Failed to load newsletters");
-      }
+      },
+      complete: () => {
+        this.isFetching.set(false)
+      },
     });
   }
 

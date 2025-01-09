@@ -20,7 +20,7 @@ private httpClient = inject(HttpClient);
   }
 
   getOneNewsletter(newsletterId: string) {
-
+    return this.httpClient.get<newsletter>(`https://localhost:7264/api/Newsletter/${newsletterId}`)
   }
 
   getOneNewsletterPdf(newsletterId: string) {
