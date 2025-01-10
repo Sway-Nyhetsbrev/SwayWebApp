@@ -36,11 +36,36 @@ img {
     }
 }
 
-$toolbar-bg: #282c34; // Bakgrundsfärg för verktygsfältet
+$toolbar-bg: white; // Bakgrundsfärg för verktygsfältet
 $icon-color: #61dafb; // Ikonfärg
-$text-color: #ffffff; // Textfärg
+$text-color: black; // Textfärg
 $dropdown-bg: #3c4048; // Bakgrund för dropdowns
 $dropdown-text: #ffffff; // Textfärg för dropdowns
+
+.ql-toolbar {
+    background-color: $toolbar-bg;
+    color: $text-color;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    .ql-stroke {
+      stroke: var$icon-color; // Ändra färg på ikoner
+    }
+  
+    .ql-fill {
+      fill: $icon-color; // Ändra fyllnadsfärg på ikoner
+    }
+  
+    .ql-picker-label,
+    .ql-picker-item {
+      color: $text-color; // Ändra textfärg
+    }
+  
+    .ql-picker-options {
+      background-color: $dropdown-bg;
+      color: $dropdown-text;
+      border: 1px solid lighten($dropdown-bg, 10%);
+    }
+  }
 
 .default-theme {
     background-color: #F5F5F7;
@@ -107,39 +132,3 @@ $dropdown-text: #ffffff; // Textfärg för dropdowns
     background-image: linear-gradient(45deg, #5f2c82, #49a09d);
     color: white;
 }
-.ql-toolbar {
-    background-color: $toolbar-bg;
-    color: $text-color;
-  
-    .ql-stroke {
-      stroke: var$icon-color; // Ändra färg på ikoner
-    }
-  
-    .ql-fill {
-      fill: $icon-color; // Ändra fyllnadsfärg på ikoner
-    }
-  
-    .ql-picker-label,
-    .ql-picker-item {
-      color: $text-color; // Ändra textfärg
-    }
-  
-    .ql-picker-options {
-      background-color: $dropdown-bg;
-      color: $dropdown-text;
-      border: 1px solid lighten($dropdown-bg, 10%);
-    }
-  
-    // Specifika ikoner
-    .ql-bold .ql-stroke {
-      stroke: #ff5722;
-    }
-  
-    .ql-italic .ql-stroke {
-      stroke: #9c27b0;
-    }
-  
-    .ql-link .ql-stroke {
-      stroke: #03a9f4;
-    }
-  }

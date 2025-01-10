@@ -34,6 +34,28 @@ img {
   color: white;
 }
 
+.ql-toolbar {
+  background-color: white;
+  color: black;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.ql-toolbar .ql-stroke {
+  stroke: var #61dafb;
+}
+.ql-toolbar .ql-fill {
+  fill: #61dafb;
+}
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-item {
+  color: black;
+}
+.ql-toolbar .ql-picker-options {
+  background-color: #3c4048;
+  color: #ffffff;
+  border: 1px solid #535964;
+}
+
 .default-theme {
   background-color: #F5F5F7;
   color: black;
@@ -92,33 +114,4 @@ img {
 .dark-purple-to-red {
   background-image: linear-gradient(45deg, #5f2c82, #49a09d);
   color: white;
-}
-
-.ql-toolbar {
-  background-color: #282c34;
-  color: #ffffff;
-}
-.ql-toolbar .ql-stroke {
-  stroke: var #61dafb;
-}
-.ql-toolbar .ql-fill {
-  fill: #61dafb;
-}
-.ql-toolbar .ql-picker-label,
-.ql-toolbar .ql-picker-item {
-  color: #ffffff;
-}
-.ql-toolbar .ql-picker-options {
-  background-color: #3c4048;
-  color: #ffffff;
-  border: 1px solid #535964;
-}
-.ql-toolbar .ql-bold .ql-stroke {
-  stroke: #ff5722;
-}
-.ql-toolbar .ql-italic .ql-stroke {
-  stroke: #9c27b0;
-}
-.ql-toolbar .ql-link .ql-stroke {
-  stroke: #03a9f4;
 }
