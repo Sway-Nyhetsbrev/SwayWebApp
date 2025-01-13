@@ -33,7 +33,7 @@ export class NewsletterDetailsComponent implements OnInit {
   
 
   ngOnInit() {
-    console.log("userRole", this.userRole());
+    this.userService.getAllUsers();
     this.activatedRoute.params.subscribe(params => {
       this.newsletterId = params['newsletterId'];
       this.userId = params['userId'];
