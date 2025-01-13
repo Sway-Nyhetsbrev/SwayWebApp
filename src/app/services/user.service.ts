@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, OnInit, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { User } from '../models/user';
 import { catchError, Observable, throwError } from 'rxjs';
 
@@ -28,7 +28,7 @@ export class UserService {
 
   // Hämta alla användare
   getAllUsers() {
-    this.httpClient.get<User[] | undefined>('https://localhost:7270/api/Users/GetAllUsers')
+    return this.httpClient.get<User[]>('https://localhost:7270/api/Users/GetAllUsers')
       .subscribe({
         next: (fetchedUsers) => {
           this.users.set(fetchedUsers);

@@ -15,7 +15,7 @@
               [(ngModel)]="newsletter.title"
             />
           </div>
-  
+
           <div class="form-group" id="releaseDate">
             <label for="Release date" class="form-label">Release date:</label>
             <input
@@ -25,10 +25,14 @@
               [(ngModel)]="newsletter.releaseDate"
             />
           </div>
-  
+
           <div class="form-group" id="theme">
             <label for="theme" class="form-label">Theme:</label>
-            <select class="form-control" [(ngModel)]="selectedTheme" name="theme">
+            <select
+              class="form-control"
+              [(ngModel)]="selectedTheme"
+              name="theme"
+            >
               <option value="default-theme">Default</option>
               <option value="light-theme">Light</option>
               <option value="blue-to-pink">Blue to Pink</option>
@@ -46,28 +50,30 @@
         </div>
 
         <div class="sectionContent">
-          @if(newsletter.sections.length > 0) { 
-            @for (section of newsletter.sections; track section) { 
-              <div [innerHTML]="section.content"></div>
+          @if(newsletter.sections.length > 0) { @for (section of
+          newsletter.sections; track section) {
+          <div [innerHTML]="section.content"></div>
 
-              @for (image of section.newsletterSectionImages; track image) {
-                <div>
-                  <img src="{{image.url}}" alt="{{image.altText}}">
-                </div>
-              }
-            } 
-          } 
-          
-          @if(showSection) {
+          @for (image of section.newsletterSectionImages; track image) {
+          <div>
+            <img src="{{ image.url }}" alt="{{ image.altText }}" />
+          </div>
+          } } } @if(showSection) {
           <app-create-newsletter-section (save)="saveSection($event)">
           </app-create-newsletter-section>
           }
-  
+
           <button class="btn btn-main" type="button" (click)="toggleSection()">
             Add Section
           </button>
-          <button class="btn btn-main" type="submit" (click)="saveAsPdf(newsletter.id)">Save newsletter</button>
-  
+          <button
+            class="btn btn-main"
+            type="submit"
+            (click)="saveAsPdf(newsletter.id)"
+          >
+            Save newsletter
+          </button>
+
           @if(statusMessage) {
           <div [ngClass]="statusClass" class="{{ statusClass }}" role="alert">
             {{ statusMessage }}

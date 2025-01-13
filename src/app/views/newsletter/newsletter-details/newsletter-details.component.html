@@ -1,6 +1,21 @@
 @if(newsletters()) {
     <section id="newsletterSection">
         <div class="container">
+            @if (userRole()?.role == "Admin") {
+                <aside class="adminNavigationContent">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a [routerLink]="['./update-newsletter']" class="nav-link btn btn-menu" aria-current="page">Update Newsletter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [routerLink]="['./delete-newsletter']" class="nav-link btn btn-menu" aria-current="page">Delete Newsletter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [routerLink]="'/admin-portal/' + userId + '/all-newsletters'" class="nav-link btn btn-menu" aria-current="page"><i class="fa-solid fa-arrow-rotate-left"></i></a>
+                        </li>
+                    </ul>
+                </aside>
+            }
             <div class="newsletterContent">
                 @for (image of newsletters(); track image) {
                     <img [src]="image" alt="Newsletter page"/>
@@ -10,8 +25,7 @@
                 @if(newsletter()) {
                     <h6>Author: {{newsletter()?.author}}</h6>
                     <h6>Created: {{newsletter()?.createdAt | date}}</h6>
-                    <h6>Release date: {{newsletter()?.releaseDate | date}}</h6>
-                    <h6>Sections: {{newsletter()?.sections?.length}}</h6>                  
+                    <h6>Release date: {{newsletter()?.releaseDate | date}}</h6>                
                 }
             </div>
           </div>

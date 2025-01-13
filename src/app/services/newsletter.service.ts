@@ -37,8 +37,8 @@ private httpClient = inject(HttpClient);
     return this.httpClient.get<any>(`https://localhost:7264/api/Newsletter/usersNewsletters/${userId}?page=${page}&pageSize=${pageSize}`);
   }
 
-  getAllNewsletters() {
-    
+  getAllNewsletters(page: number, pageSize: number) {
+    return this.httpClient.get<any>(`https://localhost:7264/api/Newsletter?page=${page}&pageSize=${pageSize}`)
   }
   
   updateNewsletter(newsletter: newsletter) {

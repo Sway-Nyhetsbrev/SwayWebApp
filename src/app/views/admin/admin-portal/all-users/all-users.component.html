@@ -1,1 +1,14 @@
-<p>all-users works!</p>
+<section id="adminAllUsersSection">
+    <div class="container">
+        @for (user of users(); track user.id) {
+            <div class="userContent">
+                <a [routerLink]="['/userDetails/{{user.id}}']" routerLinkActive="router-link-active">
+                    <h6>Username: {{user.userName}}</h6>
+                    <h6>Email: {{user.email}}</h6>
+                    <h6>Id: {{user.id}}</h6>
+                    <h6>Role: {{user.role?.role}}</h6>
+                </a>
+            </div>
+        }
+    </div>
+</section>

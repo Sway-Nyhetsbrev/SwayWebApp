@@ -53,7 +53,7 @@ img {
 .ql-toolbar .ql-picker-options {
   background-color: #3c4048;
   color: #ffffff;
-  border: 1px solid #535964;
+  border: 1px solid #3c4048, 10%;
 }
 
 .default-theme {

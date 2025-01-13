@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { UserService } from '../../../services/user.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -10,7 +10,7 @@ import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-newsletter-details',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './newsletter-details.component.html',
   styleUrl: './newsletter-details.component.scss'
 })
@@ -30,8 +30,10 @@ export class NewsletterDetailsComponent implements OnInit {
     const users = this.userService.users();
     return users?.find(u => u.id === this.userId)?.role;
   })
+  
 
   ngOnInit() {
+    console.log("userRole", this.userRole());
     this.activatedRoute.params.subscribe(params => {
       this.newsletterId = params['newsletterId'];
       this.userId = params['userId'];

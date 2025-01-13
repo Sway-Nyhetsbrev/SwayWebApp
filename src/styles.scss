@@ -63,7 +63,7 @@ $dropdown-text: #ffffff; // Textfärg för dropdowns
     .ql-picker-options {
       background-color: $dropdown-bg;
       color: $dropdown-text;
-      border: 1px solid lighten($dropdown-bg, 10%);
+      border: 1px solid ($dropdown-bg, 10%);
     }
   }
 
