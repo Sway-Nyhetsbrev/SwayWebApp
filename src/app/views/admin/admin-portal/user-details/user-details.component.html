@@ -1,0 +1,27 @@
+<section id="userDetailsSection">
+    <div class="container">
+        <aside class="adminNavigationContent">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="btn btn-warning" aria-current="page">Update Newsletter</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-danger" aria-current="page">Delete Newsletter</a>
+                </li>
+                <button (click)="goBack()" class="btn btn-success" aria-current="page">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                </button>
+            </ul>
+        </aside>
+        <div class="userDetailsContent">
+            @if (user()) {
+                <form>
+                    <input type="text" class="form-control" [value]="user()?.id" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                    <input type="text" class="form-control" [value]="user()?.email" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                    <input type="text" class="form-control" [value]="user()?.userName" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                    <input type="text" class="form-control" [value]="user()?.role?.role" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                </form>
+            }
+        </div>
+    </div>
+</section>

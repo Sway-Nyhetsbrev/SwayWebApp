@@ -9,6 +9,7 @@ import { NewsletterDetailsComponent } from './views/newsletter/newsletter-detail
 import { AllUsersComponent } from './views/admin/admin-portal/all-users/all-users.component';
 import { AllNewslettersComponent } from './views/admin/admin-portal/all-newsletters/all-newsletters.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { UserDetailsComponent } from './views/admin/admin-portal/user-details/user-details.component';
 
 export const routes: Routes = [
   {
@@ -58,5 +59,10 @@ export const routes: Routes = [
           ]
         },
     ],
+  },
+  {
+    path: 'user-details/:userId',
+    component: UserDetailsComponent,
+    canActivate: [RoleGuard]
   },
 ];

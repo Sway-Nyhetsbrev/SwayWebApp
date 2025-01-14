@@ -1,0 +1,45 @@
+#userDetailsSection {
+    height: 100%;
+
+    .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .adminNavigationContent {
+            ul {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                li {
+                    padding: 5px;
+                }
+
+                button {
+                    height: 40px;
+                }
+            }
+        }
+        .userDetailsContent {
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            form {
+                display: grid;
+                grid-template-columns: auto auto;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+
+                input {
+                    padding: 10px;
+                }
+            }
+        }
+    }
+}

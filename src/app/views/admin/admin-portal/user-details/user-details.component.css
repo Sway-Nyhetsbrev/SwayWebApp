@@ -1,0 +1,37 @@
+#userDetailsSection {
+  height: 100%;
+}
+#userDetailsSection .container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#userDetailsSection .container .adminNavigationContent ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#userDetailsSection .container .adminNavigationContent ul li {
+  padding: 5px;
+}
+#userDetailsSection .container .adminNavigationContent ul button {
+  height: 40px;
+}
+#userDetailsSection .container .userDetailsContent {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#userDetailsSection .container .userDetailsContent form {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+#userDetailsSection .container .userDetailsContent form input {
+  padding: 10px;
+}
