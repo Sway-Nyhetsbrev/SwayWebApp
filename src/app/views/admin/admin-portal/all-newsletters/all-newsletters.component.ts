@@ -1,11 +1,11 @@
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { NewsletterService } from '../../../../services/newsletter.service';
 import { newsletter } from '../../../../models/newsletter';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-all-newsletters',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterOutlet],
   templateUrl: './all-newsletters.component.html',
   styleUrl: './all-newsletters.component.scss'
 })

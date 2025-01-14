@@ -18,18 +18,18 @@
         @if(isLoggedIn) {
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a [routerLink]="'/my-newsletters/' + user()?.id" class="nav-link active btn btn-menu" aria-current="page">My Newsletters</a>
+                <a [routerLink]="'/my-newsletters/' + user()?.id" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">My Newsletters</a>
             </li>
             <li class="nav-item">
-                <a routerLink="/latest-newsletter" class="nav-link active btn btn-menu" aria-current="page">Latest Newsletter</a>
+                <a routerLink="/latest-newsletter" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Latest Newsletter</a>
             </li>
             <li class="nav-item">
-                <a routerLink="/create-newsletter" class="nav-link active btn btn-menu" aria-current="page">Create Newsletter</a>
+                <a routerLink="/create-newsletter" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Create Newsletter</a>
             </li>
 
             @if (user()?.role?.role === "Admin") {
                 <li class="nav-item">
-                    <a [routerLink]="'/admin-portal/' + user()?.id" class="nav-link active btn btn-menu" aria-current="page">Admin</a>
+                    <a [routerLink]="'/admin-portal/' + user()?.id" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Admin</a>
                 </li>
             }
         </ul>

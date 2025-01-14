@@ -62,3 +62,14 @@ header .menuContent ul .btn-menu:hover {
   border-color: #F53B53;
   color: white;
 }
+header .menuContent ul .active {
+  text-align: center;
+  border: 1px solid #F53B53;
+  background-color: #F5F5F7;
+  color: #2B0A3D;
+}
+header .menuContent ul .active:hover {
+  background-color: #12ABDB;
+  border: 1px solid #F53B53;
+  color: white;
+}

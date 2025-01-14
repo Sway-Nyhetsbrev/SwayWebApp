@@ -4,15 +4,17 @@
     
     h2 {
         padding-bottom: 30px;
-        padding-right: 30px;
         font-style: italic;
         text-shadow:#12ABDB 1px 1px 2px;
     }
+
     .container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: auto auto auto;
         gap: 15px;
-
+        justify-content: center;
+        align-items: center;
+        
         .myNewslettersShowcase {
             width: 350px;
             height: 250px;

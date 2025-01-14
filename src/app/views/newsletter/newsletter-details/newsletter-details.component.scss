@@ -24,16 +24,7 @@
         .adminNavigationContent {
             border-radius: 10px;
             padding-top: 20%;
-
             padding: 5px;
-            transition: border-color 0.3s ease-out, background-color 0.8s ease-in;
-            background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
-            box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
-
-            &:hover {
-                background-image: linear-gradient(to bottom, white, rgba(0, 0, 0, 0.525));
-                box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
-            }
 
             ul {
                 justify-content: space-between;
@@ -63,18 +54,7 @@
             display: flex;
             align-items: center;
             text-align: left;
-            border: 2px solid #0070AD;
-            border-radius: 10px;
             padding: 5px;
-            transition: border-color 0.3s ease-out, background-color 0.8s ease-in;
-            background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
-            box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
-
-            &:hover {
-                border: 2px solid #12ABDB;
-                background-image: linear-gradient(to bottom, white, #0070AD);
-                box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
-            }
 
             h6 {
                 padding-left: 20px;

@@ -1,4 +1,7 @@
 <section id="adminAllUsersSection">
+    <div class="searchUserContent">
+        <router-outlet />
+    </div>
     <div class="container">
         @for (user of users(); track user.id) {
             <div class="userContent">

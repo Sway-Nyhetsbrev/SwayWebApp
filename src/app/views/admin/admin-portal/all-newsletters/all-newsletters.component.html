@@ -1,4 +1,9 @@
 <section id="allNewslettersSection">
+    
+    <div class="searchNewsletterContent">
+        <router-outlet />
+    </div>
+
     <div class="container">
         @if (newsletters() != null) {
             @for (newsletter of currentNewsletters; track newsletter.id) 

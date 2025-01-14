@@ -6,10 +6,9 @@ import { LatestNewsletterComponent } from './views/newsletter/latest-newsletter/
 import { AdminPortalComponent } from './views/admin/admin-portal/admin-portal.component';
 import { RoleGuard } from './guards/role.guard';
 import { NewsletterDetailsComponent } from './views/newsletter/newsletter-details/newsletter-details.component';
-import { SearchUserComponent } from './views/admin/admin-portal/search-user/search-user.component';
-import { SearchNewsletterComponent } from './views/admin/admin-portal/search-newsletter/search-newsletter.component';
 import { AllUsersComponent } from './views/admin/admin-portal/all-users/all-users.component';
 import { AllNewslettersComponent } from './views/admin/admin-portal/all-newsletters/all-newsletters.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
 
 export const routes: Routes = [
   {
@@ -40,21 +39,24 @@ export const routes: Routes = [
     children: [
         {
           path: 'all-newsletters',
-          component: AllNewslettersComponent
+          component: AllNewslettersComponent,
+          children: [
+            {
+              path: 'search-newsletter',
+              component: SearchBarComponent
+            }
+          ]
         },
         {
           path: 'all-users',
           component: AllUsersComponent,
+          children: [
+            {
+              path: 'search-user',
+              component: SearchBarComponent
+            },
+          ]
         },
-        {
-          path: 'search-user',
-          component: SearchUserComponent
-        },
-        {
-          path: 'search-newsletter',
-          component: SearchNewsletterComponent
-        }
-
     ],
   },
 ];
