@@ -4,6 +4,7 @@ import { UserService } from '../../../../services/user.service';
 import { User, UserUpdateModel } from '../../../../models/user';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { single } from 'rxjs';
 
 @Component({
   selector: 'app-user-details',
@@ -20,6 +21,7 @@ export class UserDetailsComponent implements OnInit {
   location = inject(Location);
   isFetching = signal(false);
   isUpdateing = signal(false);
+  isRemoving = signal(false);
   statusMessage: string = '';
   statusClass: string = '';
 
@@ -69,6 +71,14 @@ export class UserDetailsComponent implements OnInit {
     }
   }
 
+  loadRemoveDetails() {
+    this.isRemoving.set(true);
+    this.statusMessage = (
+      'Are you sure that you want to remove ' + this.user()?.email + '?' 
+    );
+    this.statusClass = 'alert alert-primary'
+  }
+
   updateUser() {
     const currentUser = this.user();
     if (!currentUser) {
@@ -104,7 +114,30 @@ export class UserDetailsComponent implements OnInit {
       },
     });
   }
-
+  removeUser() {
+    const userEmail = this.user()?.email;
+  
+    if (!userEmail) {
+      console.error('User email is undefined. Cannot remove user.');
+      this.statusMessage = 'Cannot remove user: Email is missing!';
+      this.statusClass = 'alert alert-danger';
+      return;
+    }
+  
+    this.userService.removeUser(userEmail).subscribe({
+      next: () => {
+        console.log('User removed successfully');
+        this.isRemoving.set(false);
+        this.statusMessage = 'User was successfully removed!';
+        this.statusClass = 'alert alert-success';
+      },
+      error: (err) => {
+        console.error('Failed to remove user', err);
+        this.statusMessage = 'Failed to remove user!';
+        this.statusClass = 'alert alert-danger';
+      },
+    });
+  }
   goBack() {
     this.location.back();
   }

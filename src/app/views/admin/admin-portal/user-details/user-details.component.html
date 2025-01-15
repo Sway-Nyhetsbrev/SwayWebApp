@@ -6,7 +6,7 @@
                     <a (click)="loadUpdateDetails()" class="btn btn-warning" aria-current="page">Update User</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-danger" aria-current="page">Delete User</a>
+                    <a (click)="loadRemoveDetails()" class="btn btn-danger" aria-current="page">Delete User</a>
                 </li>
                 <button (click)="goBack()" class="btn btn-success" aria-current="page">
                     <i class="fa-solid fa-arrow-rotate-left"></i>
@@ -37,6 +37,10 @@
                 @if (statusMessage) {
                     <div [class]="statusClass" role="alert">
                         <h6>{{statusMessage}}</h6>
+                        @if (isRemoving()) {
+                            <button (click)="removeUser()" class="btn btn-warning">Yes</button>
+                            <button class="btn btn-primary">No</button>
+                        }
                     </div>
                 }
             }

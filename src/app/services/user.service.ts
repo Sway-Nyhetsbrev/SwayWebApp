@@ -43,4 +43,9 @@ export class UserService {
   updateUser(updatedUser: UserUpdateModel): Observable<User | null> {
     return this.httpClient.put<any>(`https://localhost:7270/api/Users/UpdateUser`, updatedUser)
   }
+
+  //Remove User
+  removeUser(userEmail: string) {
+    return this.httpClient.delete<User>(`https://localhost:7270/api/Users/DeleteUser?userEmail=${userEmail}`)
+  }
 }
