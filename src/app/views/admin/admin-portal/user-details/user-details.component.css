@@ -64,5 +64,5 @@
 }
 #userDetailsSection .container .userDetailsContent .alert {
   margin-top: 20px;
-  padding: 20px 40px;
+  width: 310px;
 }
