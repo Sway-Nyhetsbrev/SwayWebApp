@@ -5,6 +5,12 @@ export interface User {
     role?: Role;
 }
 
+export interface UserUpdateModel {
+    email: string;
+    userName?: string;
+    role: string;
+}
+
 export interface Role {
     id: string;
     role: string;

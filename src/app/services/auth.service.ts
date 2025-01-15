@@ -19,7 +19,7 @@ export class AuthService {
       auth: {
         clientId: '24a98435-464a-4df8-8a2c-6a9e0bde2611',
         authority: 'https://login.microsoftonline.com/76057efc-d10d-4c1f-a7b2-f9dfbf130080',
-        redirectUri: 'http://localhost:4200'
+        redirectUri: 'http://localhost:4200/'
       }
     };
 

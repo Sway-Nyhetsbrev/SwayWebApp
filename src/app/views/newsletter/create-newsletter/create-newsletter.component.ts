@@ -106,7 +106,7 @@ export class CreateNewsletterComponent {
         pdfUrl$.subscribe({
           next: (pdfUrl) => {
             // If successful, update the status message
-            this.statusMessage = `PDF uploaded successfully! You can view it at: ${pdfUrl}`;
+            this.statusMessage = `PDF uploaded successfully!`;
             this.statusClass = 'alert alert-success';
             console.log('PDF uploaded:', pdfUrl);
           },

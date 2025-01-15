@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { User } from '../models/user';
+import { User, UserUpdateModel } from '../models/user';
 import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
@@ -40,7 +40,7 @@ export class UserService {
   }
 
   // Uppdatera användare
-  updateUser(userId: string, user: User): Observable<User | null> {
-    return this.httpClient.put<User>(`https://localhost:7270/api/Users/UpdateUser/${userId}`, user)
+  updateUser(updatedUser: UserUpdateModel): Observable<User | null> {
+    return this.httpClient.put<any>(`https://localhost:7270/api/Users/UpdateUser`, updatedUser)
   }
 }

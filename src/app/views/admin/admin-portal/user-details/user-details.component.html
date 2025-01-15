@@ -3,10 +3,10 @@
         <aside class="adminNavigationContent">
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                    <a class="btn btn-warning" aria-current="page">Update Newsletter</a>
+                    <a (click)="loadUpdateDetails()" class="btn btn-warning" aria-current="page">Update User</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-danger" aria-current="page">Delete Newsletter</a>
+                    <a class="btn btn-danger" aria-current="page">Delete User</a>
                 </li>
                 <button (click)="goBack()" class="btn btn-success" aria-current="page">
                     <i class="fa-solid fa-arrow-rotate-left"></i>
@@ -15,12 +15,30 @@
         </aside>
         <div class="userDetailsContent">
             @if (user()) {
-                <form>
-                    <input type="text" class="form-control" [value]="user()?.id" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-                    <input type="text" class="form-control" [value]="user()?.email" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-                    <input type="text" class="form-control" [value]="user()?.userName" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-                    <input type="text" class="form-control" [value]="user()?.role?.role" disabled aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                <form (ngSubmit)="updateUser()">
+                    <input type="text" class="form-control" disabled [value]="user()?.id" name="userId">
+                    <input type="text" class="form-control" disabled [value]="user()?.email" name="email">
+                    <input type="text" class="form-control" disabled [value]="user()?.userName" name="userName">
+                
+                    @if (isUpdateing()) {
+                        <div class="selectWrapper">
+                            <select id="selectRole" class="form-control" [(ngModel)]="enteredRole" [value]="enteredRole" name="role">
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </select>
+                            <i id="updateUserDropDownIcon" class="fa-solid fa-arrow-down"></i>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    }
+                    @else {
+                        <input type="text" class="form-control" disabled [value]="user()?.role?.role" name="userName">
+                    }
                 </form>
+                @if (statusMessage) {
+                    <div [class]="statusClass" role="alert">
+                        <h6>{{statusMessage}}</h6>
+                    </div>
+                }
             }
         </div>
     </div>
