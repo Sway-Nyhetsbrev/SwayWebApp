@@ -1,10 +1,10 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.service';
 import { User, UserUpdateModel } from '../../../../models/user';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { single } from 'rxjs';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-user-details',
@@ -12,9 +12,12 @@ import { single } from 'rxjs';
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.scss',
 })
+
 export class UserDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   userService = inject(UserService);
+  authService = inject(AuthService)
+  loggedUserId = signal("");
   userId: string = '';
   user = signal<User | null>(null);
   enteredRole: string = "";
@@ -27,10 +30,14 @@ export class UserDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getAllUsers();
+    const loggedUserId = this.authService.loggedUser()?.id
+    if (loggedUserId) {
+      this.loggedUserId.set(loggedUserId)
+    }
     this.activatedRoute.params.subscribe((params) => {
       this.userId = params['userId'];
+      this.loadUserDetails();
     });
-    this.loadUserDetails();
   }
 
   loadUserDetails() {
@@ -59,24 +66,39 @@ export class UserDetailsComponent implements OnInit {
       },
       complete: () => {
         this.isFetching.set(false);
+        console.log('Current user:', this.user());
+        console.log('Logged user ID:', this.loggedUserId());
       },
     });
   }
 
   loadUpdateDetails() {
     this.isUpdateing.set(true);
-    const currentUser = this.user();
-    if (currentUser && currentUser.role) {
-      this.enteredRole = currentUser.role.role;
+    if (this.user()?.id != this.loggedUserId()) {
+      const currentUser = this.user();
+      if (currentUser && currentUser.role) {
+        this.enteredRole = currentUser.role.role;
+      }
     }
+    else {
+      this.statusMessage = ("You can't update your own profile!");
+      this.statusClass = 'alert alert-warning'
+    }
+
   }
 
   loadRemoveDetails() {
     this.isRemoving.set(true);
-    this.statusMessage = (
-      'Are you sure that you want to remove ' + this.user()?.email + '?' 
-    );
-    this.statusClass = 'alert alert-primary'
+    if (this.user()?.id != this.loggedUserId()) {
+      this.statusMessage = (
+        'Are you sure that you want to remove ' + this.user()?.email + '?' 
+      );
+      this.statusClass = 'alert alert-primary'
+    }
+    else {
+      this.statusMessage = ("You can't remove your own profile!");
+      this.statusClass = 'alert alert-warning'
+    }
   }
 
   updateUser() {
@@ -114,6 +136,7 @@ export class UserDetailsComponent implements OnInit {
       },
     });
   }
+
   removeUser() {
     const userEmail = this.user()?.email;
   
@@ -136,8 +159,14 @@ export class UserDetailsComponent implements OnInit {
         this.statusMessage = 'Failed to remove user!';
         this.statusClass = 'alert alert-danger';
       },
+      complete: () => {
+        setTimeout(() => {
+          this.goBack();
+        }, 2000);
+      },
     });
   }
+
   goBack() {
     this.location.back();
   }

@@ -20,7 +20,7 @@
                     <input type="text" class="form-control" disabled [value]="user()?.email" name="email">
                     <input type="text" class="form-control" disabled [value]="user()?.userName" name="userName">
                 
-                    @if (isUpdateing()) {
+                    @if (isUpdateing() && user()?.id != loggedUserId()) {
                         <div class="selectWrapper">
                             <select id="selectRole" class="form-control" [(ngModel)]="enteredRole" [value]="enteredRole" name="role">
                                 <option value="Admin">Admin</option>
@@ -37,7 +37,7 @@
                 @if (statusMessage) {
                     <div [class]="statusClass" role="alert">
                         <h6>{{statusMessage}}</h6>
-                        @if (isRemoving()) {
+                        @if (isRemoving() && user()?.id != loggedUserId()) {
                             <button (click)="removeUser()" class="btn btn-warning">Yes</button>
                             <button class="btn btn-primary">No</button>
                         }

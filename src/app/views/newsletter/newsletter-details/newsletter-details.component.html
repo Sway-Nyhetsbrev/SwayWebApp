@@ -5,16 +5,25 @@
                 <aside class="adminNavigationContent">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a [routerLink]="['./update-newsletter']" class="btn btn-warning" aria-current="page">Update Newsletter</a>
+                            <a [routerLink]="['/update-newsletter', newsletterId]" class="btn btn-warning" aria-current="page">Update Newsletter</a>
                         </li>
                         <li class="nav-item">
-                            <a [routerLink]="['./delete-newsletter']" class="btn btn-danger" aria-current="page">Delete Newsletter</a>
+                            <a (click)="loadDeleteNewsletterDetails()" class="btn btn-danger" aria-current="page">Delete Newsletter</a>
                         </li>
-                        <li class="nav-item">
-                            <a [routerLink]="'/admin-portal/' + userId + '/all-newsletters'" class="btn btn-success" aria-current="page"><i class="fa-solid fa-arrow-rotate-left"></i></a>
-                        </li>
+                        <button (click)="goBack()" class="btn btn-success" aria-current="page">
+                            <i class="fa-solid fa-arrow-rotate-left"></i>
+                        </button>
                     </ul>
                 </aside>
+            }
+            @if (statusMessage) {
+                <div [class]="statusClass" role="alert">
+                    <h6>{{statusMessage}}</h6>
+                    @if (isRemoving()) {
+                        <button (click)="deleteNewsletter()" class="btn btn-warning">Yes</button>
+                        <button (click)="goBack()" class="btn btn-primary">No</button>
+                    }
+                </div>
             }
             <div class="newsletterContent">
                 @for (image of newsletters(); track image) {
@@ -31,10 +40,10 @@
           </div>
     </section>
 }
-@else if (isFetching() && !errorMessage()) {
+@else if (isFetching() && !statusMessage) {
     <p>Loading newsletter...</p>
 }
 
-@else if (errorMessage()) {
-    <p>{{errorMessage()}}</p>
+@else if (statusMessage) {
+    <p>{{statusMessage}}</p>
 }

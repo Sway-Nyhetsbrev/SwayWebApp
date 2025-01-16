@@ -20,27 +20,18 @@
   border-radius: 10px;
 }
 #newsletterSection .container .adminNavigationContent {
-  border-radius: 10px;
-  padding-top: 20%;
-  padding: 5px;
+  margin-bottom: 20px;
 }
 #newsletterSection .container .adminNavigationContent ul {
-  justify-content: space-between;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 #newsletterSection .container .adminNavigationContent ul li {
-  padding: 10px;
+  padding: 5px;
 }
-#newsletterSection .container .adminNavigationContent ul li .btn-menu {
-  border: 1px solid #2B0A3D;
-  background-color: #0070AD;
-  color: #F5F5F7;
-  padding: 5px 10px;
-  text-decoration: none;
-}
-#newsletterSection .container .adminNavigationContent ul li .btn-menu:hover {
-  background-color: #12ABDB;
-  border-color: #F53B53;
-  color: white;
+#newsletterSection .container .adminNavigationContent ul button {
+  height: 39px;
 }
 #newsletterSection .container .newsletterInformation {
   width: auto;

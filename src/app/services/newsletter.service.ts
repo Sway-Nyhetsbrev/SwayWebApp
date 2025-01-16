@@ -46,6 +46,10 @@ private httpClient = inject(HttpClient);
   }
 
   removeNewsletter(newsletterId: string) {
-    
+    return this.httpClient.delete<newsletter>(`https://localhost:7264/api/Newsletter/${newsletterId}`)
+  }
+  
+  removeNewsletterPdf(newsletterId: string) {
+    return this.httpClient.delete<void>(`http://localhost:7126/api/DeleteNewsletterFile?newsletterId=${newsletterId}`)
   }
 }
