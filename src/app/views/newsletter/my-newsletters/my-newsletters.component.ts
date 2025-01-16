@@ -14,7 +14,8 @@ export class MyNewslettersComponent implements OnInit {
   newsletterService = inject(NewsletterService);
   userService = inject(UserService)
   userId = input.required<string>();
-  errorMessage = signal('');
+  statusMessage: string = '';
+  statusClass: string = '';
   isFetching = signal(false);
   userNewsletters = signal<any[]>([]);
   currentNewsletters: any[] = [];
@@ -35,32 +36,36 @@ export class MyNewslettersComponent implements OnInit {
 
   loadNewsletters(userId: string, page: number) {
     this.isFetching.set(true);
+    this.statusMessage = '';
     this.newsletterService.getOneUsersNewsletters(userId, page, this.pageSize).subscribe({
       next: (response) => {
         console.log("Received response:", response);
   
         if (response && Array.isArray(response.newsletters)) {
-          this.userNewsletters.set(response.newsletters);
-          this.totalNewsletters = response.totalCount;
-          this.totalPages = Math.ceil(this.totalNewsletters / this.pageSize);
+          if (response.newsletters.length > 0) {
+            this.userNewsletters.set(response.newsletters);
+            this.totalNewsletters = response.totalCount;
+            this.totalPages = Math.ceil(this.totalNewsletters / this.pageSize);
+            this.currentNewsletters = response.newsletters;
   
-          console.log('Total newsletters:', this.totalNewsletters);
-          console.log('Total pages:', this.totalPages);
-  
-          this.currentNewsletters = response.newsletters; 
-  
-          console.log("User newsletters (current page):", this.currentNewsletters);
-        } else {
-          this.errorMessage.set("No newsletters found");
+            console.log('Total newsletters:', this.totalNewsletters);
+            console.log('Total pages:', this.totalPages);
+
+          } else {
+            this.statusMessage = "No newsletters found";
+            this.statusClass = 'alert alert-warning';
+
+          }
         }
       },
       error: (err) => {
         console.error("Error fetching newsletters:", err);
-        this.errorMessage.set("Failed to load newsletters");
+        this.statusMessage = "Failed to load newsletters";
+        this.statusClass = 'alert alert-danger';
       },
       complete: () => {
-        this.isFetching.set(false)
-      },
+        this.isFetching.set(false);
+      }
     });
   }
 

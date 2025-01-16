@@ -133,7 +133,7 @@ export class NewsletterDetailsComponent implements OnInit {
       },
     });
 
-    this.newsletterService.getOneNewsletterPdf(this.newsletterId).subscribe({
+    this.newsletterService.removeNewsletterPdf(this.newsletterId).subscribe({
       next: () => {
         console.log('Newsletter was removed successfully');
         this.isRemoving.set(false);
@@ -142,7 +142,7 @@ export class NewsletterDetailsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to remove newsletter', err);
-        this.statusMessage = 'Failed to remove newsletter!';
+        this.statusMessage = 'Failed to remove newsletterPdf!';
         this.statusClass = 'alert alert-danger';
       },
       complete: () => {

@@ -1,7 +1,7 @@
 <section id="myNewsletters">
     <h2>{{userName()}}'s newsletters</h2>
     <div class="container">
-        @if (userNewsletters() != null) {
+        @if (totalNewsletters > 0) {
             @for (newsletter of currentNewsletters; track newsletter.id) 
             {
                 <div class="myNewslettersShowcase">
@@ -19,10 +19,15 @@
                 </div>
             }
         }
-        @else if (isFetching() && !errorMessage()) {
+        @else if (isFetching() && !statusMessage) {
             <p>Loading newsletters...</p>
         }
-        
+        @else
+        {
+            <div [class]="statusClass">
+                {{statusMessage}}
+            </div>
+        } 
     </div>
     @if(totalPages > 1) {
         <nav aria-label="Page navigation">
@@ -37,11 +42,4 @@
             </ul>
         </nav>
     }
-
-    @else if (errorMessage())
-    {
-        <div class="errorMessage">
-            {{errorMessage()}}
-        </div>
-    } 
 </section>

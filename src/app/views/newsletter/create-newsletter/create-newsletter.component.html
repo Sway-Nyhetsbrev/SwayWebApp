@@ -32,6 +32,7 @@
               class="form-control"
               [(ngModel)]="selectedTheme"
               name="theme"
+              (ngModelChange)="selectTheme($event)"
             >
               <option value="default-theme">Default</option>
               <option value="light-theme">Light</option>
@@ -75,7 +76,7 @@
           </button>
 
           @if(statusMessage) {
-          <div [ngClass]="statusClass" class="{{ statusClass }}" role="alert">
+          <div [class]="statusClass" role="alert">
             {{ statusMessage }}
           </div>
           }

@@ -11,12 +11,6 @@ private httpClient = inject(HttpClient);
 
   createNewsletter(newsletter: any): Observable<any>  {
     return this.httpClient.post<newsletter>('https://localhost:7264/api/Newsletter/create', newsletter)
-    .pipe(
-      catchError((error) => {
-        console.error('Error creating newsletter:', error);
-        return throwError(() => new Error('Failed to create newsletter'));
-      })
-    );
   }
 
   getOneNewsletter(newsletterId: string) {
@@ -24,6 +18,7 @@ private httpClient = inject(HttpClient);
   }
 
   getOneNewsletterPdf(newsletterId: string) {
+    console.log("newsletterId:", newsletterId)
     return this.httpClient.get<Blob>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`, {
       responseType: 'blob' as 'json',
     });
@@ -48,8 +43,8 @@ private httpClient = inject(HttpClient);
   removeNewsletter(newsletterId: string) {
     return this.httpClient.delete<newsletter>(`https://localhost:7264/api/Newsletter/${newsletterId}`)
   }
-  
+
   removeNewsletterPdf(newsletterId: string) {
-    return this.httpClient.delete<void>(`http://localhost:7126/api/DeleteNewsletterFile?newsletterId=${newsletterId}`)
+    return this.httpClient.delete<string>(`http://localhost:7126/api/DeleteNewsletterFile?newsletterId=${newsletterId}`, { responseType: 'text' as 'json' });
   }
 }

@@ -13,8 +13,9 @@ export class AllNewslettersComponent implements OnInit{
   newsletterService = inject(NewsletterService)
   newsletters = signal<newsletter[] | undefined>(undefined)
   userId = input.required<string>();
-  errorMessage = signal('');
   isFetching = signal(false);
+  statusMessage: string = '';
+  statusClass: string = '';
   currentNewsletters: any[] = [];
   currentPage = 1;
   pageSize = 9;
@@ -42,13 +43,19 @@ export class AllNewslettersComponent implements OnInit{
           this.currentNewsletters = response.newsletters; 
   
           console.log("User newsletters (current page):", this.currentNewsletters);
+          if (this.currentNewsletters.length === 0) {
+            this.statusMessage = "No newsletters available";
+            this.statusClass = 'alert alert-warning';
+          }
         } else {
-          this.errorMessage.set("No newsletters found");
+          this.statusMessage = "No newsletters found";
+          this.statusClass = 'alert alert-warning';
         }
       },
       error: (err) => {
         console.error("Error fetching newsletters:", err);
-        this.errorMessage.set("Failed to load newsletters");
+        this.statusMessage = "Failed to load newsletters";
+        this.statusClass = 'alert alert-danger';
       },
       complete: () => {
         this.isFetching.set(false)

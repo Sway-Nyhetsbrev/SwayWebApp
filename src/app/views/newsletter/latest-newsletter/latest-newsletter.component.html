@@ -1,7 +1,8 @@
 
-@if(latestNewsletter()) {
+
     <section id="newsletterSection">
         <div class="container">
+            @if(latestNewsletter()) {
             <iframe
                 [src]="latestNewsletter()" 
                 width="100%" 
@@ -10,13 +11,17 @@
                 title="Latest Newsletter"
                 class="newsletter-iframe" 
             ></iframe>
+            }
+            @else if (isFetching() && !statusMessage) {
+                <p>Loading latest newsletter...</p>
+            }
+            
+            @else if (statusMessage) {
+                <div [class]="statusClass">
+                    {{statusMessage}}
+                </div>
+            }
           </div>
     </section>
-}
-@else if (isFetching() && !errorMessage()) {
-    <p>Loading latest newsletter...</p>
-}
 
-@else if (errorMessage()) {
-    <p>{{errorMessage()}}</p>
-}
+

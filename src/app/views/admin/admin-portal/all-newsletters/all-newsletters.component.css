@@ -25,6 +25,9 @@
   color: #0070AD;
   padding: 10px;
 }
+#allNewslettersSection .container .alert {
+  width: 800px;
+}
 #allNewslettersSection .pagination {
   display: flex;
   justify-content: center;

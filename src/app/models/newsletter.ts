@@ -1,3 +1,5 @@
+import { ThemeColors } from "./themecolor";
+
 export interface newsletter {
     id: string;
     title: string;
@@ -6,6 +8,7 @@ export interface newsletter {
     releaseDate: Date;
     userId: string;
     sections: newsletterSection[]
+    theme?: ThemeColors;
 }
 
 export interface newsletterSection {

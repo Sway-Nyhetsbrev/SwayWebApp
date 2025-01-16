@@ -12,7 +12,6 @@ import { AuthService } from '../../../../services/auth.service';
   templateUrl: './user-details.component.html',
   styleUrl: './user-details.component.scss',
 })
-
 export class UserDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   userService = inject(UserService);

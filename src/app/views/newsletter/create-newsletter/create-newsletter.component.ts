@@ -7,6 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { AuthService } from '../../../services/auth.service';
 import { FileService } from '../../../services/file.service';
+import { themeColorsMap } from '../../../models/themecolor';
 
 @Component({
   selector: 'app-create-newsletter',
@@ -34,6 +35,7 @@ export class CreateNewsletterComponent {
     releaseDate: new Date(),
     userId: '',
     sections: [],
+    theme: themeColorsMap['default-theme']
   };
 
   toggleSection() {
@@ -49,6 +51,11 @@ export class CreateNewsletterComponent {
     } else {
       console.log('Sektionen är inte fullständig.');
     }
+  }
+
+  selectTheme(theme: string) {
+    this.selectedTheme = theme;
+    this.newsletter.theme = themeColorsMap[theme];
   }
 
   saveNewsletter() {
@@ -74,8 +81,8 @@ export class CreateNewsletterComponent {
             this.statusClass = 'alert alert-success';
             console.log('Newsletter was created!', response);
 
-            this.newsletter.id = response.id; // Här sparar vi ID:t från backend
-            this.saveAsPdf(this.newsletter.id);  // Skicka ID till saveAsPdf       
+            this.newsletter.id = response.id;
+            this.saveAsPdf(this.newsletter.id);    
           },
           error: (error) => {
             this.statusMessage = 'Newsletter was not created!';
@@ -106,8 +113,6 @@ export class CreateNewsletterComponent {
         pdfUrl$.subscribe({
           next: (pdfUrl) => {
             // If successful, update the status message
-            this.statusMessage = `PDF uploaded successfully!`;
-            this.statusClass = 'alert alert-success';
             console.log('PDF uploaded:', pdfUrl);
           },
           error: (error) => {

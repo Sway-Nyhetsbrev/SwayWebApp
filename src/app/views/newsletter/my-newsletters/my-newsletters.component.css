@@ -44,6 +44,9 @@
   border-radius: 8px;
   width: 95%;
 }
+#myNewsletters .container .alert {
+  width: 320px;
+}
 #myNewsletters .pagination {
   display: flex;
   justify-content: center;

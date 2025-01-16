@@ -14,7 +14,8 @@ export class LatestNewsletterComponent implements OnInit {
   sanitizer = inject(DomSanitizer);
   latestNewsletter = signal<SafeResourceUrl | null>(null);
   isFetching = signal(false);
-  errorMessage = signal('');
+  statusMessage = '';
+  statusClass = '';
 
   ngOnInit() {
     this.isFetching.set(true);
@@ -26,12 +27,14 @@ export class LatestNewsletterComponent implements OnInit {
         this.latestNewsletter.set(safeUrl);
       } else {
         console.error('Invalid fileUri received:', value);
-        this.errorMessage.set('Invalid fileUri received.');
+        this.statusMessage = 'Invalid fileUri received.';
+        this.statusClass = 'alert alert-danger';
       }
     },
     error: (err) => {
       console.error('Error fetching newsletter:', err);
-      this.errorMessage.set('Failed to fetch the latest newsletter');
+      this.statusMessage = 'Failed to fetch the latest newsletter';
+      this.statusClass = 'alert alert-danger';
     },
     complete: () => {
       this.isFetching.set(false);
