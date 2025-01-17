@@ -29,9 +29,10 @@ export class UserDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getAllUsers();
-    const loggedUserId = this.authService.loggedUser()?.id
-    if (loggedUserId) {
-      this.loggedUserId.set(loggedUserId)
+    const loggedUser = this.authService.getLoggedUser();
+    if (loggedUser) {
+      this.loggedUserId.set(loggedUser.id)
+      console.log(loggedUser)
     }
     this.activatedRoute.params.subscribe((params) => {
       this.userId = params['userId'];

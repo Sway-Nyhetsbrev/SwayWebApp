@@ -1,5 +1,91 @@
 <section id="updateNewsletterSection">
-    <div class="container">
-        <p>updateNewsletterSection</p>
-    </div>
+  <div class="container">
+    <h2>Update Newsletter</h2>
+    <form
+      (ngSubmit)="updateNewsletter()"
+      [ngClass]="newsletter()?.theme?.className"
+    >
+      <div id="newsletter-content">
+        <div class="form-group-content">
+          <div class="form-group">
+            <label for="Title" class="form-label">Title:</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Title"
+              name="title"
+              required
+              [value]="newsletter()?.title"
+            />
+          </div>
+
+          <div class="form-group" id="releaseDate">
+            <label for="Release date" class="form-label">Release date:</label>
+            <input
+              class="form-control"
+              type="date"
+              name="releaseDate"
+              [value]="newsletter()?.releaseDate | date : 'yyyy-MM-dd'"
+            />
+          </div>
+
+          <div class="form-group" id="theme">
+            <label for="theme" class="form-label">Theme:</label>
+            <select
+              class="form-control"
+              [(ngModel)]="(newsletter()?.theme)!.className"
+              [value]="newsletter()?.theme"
+              name="theme"
+              (ngModelChange)="updateTheme($event)"
+            >
+              <option value="default-theme">Default</option>
+              <option value="light-theme">Light</option>
+              <option value="blue-to-pink">Blue to Pink</option>
+              <option value="purple-to-blue">Purple to Blue</option>
+              <option value="red-to-orange">Red to Orange</option>
+              <option value="green-to-blue">Green to Blue</option>
+              <option value="yellow-to-red">Yellow to Red</option>
+              <option value="blue-to-turquoise">Blue to Turquoise</option>
+              <option value="pink-to-purple">Pink to Purple</option>
+              <option value="orange-to-yellow">Orange to Yellow</option>
+              <option value="blue-to-green">Blue to Green</option>
+              <option value="dark-purple-to-red">Dark Purple to Red</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sectionContent">
+          @if(newsletter()?.sections!.length > 0) 
+          { 
+            @for (section of newsletter()?.sections; track section) 
+            {
+              <div [innerHTML]="section.content"></div>
+
+              @for (image of section.newsletterSectionImages; track image) {
+              <div>
+                <img src="{{ image.url }}" alt="{{ image.altText }}" />
+              </div>
+              } 
+              <button type="button" class="btn btn-main" (click)="editSection(section)">Edit Section</button>
+            } 
+          } 
+          
+          @if(showSection) 
+          {
+          <app-create-newsletter-section [newsletterSection]="selectedSection" (save)="updateSection($event)">
+          </app-create-newsletter-section>
+          }
+
+          <button class="btn btn-main" type="button" (click)="toggleSection()">Add Section</button>
+          <button class="btn btn-main" type="submit">Update newsletter</button>
+
+          @if(statusMessage) {
+          <div [class]="statusClass" role="alert">
+            {{ statusMessage }}
+          </div>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
 </section>

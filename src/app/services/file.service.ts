@@ -227,31 +227,31 @@ export class FileService {
   getThemeColors(theme: string): ThemeColors {
     switch (theme) {
       case 'default-theme':
-        return { name: 'default-theme', backgroundStart: '#F5F5F7', backgroundEnd: '#FFFFFF', textColor: 'black' };
+        return { name: 'default-theme', backgroundStart: '#F5F5F7', backgroundEnd: '#FFFFFF', textColor: 'black', className: 'default-theme' };
       case 'light-theme':
-        return { name: 'light-theme', backgroundStart: '#FFFFFF', backgroundEnd: '#EEEEEE', textColor: '#333333' };
+        return { name: 'light-theme', backgroundStart: '#FFFFFF', backgroundEnd: '#EEEEEE', textColor: '#333333', className: 'light-theme' };
       case 'blue-to-pink':
-        return { name: 'blue-to-pink', backgroundStart: '#1e3c72', backgroundEnd: '#2a5298', textColor: 'white' };
+        return { name: 'blue-to-pink', backgroundStart: '#1e3c72', backgroundEnd: '#2a5298', textColor: 'white', className: 'blue-to-pink' };
       case 'purple-to-blue':
-        return { name: 'purple-to-blue', backgroundStart: '#6a11cb', backgroundEnd: '#2575fc', textColor: 'white' };
+        return { name: 'purple-to-blue', backgroundStart: '#6a11cb', backgroundEnd: '#2575fc', textColor: 'white', className: 'purple-to-blue' };
       case 'red-to-orange':
-        return { name: 'red-to-orange', backgroundStart: '#ff416c', backgroundEnd: '#ff4b2b', textColor: 'white' };
+        return { name: 'red-to-orange', backgroundStart: '#ff416c', backgroundEnd: '#ff4b2b', textColor: 'white', className: 'red-to-orange' };
       case 'green-to-blue':
-        return { name: 'green-to-blue', backgroundStart: '#00b09b', backgroundEnd: '#96c93d', textColor: 'white' };
+        return { name: 'green-to-blue', backgroundStart: '#00b09b', backgroundEnd: '#96c93d', textColor: 'white', className: 'green-to-blue' };
       case 'yellow-to-red':
-        return { name: 'yellow-to-red', backgroundStart: '#f6d365', backgroundEnd: '#fda085', textColor: 'white' };
+        return { name: 'yellow-to-red', backgroundStart: '#f6d365', backgroundEnd: '#fda085', textColor: 'white', className: 'yellow-to-red' };
       case 'blue-to-turquoise':
-        return { name: 'blue-to-turquoise', backgroundStart: '#4facfe', backgroundEnd: '#00f2fe', textColor: 'white' };
+        return { name: 'blue-to-turquoise', backgroundStart: '#4facfe', backgroundEnd: '#00f2fe', textColor: 'white', className: 'blue-to-turquoise' };
       case 'pink-to-purple':
-        return { name: 'pink-to-purple', backgroundStart: '#ff9a9e', backgroundEnd: '#fad0c4', textColor: 'white' };
+        return { name: 'pink-to-purple', backgroundStart: '#ff9a9e', backgroundEnd: '#fad0c4', textColor: 'white', className: 'pink-to-purple' };
       case 'orange-to-yellow':
-        return { name: 'orange-to-yellow', backgroundStart: '#ff7e5f', backgroundEnd: '#feb47b', textColor: 'white' };
+        return { name: 'orange-to-yellow', backgroundStart: '#ff7e5f', backgroundEnd: '#feb47b', textColor: 'white', className: 'orange-to-yellow' };
       case 'blue-to-green':
-        return { name: 'blue-to-green', backgroundStart: '#00c6ff', backgroundEnd: '#0072ff', textColor: 'white' };
+        return { name: 'blue-to-green', backgroundStart: '#00c6ff', backgroundEnd: '#0072ff', textColor: 'white', className: 'blue-to-green' };
       case 'dark-purple-to-red':
-        return { name: 'dark-purple-to-red', backgroundStart: '#5f2c82', backgroundEnd: '#49a09d', textColor: 'white' };
+        return { name: 'dark-purple-to-red', backgroundStart: '#5f2c82', backgroundEnd: '#49a09d', textColor: 'white', className: 'dark-purple-to-red' };
       default:
-        return { name: 'default-theme', backgroundStart: '#FFFFFF', backgroundEnd: '#EEEEEE', textColor: 'black' };
+        return { name: 'default-theme', backgroundStart: '#FFFFFF', backgroundEnd: '#EEEEEE', textColor: 'black', className: 'default-theme'  };
     }
   }
 

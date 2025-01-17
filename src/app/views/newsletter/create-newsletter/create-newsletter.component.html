@@ -1,7 +1,7 @@
 <section id="createNewsletterSection">
   <div class="container">
     <h2>Create Newsletter</h2>
-    <form (ngSubmit)="saveNewsletter()" [ngClass]="selectedTheme">
+    <form (ngSubmit)="saveNewsletter()" [ngClass]="newsletter.theme?.className">
       <div id="newsletter-content">
         <div class="form-group-content">
           <div class="form-group">

@@ -19,7 +19,7 @@ export class AuthService {
       auth: {
         clientId: '24a98435-464a-4df8-8a2c-6a9e0bde2611',
         authority: 'https://login.microsoftonline.com/76057efc-d10d-4c1f-a7b2-f9dfbf130080',
-        redirectUri: 'http://localhost:4200/'
+        redirectUri: 'http://localhost:4200'
       }
     };
 
@@ -75,18 +75,20 @@ export class AuthService {
   }
   // Logga ut användaren
   logout() {
-    const account = this.msalInstance.getAllAccounts()[0];
-    if (account) {
+    // Logga ut användaren via en popup
+    this.msalInstance.getAllAccounts().forEach(account => {
       this.msalInstance.logoutPopup({
-        account: account
+        account: account,
+        postLogoutRedirectUri: 'http://localhost:4200'  // Redirect URL efter utloggning
       }).then(() => {
-        console.log('Logged out successfully');
-        // Rensa localStorage vid utloggning
+        // Rensa användardata från lagring
         localStorage.removeItem('loggedUser');
+        sessionStorage.clear();
+        
       }).catch(error => {
-        console.error('Logout error:', error);
+        console.error('Logout failed', error);
       });
-    }
+    });
   }
   // Hämta den autentiserade användaren
   getAccount() {

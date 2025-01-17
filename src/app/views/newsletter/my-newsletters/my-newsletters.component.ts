@@ -2,6 +2,7 @@ import { Component, computed, inject, input, OnInit, signal } from '@angular/cor
 import { NewsletterService } from '../../../services/newsletter.service';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-my-newsletters',
@@ -51,22 +52,29 @@ export class MyNewslettersComponent implements OnInit {
             console.log('Total newsletters:', this.totalNewsletters);
             console.log('Total pages:', this.totalPages);
 
-          } else {
+          } 
+          else {
             this.statusMessage = "No newsletters found";
             this.statusClass = 'alert alert-warning';
 
           }
         }
       },
-      error: (err) => {
-        console.error("Error fetching newsletters:", err);
-        this.statusMessage = "Failed to load newsletters";
+    error: (err: HttpErrorResponse) => {
+      console.error('Error fetching newsletters:', err);
+      if (err.status === 400) {
+        this.statusMessage = 'Bad request (400). Please check your request.';
         this.statusClass = 'alert alert-danger';
-      },
-      complete: () => {
-        this.isFetching.set(false);
+      } 
+      else {
+        this.statusMessage = 'An unexpected error occurred.';
+        this.statusClass = 'alert alert-danger';
       }
-    });
+    },
+    complete: () => {
+      this.isFetching.set(false);
+    }
+  });;
   }
 
   nextPage() {

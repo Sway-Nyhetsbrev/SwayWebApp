@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NewsletterService } from '../../../services/newsletter.service';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'app-latest-newsletter',
@@ -31,14 +32,23 @@ export class LatestNewsletterComponent implements OnInit {
         this.statusClass = 'alert alert-danger';
       }
     },
-    error: (err) => {
+    error: (err: HttpErrorResponse) => {
       console.error('Error fetching newsletter:', err);
-      this.statusMessage = 'Failed to fetch the latest newsletter';
-      this.statusClass = 'alert alert-danger';
+      
+      if (err.status === 404) {
+        this.statusMessage = 'Newsletter not found (404).';
+        this.statusClass = 'alert alert-warning';
+      } else if (err.status === 400) {
+        this.statusMessage = 'Bad request (400). Please check your request.';
+        this.statusClass = 'alert alert-danger';
+      } else {
+        this.statusMessage = 'An unexpected error occurred.';
+        this.statusClass = 'alert alert-danger';
+      }
     },
     complete: () => {
       this.isFetching.set(false);
     }
-    });
+  });;
   }
 }
