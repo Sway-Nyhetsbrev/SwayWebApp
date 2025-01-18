@@ -8,6 +8,7 @@ import { NewsletterService } from '../../../services/newsletter.service';
 import { AuthService } from '../../../services/auth.service';
 import { FileService } from '../../../services/file.service';
 import { themeColorsMap } from '../../../models/themecolor';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-create-newsletter',
@@ -20,6 +21,7 @@ export class CreateNewsletterComponent {
   showSection = false;
   selectedTheme = 'default-theme';
   sanitizer = inject(DomSanitizer);
+  location = inject(Location)
   private authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
   private destroyRef = inject(DestroyRef);
@@ -89,6 +91,11 @@ export class CreateNewsletterComponent {
             this.statusClass = 'alert alert-danger';
             console.log('Newsletter was not created!', error);
           },
+          complete: () => {
+            setTimeout(() => {
+              this.goBack();
+            }, 2000);
+          },
         });
       this.destroyRef.onDestroy(() => {
         subscription.unsubscribe();
@@ -135,5 +142,20 @@ export class CreateNewsletterComponent {
       this.statusClass = 'alert alert-warning';
     }
   }
+  removeSection(section: newsletterSection) {
+    if (section != null) {
+      // Hitta indexet för sektionen baserat på dess id
+      const index = this.newsletter?.sections.findIndex(s => s === section);
   
+      // Om sektionen finns (index > -1)
+      if (index !== undefined && index !== -1) {
+        // Ta bort sektionen från listan
+        this.newsletter?.sections.splice(index, 1);
+        console.log('Sektion borttagen:', section);
+      }
+    } 
+  }
+  goBack() {
+    this.location.back();
+  }
 }

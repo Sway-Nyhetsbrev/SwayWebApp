@@ -51,15 +51,17 @@
         </div>
 
         <div class="sectionContent">
-          @if(newsletter.sections.length > 0) { @for (section of
-          newsletter.sections; track section) {
-          <div [innerHTML]="section.content"></div>
+          @if(newsletter.sections.length > 0) { 
+            @for (section of newsletter.sections; track section) {
+              <div [innerHTML]="section.content"></div>
 
-          @for (image of section.newsletterSectionImages; track image) {
+              @for (image of section.newsletterSectionImages; track image) {
           <div>
             <img src="{{ image.url }}" alt="{{ image.altText }}" />
           </div>
-          } } } @if(showSection) {
+          } 
+          <button type="button" class="btn btn-danger" (click)="removeSection(section)">Remove Section</button>
+        } } @if(showSection) {
           <app-create-newsletter-section (save)="saveSection($event)">
           </app-create-newsletter-section>
           }
@@ -74,7 +76,7 @@
           >
             Save newsletter
           </button>
-
+          
           @if(statusMessage) {
           <div [class]="statusClass" role="alert">
             {{ statusMessage }}

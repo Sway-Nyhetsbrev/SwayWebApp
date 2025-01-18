@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { newsletter } from '../models/newsletter';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ private httpClient = inject(HttpClient);
   }
   
   updateNewsletter(newsletter: newsletter) {
-    
+    return this.httpClient.put<newsletter>('https://localhost:7264/api/Newsletter/update', newsletter)
   }
 
   removeNewsletter(newsletterId: string) {
