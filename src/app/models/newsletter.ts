@@ -5,7 +5,7 @@ export interface newsletter {
     title: string;
     author?: string;
     createdAt?: Date;
-    releaseDate: Date;
+    releaseDate: string | Date;
     userId: string;
     sections: newsletterSection[]
     theme?: ThemeColors;

@@ -36,7 +36,7 @@ export class FileService {
             const section = sections[i];
   
             // Calculate the total height needed for the section (text + images)
-            let sectionHeight = 40; // Initial height for the text (40 px)
+            let sectionHeight = 35; // Initial height for the text (40 px)
   
             if (images[i]) {
               for (const image of images[i]) {
@@ -49,7 +49,7 @@ export class FileService {
   
                   const embeddedImage = await pdfDoc.embedJpg(imageBuffer);
                   const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
-                  sectionHeight += imgDims.height + 20; // Add the height of the image + spacing
+                  sectionHeight += imgDims.height + 10; // Add the height of the image + spacing
                 }
               }
             }
@@ -57,7 +57,7 @@ export class FileService {
             // Check if the section fits on the current page
             if (yOffset - sectionHeight < 50) { // If not enough space, add a new page
               page = pdfDoc.addPage([600, 800]); // Add a new page
-              yOffset = 700; // Reset yOffset for the new page
+              yOffset = 750; // Reset yOffset for the new page
   
               // Reapply the gradient background on the new page
               this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
@@ -65,7 +65,7 @@ export class FileService {
   
             // Draw the text for the section
             page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
-            yOffset -= 40;
+            yOffset -= 20;
   
             // Draw images for this section
             if (images[i]) {
@@ -88,7 +88,7 @@ export class FileService {
                       height: imgDims.height,
                     });
   
-                    yOffset -= imgDims.height + 20; // Add spacing after the image
+                    yOffset -= imgDims.height + 22; // Add spacing after the image
                   } catch (imageError) {
                     console.error(`Error embedding image from URL ${image.url}:`, imageError);
                   }

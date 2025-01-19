@@ -37,12 +37,24 @@ export class UpdateNewsletterComponent implements OnInit {
   }
 
   loadNewsletterDetails() {
+    const datePipe = new DatePipe('en-US');
     const subscription = this.newsletterService.getOneNewsletter(this.newsletterId).subscribe({
       next: (response) => {
-      // Verifiera att temat finns i themeColorsMap
 
+      // Verifiera att temat finns i themeColorsMap
       const theme = themeColorsMap[response.theme!.className] || response.theme;
-      response.theme = { ...theme, ...response.theme }; // Prioritera backend-värden
+      response.theme = { ...theme, ...response.theme };
+
+      // Använd DatePipe för att formatera releaseDate till yyyy-MM-dd
+      console.log("ReleaseDate:", response.releaseDate)
+      if (response.releaseDate) {
+        const formattedDate = datePipe.transform(response.releaseDate, 'yyyy-MM-dd');
+        if (formattedDate) {
+          response.releaseDate = formattedDate;
+        } else {
+          console.error('DatePipe returned null for releaseDate:', response.releaseDate);
+        }
+      }
       this.newsletter.set(response);
       console.log('Loaded theme:', this.newsletter()?.theme);
       },

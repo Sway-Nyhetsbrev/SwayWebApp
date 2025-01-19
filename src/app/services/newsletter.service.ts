@@ -10,11 +10,11 @@ export class NewsletterService {
 private httpClient = inject(HttpClient);
 
   createNewsletter(newsletter: any): Observable<any>  {
-    return this.httpClient.post<newsletter>('https://localhost:7264/api/Newsletter/create', newsletter)
+    return this.httpClient.post<newsletter>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/create', newsletter)
   }
 
   getOneNewsletter(newsletterId: string) {
-    return this.httpClient.get<newsletter>(`https://localhost:7264/api/Newsletter/${newsletterId}`)
+    return this.httpClient.get<newsletter>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/${newsletterId}`)
   }
 
   getOneNewsletterPdf(newsletterId: string) {
@@ -29,19 +29,19 @@ private httpClient = inject(HttpClient);
   }
 
   getOneUsersNewsletters(userId: string, page: number, pageSize: number) {
-    return this.httpClient.get<any>(`https://localhost:7264/api/Newsletter/usersNewsletters/${userId}?page=${page}&pageSize=${pageSize}`);
+    return this.httpClient.get<any>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/usersNewsletters/${userId}?page=${page}&pageSize=${pageSize}`);
   }
 
   getAllNewsletters(page: number, pageSize: number) {
-    return this.httpClient.get<any>(`https://localhost:7264/api/Newsletter?page=${page}&pageSize=${pageSize}`)
+    return this.httpClient.get<any>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/?page=${page}&pageSize=${pageSize}`)
   }
   
   updateNewsletter(newsletter: newsletter) {
-    return this.httpClient.put<newsletter>('https://localhost:7264/api/Newsletter/update', newsletter)
+    return this.httpClient.put<newsletter>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/update', newsletter)
   }
 
   removeNewsletter(newsletterId: string) {
-    return this.httpClient.delete<newsletter>(`https://localhost:7264/api/Newsletter/${newsletterId}`)
+    return this.httpClient.delete<newsletter>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/${newsletterId}`)
   }
 
   removeNewsletterPdf(newsletterId: string) {

@@ -24,7 +24,9 @@
             }
         }
         @else if (isFetching() && !statusMessage) {
-            <p>Loading newsletters...</p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
         }
         @else if (currentNewsletters.length === 0 && !isFetching())
         {

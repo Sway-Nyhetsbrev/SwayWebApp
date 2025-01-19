@@ -1,5 +1,4 @@
 
-
     <section id="newsletterSection">
         <div class="container">
             @if(latestNewsletter()) {
@@ -12,8 +11,10 @@
                 class="newsletter-iframe" 
             ></iframe>
             }
-            @else if (isFetching() && !statusMessage) {
-                <p>Loading latest newsletter...</p>
+            @if (isFetching()) {
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
             }
             
             @else if (statusMessage) {

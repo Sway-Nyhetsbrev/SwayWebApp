@@ -12,7 +12,7 @@ export class UserService {
 
   // Skapa användare - returnerar ett Observable
   createUser(user: User): Observable<User | undefined> {
-    return this.httpClient.post<User>('https://localhost:7270/api/Users/Create', user)
+    return this.httpClient.post<User>('https://userprovider20250119171348.azurewebsites.net/api/users/Create', user)
       .pipe(
         catchError((error) => {
           console.error('Error creating user:', error);
@@ -23,12 +23,12 @@ export class UserService {
 
   // Hämta en användare
   getOneUser(userEmail: string): Observable<User | null> {
-    return this.httpClient.get<User>(`https://localhost:7270/api/Users/GetOneUser/${userEmail}`)
+    return this.httpClient.get<User>(`https://userprovider20250119171348.azurewebsites.net/api/users/GetOneUser/${userEmail}`)
   }
 
   // Hämta alla användare
   getAllUsers() {
-    return this.httpClient.get<User[]>('https://localhost:7270/api/Users/GetAllUsers')
+    return this.httpClient.get<User[]>('https://userprovider20250119171348.azurewebsites.net/api/users/GetAllUsers')
       .subscribe({
         next: (fetchedUsers) => {
           this.users.set(fetchedUsers);
@@ -41,11 +41,11 @@ export class UserService {
 
   // Uppdatera användare
   updateUser(updatedUser: UserUpdateModel): Observable<User | null> {
-    return this.httpClient.put<any>(`https://localhost:7270/api/Users/UpdateUser`, updatedUser)
+    return this.httpClient.put<any>(`https://userprovider20250119171348.azurewebsites.net/api/users/UpdateUser`, updatedUser)
   }
 
   //Remove User
   removeUser(userEmail: string) {
-    return this.httpClient.delete<User>(`https://localhost:7270/api/Users/DeleteUser?userEmail=${userEmail}`)
+    return this.httpClient.delete<User>(`https://userprovider20250119171348.azurewebsites.net/api/users/DeleteUser?userEmail=${userEmail}`)
   }
 }
