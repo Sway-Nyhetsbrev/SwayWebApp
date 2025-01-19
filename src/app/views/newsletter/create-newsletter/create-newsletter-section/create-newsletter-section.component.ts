@@ -1,7 +1,7 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { newsletterSection, newsletterSectionImages } from '../../../../models/newsletter';
 import { FormsModule } from '@angular/forms';
-import { QuillModule } from 'ngx-quill';
+import { QuillEditorComponent, QuillModule } from 'ngx-quill';
 import { FileService } from '../../../../services/file.service';
 import Quill from 'quill';
 import { VideoHandler, ImageHandler } from 'ngx-quill-upload';
@@ -20,6 +20,7 @@ Quill.register('modules/videoHandler', VideoHandler);
 export class CreateNewsletterSectionComponent {
   private fileService = inject(FileService)
   private destroyRef = inject(DestroyRef)
+  // @ViewChild(QuillEditorComponent) quillEditor!: QuillEditorComponent;
 
   @Input() newsletterSection: newsletterSection = {
     content: '',
@@ -43,7 +44,22 @@ export class CreateNewsletterSectionComponent {
       this.save.emit(this.section);
     }
   }
-  
+
+  // saveSection() {
+  // if (this.quillEditor?.quillEditor) { // Säkerställ att Quill-instansen är tillgänglig
+  //   const quillInstance = this.quillEditor.quillEditor; // Hämta Quill-instansen
+
+  //   const content = quillInstance.root.innerHTML; // Hämta HTML-innehållet från Quill
+  //   console.log('Saving section content:', content);
+    
+  //   // Sätt innehållet till din section
+  //   this.section.content = content;
+    
+  //   this.save.emit(this.section);
+  // }
+// }
+
+
   editorModules = {
     toolbar: [
       [{ font: [] }],
