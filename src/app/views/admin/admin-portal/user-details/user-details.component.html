@@ -16,7 +16,6 @@
         <div class="userDetailsContent">
             @if (user()) {
                 <form (ngSubmit)="updateUser()">
-                    <input type="text" class="form-control" disabled [value]="user()?.id" name="userId">
                     <input type="text" class="form-control" disabled [value]="user()?.email" name="email">
                     <input type="text" class="form-control" disabled [value]="user()?.userName" name="userName">
                 

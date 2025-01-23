@@ -72,8 +72,6 @@ export class CreateNewsletterComponent {
     this.newsletter.userId = loggedUser.id;
     this.newsletter.author = loggedUser.email;
 
-    console.log('Saved Newsletter before saving backend::', this.newsletter);
-
     // Kontrollera att nyhetsbrevstiteln och releaseDate är ifyllda
     if (this.newsletter.title && this.newsletter.releaseDate) {
       const subscription = this.newsletterService.createNewsletter(this.newsletter)
