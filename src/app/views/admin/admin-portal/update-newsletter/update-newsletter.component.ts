@@ -101,8 +101,7 @@ export class UpdateNewsletterComponent implements OnInit {
   async saveAsPdf(newsletterId: string) {
     // Check if the newsletter's title and sections are filled
     if (this.newsletter()?.title && this.newsletter()!.sections.length > 0) {
-      const sectionsContent = this.newsletter()!.sections.map(section => section.content);  // Extract content from each section
-      const sectionsImages = this.newsletter()!.sections.map(section => section.newsletterSectionImages);  // Extract images from each section
+      const sectionsContent = this.newsletter()!.sections.map(section => section.content);  
       
       try {
         // Wait for the PDF removal to complete
@@ -118,7 +117,7 @@ export class UpdateNewsletterComponent implements OnInit {
         });
   
         // Create and upload the new PDF
-        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter()!.title, sectionsContent, sectionsImages, this.newsletter()!.theme!.className!, newsletterId);
+        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter()!.title, sectionsContent, this.newsletter()!.theme!.className!, newsletterId);
         
         pdfUrl$.subscribe({
           next: (pdfUrl) => {

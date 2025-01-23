@@ -3,6 +3,7 @@ import { provideRouter, withComponentInputBinding, withRouterConfig } from '@ang
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import { provideQuillConfig } from 'ngx-quill';
 
 
 
@@ -13,5 +14,14 @@ export const appConfig: ApplicationConfig = {
       paramsInheritanceStrategy: 'always',
     })),
     provideHttpClient(),
+    provideQuillConfig({
+      customOptions: [{
+        import: 'formats/font',
+        whitelist: [
+          'bebas', 'dm-sans', 'inter', 'poppins', 
+          'roboto', 'roboto-mono', 'roboto-slab', 'oswald'
+        ]
+      }]
+    })
   ]
 };

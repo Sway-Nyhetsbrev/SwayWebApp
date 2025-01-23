@@ -3,7 +3,7 @@ import { newsletter, newsletterSection } from '../../../models/newsletter';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
 import { NgClass } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { AuthService } from '../../../services/auth.service';
 import { FileService } from '../../../services/file.service';
@@ -54,7 +54,7 @@ export class CreateNewsletterComponent {
       console.log('Sektionen är inte fullständig.');
     }
   }
-
+  
   selectTheme(theme: string) {
     this.selectedTheme = theme;
     this.newsletter.theme = themeColorsMap[theme];
@@ -72,7 +72,7 @@ export class CreateNewsletterComponent {
     this.newsletter.userId = loggedUser.id;
     this.newsletter.author = loggedUser.email;
 
-    console.log('Saved Newsletter:', this.newsletter);
+    console.log('Saved Newsletter before saving backend::', this.newsletter);
 
     // Kontrollera att nyhetsbrevstiteln och releaseDate är ifyllda
     if (this.newsletter.title && this.newsletter.releaseDate) {
@@ -81,7 +81,7 @@ export class CreateNewsletterComponent {
           next: (response) => {
             this.statusMessage = 'Newsletter was created!';
             this.statusClass = 'alert alert-success';
-            console.log('Newsletter was created!', response);
+            console.log('Response from creating newsletter:', response);
 
             this.newsletter.id = response.id;
             this.saveAsPdf(this.newsletter.id);    
@@ -109,12 +109,10 @@ export class CreateNewsletterComponent {
   async saveAsPdf(newsletterId: string) {
     // Check if the newsletter's title and sections are filled
     if (this.newsletter.title && this.newsletter.sections.length > 0) {
-      const sectionsContent = this.newsletter.sections.map(section => section.content);  // Extract content from each section
-      const sectionsImages = this.newsletter.sections.map(section => section.newsletterSectionImages);  // Extract images from each section
-      
+      const sectionsContent = this.newsletter.sections.map(section => section.content);  
       try {
         // Await the promise returned by createAndUploadPdf, which will resolve to an Observable
-        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, sectionsImages, this.selectedTheme, newsletterId);
+        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter.title, sectionsContent, this.selectedTheme, newsletterId);
         
         // Now, subscribe to the Observable to get the actual result
         pdfUrl$.subscribe({
@@ -142,6 +140,7 @@ export class CreateNewsletterComponent {
       this.statusClass = 'alert alert-warning';
     }
   }
+
   removeSection(section: newsletterSection) {
     if (section != null) {
       // Hitta indexet för sektionen baserat på dess id
@@ -155,6 +154,7 @@ export class CreateNewsletterComponent {
       }
     } 
   }
+  
   goBack() {
     this.location.back();
   }

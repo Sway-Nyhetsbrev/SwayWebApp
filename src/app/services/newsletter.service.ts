@@ -18,10 +18,7 @@ private httpClient = inject(HttpClient);
   }
 
   getOneNewsletterPdf(newsletterId: string) {
-    console.log("newsletterId:", newsletterId)
-    return this.httpClient.get<Blob>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`, {
-      responseType: 'blob' as 'json',
-    });
+    return this.httpClient.get<any>(`http://localhost:7126/api/FetchOneFile?newsletterId=${newsletterId}`)
   }
 
   getLatestNewsletter() {

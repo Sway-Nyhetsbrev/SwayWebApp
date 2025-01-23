@@ -1,105 +1,106 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
-import { newsletterSection, newsletterSectionImages } from '../../../../models/newsletter';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { newsletterSection } from '../../../../models/newsletter';
 import { QuillEditorComponent, QuillModule } from 'ngx-quill';
 import { FileService } from '../../../../services/file.service';
 import Quill from 'quill';
 import { VideoHandler, ImageHandler } from 'ngx-quill-upload';
+import { FormsModule } from '@angular/forms';
+import html2canvas from 'html2canvas';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/videoHandler', VideoHandler);
+Quill.register('modules/font', {
+  'bebas': 'Bebas Neue',
+  'dm-sans': 'DM Sans',
+  'inter': 'Inter',
+  'poppins': 'Poppins',
+  'roboto': 'Roboto',
+  'roboto-mono': 'Roboto Mono',
+  'roboto-slab': 'Roboto Slab',
+  'oswald': 'Oswald'
+});
 
 @Component({
   selector: 'app-create-newsletter-section',
   standalone: true,
-  imports: [FormsModule, QuillModule],
+  imports: [FormsModule,QuillModule],
   templateUrl: './create-newsletter-section.component.html',
-  styleUrl: './create-newsletter-section.component.scss'
+  styleUrls: ['./create-newsletter-section.component.scss'],
 })
-
 export class CreateNewsletterSectionComponent {
-  private fileService = inject(FileService)
-  private destroyRef = inject(DestroyRef)
-  // @ViewChild(QuillEditorComponent) quillEditor!: QuillEditorComponent;
+  private fileService = inject(FileService);
 
-  @Input() newsletterSection: newsletterSection = {
-    content: '',
-    newsletterSectionImages: []
-  };
+  @ViewChild(QuillEditorComponent) quillEditor?: QuillEditorComponent;
 
+  // Tar emot sektionen från föräldern
+  @Input() section: newsletterSection = { content: "", newsletterSectionImages: [] };
+
+  // Event för att skicka ändringar till föräldern
   @Output() save = new EventEmitter<newsletterSection>();
 
-  section: newsletterSection = {
-    content: '',
-    newsletterSectionImages: []
-  };
+  // Konfiguration för Quill-editorn
+  editorModules = {
+    toolbar: [
+      [{ font: ['bebas', 'dm-sans', 'inter', 'poppins', 'roboto', 'roboto-mono', 'roboto-slab', 'oswald'] }],
+      [{'header': [1, 2, 3, 4, 5, 6, false]}],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{background: []}, {color: []}],
+      ['link', 'image'],
+      ['code-block'],
+      [{'header': 1}, {'header': 2}],
+      [{list: 'ordered'}],
+      [{'script': 'sub'}, {'script': 'super'}],     
+      [{'indent': '-1'}, {'indent': '+1'}],         
+      [{ 'align': [] }],
+      [{'direction': 'rtl'}],                     
 
-  newsletterSectionImage: newsletterSectionImages = {
-    url: '',
-    altText: '',
+    ],
+    imageHandler: {
+      upload: (file: Blob) => this.uploadImage(file),
+      accepts: ['png', 'jpg', 'jpeg', 'jfif'],
+      allowDrop: true,
+    },
   };
 
   saveSection() {
-    if (this.section.content) {
-      this.save.emit(this.section);
+    if (this.quillEditor?.quillEditor) {
+      const quillContent = this.quillEditor.quillEditor.root;
+  
+      html2canvas(quillContent, {
+        backgroundColor: null,
+        logging: true,
+        useCORS: true,
+        scale: 4,
+      }).then((canvas) => {
+        const imageUrl = canvas.toDataURL('image/png');
+  
+        console.log('Generated Base64 Image URL Length:', imageUrl.length);
+        console.log('Base64 Preview:', imageUrl.slice(0, 50)); // Förhandsvisning för felsökning
+  
+        // Lägg till Base64-strängen till sektionen
+        this.section.content = imageUrl;
+  
+        // Spara sektionen och vidarebefordra den
+        this.save.emit(this.section);
+      }).catch((error) => {
+        console.error('Error generating image from Quill content:', error);
+      });
     }
   }
 
-  // saveSection() {
-  // if (this.quillEditor?.quillEditor) { // Säkerställ att Quill-instansen är tillgänglig
-  //   const quillInstance = this.quillEditor.quillEditor; // Hämta Quill-instansen
-
-  //   const content = quillInstance.root.innerHTML; // Hämta HTML-innehållet från Quill
-  //   console.log('Saving section content:', content);
-    
-  //   // Sätt innehållet till din section
-  //   this.section.content = content;
-    
-  //   this.save.emit(this.section);
-  // }
-// }
-
-
-  editorModules = {
-    toolbar: [
-      [{ font: [] }],
-      [{ header: [1, 2, 3, false] }], 
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      [{ align: [] }],
-      [{ 'color': [] }],
-      ['link', 'image'],
-    ],
-    imageHandler: {
-      upload: (newsletterSectionImage: BlobPart) => {
-        return new Promise((resolve, reject) => {
-          console.log(newsletterSectionImage);
-          const subscription = this.fileService.createAndUploadImage(newsletterSectionImage)
-            .subscribe({
-              next: (response) => {
-                console.log('Image was created!', response);
-                const imageUrl = response; 
-                
-                this.newsletterSectionImage.url = imageUrl;
-                this.newsletterSectionImage.altText = 'Uploaded Image'; 
-                this.section.newsletterSectionImages.push(this.newsletterSectionImage);
+  // Hanterar uppladdning av bilder
+  private uploadImage(file: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const subscription = this.fileService.createAndUploadImage(file).subscribe({
+        next: (response) => {
+          const imageUrl = response;
+          this.section.newsletterSectionImages.push({ url: imageUrl, altText: 'Uploaded Image' });
+          resolve(imageUrl);
+        },
+        error: (error) => reject(error),
+      });
+    });
+  }
   
-                resolve(response);
-              },
-              error: (error) => {
-                console.log('Image was not created!', error);
-                reject(error);
-              }
-            });
-  
-          this.destroyRef.onDestroy(() => {
-            subscription.unsubscribe();
-          });
-        });
-      },
-      accepts: ['png', 'jpg', 'jpeg', 'jfif'],
-      allowDrop: true,
-    }    
-  };
 }
 

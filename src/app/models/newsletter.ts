@@ -13,7 +13,7 @@ export interface newsletter {
 
 export interface newsletterSection {
     content: string;
-    newsletterSectionImages: newsletterSectionImages[]
+    newsletterSectionImages: newsletterSectionImages[];
 }
 
 export interface newsletterSectionImages {
