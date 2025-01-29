@@ -9,9 +9,9 @@ import { ThemeColors } from '../models/themecolor';
 })
 export class FileService {
   private httpClient = inject(HttpClient);
-  
-  async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string
-  ): Promise<Observable<string>> {
+
+  async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string): Promise<Observable<string>> {
+    console.log("Skapar PDF för:", title);
     return new Observable<string>((observer) => {
       (async () => {
         try {
@@ -24,20 +24,16 @@ export class FileService {
           );
           const gradientSteps = 100;
 
-          // Lägg till gradientbakgrund
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
 
-          // Lägg till titel
           const [rTitle, gTitle, bTitle] = this.hexToRgb(textColor).map((val) => val / 255);
           page.drawText(title, { x: 50, y: 770, size: 24, color: rgb(rTitle, gTitle, bTitle) });
 
-          // Gå igenom sektioner och rendera antingen text eller bild
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
-            let sectionHeight = 35; // Starta med textens höjd
+            let sectionHeight = 35;
 
-            // Kontrollera om sektionen är en URL (bild)
-            const isUrlImage = section.startsWith('https'); // Kontrollera om det är en URL
+            const isUrlImage = section.startsWith('https');
 
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
@@ -47,20 +43,17 @@ export class FileService {
               }
             }
 
-            // Kontrollera om sektionen får plats på sidan
             if (yOffset - sectionHeight < 50) {
               page = pdfDoc.addPage([600, 800]);
               yOffset = 750;
               this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
             }
 
-            // Lägg till text om det inte är en URL
             if (!isUrlImage) {
               page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
               yOffset -= 20;
             }
 
-            // Lägg till bild om det är en URL
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
@@ -76,7 +69,6 @@ export class FileService {
             }
           }
 
-          // Spara PDF och ladda upp
           const pdfBytes = await pdfDoc.save();
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -84,6 +76,7 @@ export class FileService {
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
           console.log('HTTP POST request sent for:', fileName);
+
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {
               const fileUrl = response ? (response as any).filePath : '';
@@ -91,15 +84,15 @@ export class FileService {
                 observer.next(fileUrl);
                 observer.complete();
               } else {
-                observer.error('No fileUrl returned from server');
+                observer.error('Error uploading PDF');
               }
             },
-            error: (error) => {
-              observer.error('Error uploading PDF: ' + error);
-            },
+            error: (err) => {
+              observer.error('Error uploading PDF');
+            }
           });
         } catch (error) {
-          observer.error('Error creating PDF: ' + error);
+          observer.error('Error generating PDF');
         }
       })();
     });

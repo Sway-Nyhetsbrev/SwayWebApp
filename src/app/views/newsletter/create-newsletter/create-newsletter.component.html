@@ -6,24 +6,13 @@
         <div class="form-group-content">
           <div class="form-group">
             <label for="Title" class="form-label">Title:</label>
-            @if (validateInput) {
-              <input type="text" class="form-control validateText" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
-            }
-            @else {
-              <input type="text" class="form-control" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
-            }
-
+            <input type="text" [class]="validationClass" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
           </div>
 
           <div class="form-group" id="releaseDate">
             <label for="Release date" class="form-label">Release date:</label>
-            @if (validateInput) {
-              <input class="form-control validateText" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
-            }
-            @else {
-              <input class="form-control" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
-            }
-            </div>
+            <input [class]="validationClass" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
+          </div>
 
           <div class="form-group" id="theme">
             <label for="theme" class="form-label">Theme:</label>

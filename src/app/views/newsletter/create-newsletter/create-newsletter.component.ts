@@ -29,8 +29,10 @@ export class CreateNewsletterComponent {
   private destroyRef = inject(DestroyRef);
   private fileService = inject(FileService)
   private cdr = inject(ChangeDetectorRef)
+  
   statusMessage: string = '';
   statusClass: string = '';
+  validationClass: string = 'form-control';
 
   newsletter = signal<newsletter | undefined>({
     id: '',
@@ -67,57 +69,53 @@ export class CreateNewsletterComponent {
     this.newsletter()!.theme = themeColorsMap[theme];
   }
 
-  saveNewsletter() {
-    // Kontrollera om användaren är inloggad och att loggedUser inte är null
+  async saveNewsletter() {
     const loggedUser = this.authService.getLoggedUser();
     if (!loggedUser) {
       console.error('Användaren är inte inloggad.');
-      return; // Avbryt om användaren inte är inloggad
+      return;
     }
-
-    // Sätt userId och author med användardata
+  
     this.newsletter()!.userId = loggedUser.id;
     this.newsletter()!.author = loggedUser.email;
-
-    console.log("releaseDate:", this.newsletter()!.releaseDate)
-    console.log("title:", this.newsletter()!.title)
-
-    // Kontrollera att nyhetsbrevstiteln och releaseDate är ifyllda
+  
     if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
       this.validateInput = false;
-      this.newsletter()!.sections
-      const subscription = this.newsletterService.createNewsletter(this.newsletter)
-        .subscribe({
-          next: (response) => {
-            this.statusMessage = 'Newsletter was created!';
-            this.statusClass = 'alert alert-success';
-            console.log('Response from creating newsletter:', response);
-
-            this.newsletter()!.id = response.id;
-            this.saveAsPdf(this.newsletter()!.id);    
-          },
-          error: (error) => {
-            this.statusMessage = 'Newsletter was not created!';
-            this.statusClass = 'alert alert-danger';
-            console.log('Newsletter was not created!', error);
-          },
-          complete: () => {
-            setTimeout(() => {
-              this.goBack();
-            }, 2000);
-          },
-        });
-      this.destroyRef.onDestroy(() => {
-        subscription.unsubscribe();
-      });
+  
+      try {
+        const response = await this.newsletterService.createNewsletter(this.newsletter()).toPromise();
+        this.statusMessage = 'Newsletter was created!';
+        this.statusClass = 'alert alert-success';
+        
+        // Sätt ID för nyhetsbrevet här
+        this.newsletter()!.id = response.id;
+        console.log('Created newsletter with ID:', this.newsletter()!.id);
+  
+        // Kontrollera att ID finns innan vi anropar saveAsPdf
+        if (this.newsletter()!.id) {
+          // Anropa saveAsPdf enbart om ID är korrekt tilldelat
+          await this.saveAsPdf(this.newsletter()!.id);
+        }
+  
+        setTimeout(() => {
+          this.goBack();
+        }, 1000);
+      } catch (error) {
+        this.statusMessage = 'Newsletter was not created!';
+        this.statusClass = 'alert alert-danger';
+        console.log('Newsletter was not created!', error);
+      }
     } else {
-      this.statusMessage = 'Newslettertitle or release date missing!';
+      this.statusMessage = 'Please ensure the newsletter has a title, release date and at least one section!';
       this.statusClass = 'alert alert-warning';
-      this.validateInput = true
+      this.validationClass = 'form-control validateText';
+      this.validateInput = true;
+      this.cdr.detectChanges();
     }
   }
 
   async saveAsPdf(newsletterId: string) {
+    console.log("saveAsPdf anropas för id:", newsletterId); 
     if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
       const sectionsHtml = this.newsletter()!.sections.map(section => {
         try {
@@ -158,10 +156,7 @@ export class CreateNewsletterComponent {
         this.statusClass = 'alert alert-danger';
         console.error('Error creating PDF:', error);
       }
-    } else {
-      this.statusMessage = 'Please ensure the newsletter has a title and at least one section.';
-      this.statusClass = 'alert alert-warning';
-    }
+    } 
   }
 
   removeSection(section: newsletterSection) {

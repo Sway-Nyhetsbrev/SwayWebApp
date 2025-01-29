@@ -80,7 +80,7 @@ export class UpdateNewsletterComponent implements OnInit {
             console.log('Newsletter was created!', response);
 
             this.newsletterId == response.id;
-            this.saveAsPdf(this.newsletterId);    
+            this.updateAsPdf(this.newsletterId);
           },
           error: (error) => {
             this.statusMessage = 'Newsletter was not created!';
@@ -98,7 +98,7 @@ export class UpdateNewsletterComponent implements OnInit {
     }
   }
 
-  async saveAsPdf(newsletterId: string) {
+  async updateAsPdf(newsletterId: string) {
     // Check if the newsletter's title and sections are filled
     if (this.newsletter()?.title && this.newsletter()!.sections.length > 0) {
       const sectionsContent = this.newsletter()!.sections.map(section => section.content);  

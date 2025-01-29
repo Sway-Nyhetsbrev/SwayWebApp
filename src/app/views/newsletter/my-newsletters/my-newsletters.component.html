@@ -1,47 +1,49 @@
 <section id="myNewsletters">
-    <h2>{{userName()}}'s newsletters</h2>
-    <div class="container">
-        @if (totalNewsletters > 0) {
-            @for (newsletter of currentNewsletters; track newsletter.id) 
+  @if(totalNewsletters > 0 && userName()!.length > 0) 
+  {
+    <h2>{{ userName() }}'s newsletters</h2>
+    <div class="container">    
+      @for (newsletter of currentNewsletters; track newsletter.id) 
+      {
+        <div class="myNewslettersShowcase">
+          <a [routerLink]="['/newsletter-details', userId(), newsletter.id]">
+            <h4>{{ newsletter.title }}</h4>
+
+            @for (section of newsletter.sections; track section) 
             {
-                <div class="myNewslettersShowcase">
-                    <a [routerLink]="['/newsletter-details', userId(), newsletter.id]">
-                        <h4>{{newsletter.title}}</h4>
-                        @if (newsletter.sections.length > 0 ) {
-
-                            @if (newsletter.sections[0].newsletterSectionImages.length > 0 ) 
-                            {
-                                <img [src]="newsletter.sections[0].newsletterSectionImages[0].url" 
-                                [alt]="newsletter.sections[0].newsletterSectionImages[0].alttext">
-                            }  
-                        }
-                    </a>        
-                </div>
+              @if (section.newsletterSectionImages && section.newsletterSectionImages.length > 0) 
+              {
+                <img [src]="section.newsletterSectionImages[0].url" 
+                    [alt]="section.newsletterSectionImages[0].altText">
+              }
             }
-        }
-        @else if (isFetching() && !statusMessage && !userName()) {
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        }
-        @else
-        {
-            <div [class]="statusClass">
-                {{statusMessage}}
-            </div>
-        } 
+          </a>        
+        </div>
+      }
     </div>
-    @if(totalPages > 1) {
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item" [class.disabled]="currentPage === 1">
-                    <button class="page-link" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-                </li>
+  }
+  @else if (isFetching() && !statusMessage && !userName()) {
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  }
+  @else {
+    <div [class]="statusClass">
+      {{ statusMessage }}
+    </div>
+  }
 
-                <li class="page-item" [class.disabled]="currentPage === totalPages">
-                    <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-                </li>
-            </ul>
-        </nav>
-    }
-</section>
+  @if(totalPages > 1) 
+  {
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+        </li>
+      </ul>
+    </nav>
+  }
+  </section>
