@@ -3,8 +3,6 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { UserService } from '../../../services/user.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { newsletter } from '../../../models/newsletter';
-import { DatePipe } from '@angular/common';
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 

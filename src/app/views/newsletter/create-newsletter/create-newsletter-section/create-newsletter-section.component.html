@@ -4,5 +4,7 @@
       [modules]="editorModules"
       (ngModelChange)="section.content = $event">
     </quill-editor>
-    <button type="button" class="btn btn-main" (click)="saveSection()">Save Section</button>
+    <button type="button" class="btn btn-main" (click)="saveSection()" [disabled]="isSaving">
+      {{isSaving ? 'Saving...' : 'Save Section'}}
+    </button>
   </div>

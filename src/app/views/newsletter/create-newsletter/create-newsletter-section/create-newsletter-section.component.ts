@@ -29,6 +29,7 @@ Quill.register('modules/font', {
 })
 export class CreateNewsletterSectionComponent {
   private fileService = inject(FileService);
+  isSaving = false;
 
   @ViewChild(QuillEditorComponent) quillEditor?: QuillEditorComponent;
 
@@ -38,6 +39,51 @@ export class CreateNewsletterSectionComponent {
   // Event för att skicka ändringar till föräldern
   @Output() save = new EventEmitter<newsletterSection>();
 
+  saveSection() {
+    if (this.quillEditor?.quillEditor) {
+      const quillContent = this.quillEditor.quillEditor.root;
+  
+      // Visa en laddningsindikator eller inaktivera knappen under uppladdning
+      this.isSaving = true;
+  
+      html2canvas(quillContent, {
+        backgroundColor: null,
+        logging: true,
+        useCORS: true,
+        scale: 4,
+      }).then((canvas) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            console.log('Blob generated:', blob);
+  
+            // Ladda upp bilden
+            this.uploadSection(blob).then((imageUrl) => {
+              console.log('Image uploaded successfully:', imageUrl);
+  
+              // Uppdatera sektionen med den uppladdade bildens URL
+              this.section.content = imageUrl;
+  
+              // Emitter för att meddela föräldern om att sektionen är sparad
+              this.save.emit(this.section);
+  
+              // Återställ sparningens tillstånd
+              this.isSaving = false;
+            }).catch((error) => {
+              console.error('Failed to upload image:', error);
+              this.isSaving = false; // Återställ vid fel
+            });
+          } else {
+            console.error('Failed to generate Blob from canvas');
+            this.isSaving = false; // Återställ vid fel
+          }
+        }, 'image/png');
+      }).catch((error) => {
+        console.error('Error generating image from Quill content:', error);
+        this.isSaving = false; // Återställ vid fel
+      });
+    }
+  }
+  
   // Konfiguration för Quill-editorn
   editorModules = {
     toolbar: [
@@ -56,42 +102,17 @@ export class CreateNewsletterSectionComponent {
 
     ],
     imageHandler: {
-      upload: (file: Blob) => this.uploadImage(file),
+      upload: (file: Blob) => this.uploadSectionImage(file),
       accepts: ['png', 'jpg', 'jpeg', 'jfif'],
       allowDrop: true,
     },
+    
   };
-
-  saveSection() {
-    if (this.quillEditor?.quillEditor) {
-      const quillContent = this.quillEditor.quillEditor.root;
   
-      html2canvas(quillContent, {
-        backgroundColor: null,
-        logging: true,
-        useCORS: true,
-        scale: 4,
-      }).then((canvas) => {
-        const imageUrl = canvas.toDataURL('image/png');
-  
-        console.log('Generated Base64 Image URL Length:', imageUrl.length);
-        console.log('Base64 Preview:', imageUrl.slice(0, 50)); // Förhandsvisning för felsökning
-  
-        // Lägg till Base64-strängen till sektionen
-        this.section.content = imageUrl;
-  
-        // Spara sektionen och vidarebefordra den
-        this.save.emit(this.section);
-      }).catch((error) => {
-        console.error('Error generating image from Quill content:', error);
-      });
-    }
-  }
-
   // Hanterar uppladdning av bilder
-  private uploadImage(file: Blob): Promise<string> {
+  private uploadSectionImage(file: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
-      const subscription = this.fileService.createAndUploadImage(file).subscribe({
+      const subscription = this.fileService.createAndUploadSectionImage(file).subscribe({
         next: (response) => {
           const imageUrl = response;
           this.section.newsletterSectionImages.push({ url: imageUrl, altText: 'Uploaded Image' });
@@ -101,6 +122,19 @@ export class CreateNewsletterSectionComponent {
       });
     });
   }
-  
+
+    // Hanterar uppladdning av bilder
+  private uploadSection(file: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const subscription = this.fileService.createAndUploadSection(file).subscribe({
+        next: (response) => {
+          const imageSectionUrl = response;
+          this.section.content = imageSectionUrl;
+          resolve(imageSectionUrl);
+        },
+        error: (error) => reject(error),
+      });
+    });
+  }
 }
 

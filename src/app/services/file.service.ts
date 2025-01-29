@@ -9,56 +9,60 @@ import { ThemeColors } from '../models/themecolor';
 })
 export class FileService {
   private httpClient = inject(HttpClient);
-
-  async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string): Promise<Observable<string>> {
+  
+  async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string
+  ): Promise<Observable<string>> {
     return new Observable<string>((observer) => {
       (async () => {
         try {
           const pdfDoc = await PDFDocument.create();
           let page = pdfDoc.addPage([600, 800]);
           let yOffset = 750;
-  
-          const { backgroundStart, backgroundEnd, textColor } = this.getThemeColors(theme);
+
+          const { backgroundStart, backgroundEnd, textColor } = this.getThemeColors(
+            theme
+          );
           const gradientSteps = 100;
-  
+
           // Lägg till gradientbakgrund
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-  
+
           // Lägg till titel
           const [rTitle, gTitle, bTitle] = this.hexToRgb(textColor).map((val) => val / 255);
           page.drawText(title, { x: 50, y: 770, size: 24, color: rgb(rTitle, gTitle, bTitle) });
-  
+
           // Gå igenom sektioner och rendera antingen text eller bild
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
             let sectionHeight = 35; // Starta med textens höjd
-  
-            // Kontrollera om sektionen är en Base64-sträng (bild)
-            const isBase64Image = section.startsWith('data:image/');
-            if (isBase64Image) {
-              const embeddedImage = await this.embedImageFromBase64(section, pdfDoc);
+
+            // Kontrollera om sektionen är en URL (bild)
+            const isUrlImage = section.startsWith('https'); // Kontrollera om det är en URL
+
+            if (isUrlImage) {
+              const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
                 const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
                 sectionHeight += imgDims.height + 10;
               }
             }
-  
+
             // Kontrollera om sektionen får plats på sidan
             if (yOffset - sectionHeight < 50) {
               page = pdfDoc.addPage([600, 800]);
               yOffset = 750;
               this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
             }
-  
-            // Lägg till text om det inte är en Base64-sträng (bild)
-            if (!isBase64Image) {
+
+            // Lägg till text om det inte är en URL
+            if (!isUrlImage) {
               page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
               yOffset -= 20;
             }
-  
-            // Lägg till bild om det är en Base64-sträng
-            if (isBase64Image) {
-              const embeddedImage = await this.embedImageFromBase64(section, pdfDoc);
+
+            // Lägg till bild om det är en URL
+            if (isUrlImage) {
+              const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
                 const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
                 page.drawImage(embeddedImage, {
@@ -71,17 +75,15 @@ export class FileService {
               }
             }
           }
-  
+
           // Spara PDF och ladda upp
           const pdfBytes = await pdfDoc.save();
-          console.log('Generated PDF bytes:', pdfBytes);
-  
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
           const fileName = `${title.replace(/\s+/g, '-').toLowerCase()}.pdf`;
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
-  
+          console.log('HTTP POST request sent for:', fileName);
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {
               const fileUrl = response ? (response as any).filePath : '';
@@ -103,38 +105,142 @@ export class FileService {
     });
   }
 
-  async embedImageFromBase64(
-    base64: string,
-    pdfDoc: PDFDocument
-  ): Promise<PDFImage | null> {
+  async embedImageFromUrl(imageUrl: string, pdfDoc: PDFDocument): Promise<PDFImage | null> {
     try {
-      console.log('Embedding image from Base64:', base64); // Log for debugging
+      const response = await fetch(imageUrl);
+      console.log("FileService::embedImageFromUrl-Response:", response);
   
-      // Ta bort "data:image/png;base64," eller "data:image/jpeg;base64," från början av Base64-strängen
-      const base64Data = base64.split(',')[1]; // Den här raden tar bort prefixet
-      
-      // Om Base64-strängen inte innehåller någon bilddata, returnera null
-      if (!base64Data) {
-        console.error('Invalid Base64 data.');
+      // Kontrollera om det är en bild
+      const contentType = response.headers.get('Content-Type');
+      console.log("FileService::embedImageFromUrl-contentType:", contentType);
+  
+      // Tillåt både image/jpeg och application/jpg
+      if (!contentType || (!contentType.startsWith('image/jpeg') && !contentType.startsWith('image/png') && !contentType.startsWith('application/jpg'))) {
+        console.error('Not a valid image type. Expected JPEG or PNG.');
         return null;
       }
   
-      // Konvertera Base64-data till bytes
-      const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+      // Hämta bildens byte-array
+      const imageBuffer = await response.arrayBuffer();
+      console.log('Image Buffer:', imageBuffer);
   
-      // Bädda in bilden beroende på om det är PNG eller JPEG
-      if (base64.startsWith('data:image/png')) {
-        return pdfDoc.embedPng(imageBytes);
-      } else if (base64.startsWith('data:image/jpeg')) {
-        return pdfDoc.embedJpg(imageBytes);
-      } else {
-        console.error('Unsupported image type');
-        return null;
+      // Kontrollera att vi har en korrekt JPEG eller PNG och försök att läsa in den korrekt
+      if (contentType.startsWith('image/jpeg') || contentType.startsWith('application/jpg')) {
+        // För JPEG-bilder
+        try {
+          return await pdfDoc.embedPng(imageBuffer);  // För JPEG
+        } catch (error) {
+          console.error('Failed to embed JPEG image:', error);
+          return null;
+        }
+      } else if (contentType.startsWith('image/png')) {
+        // För PNG-bilder
+        try {
+          return await pdfDoc.embedPng(imageBuffer);  // För PNG
+        } catch (error) {
+          console.error('Failed to embed PNG image:', error);
+          return null;
+        }
       }
+  
+      console.error('Unsupported image format');
+      return null;
     } catch (error) {
-      console.error('Error embedding Base64 image:', error);
+      console.error('Error embedding image from URL:', error);
       return null;
     }
+  }
+
+  createAndUploadSectionImage(newsletterSectionImage: BlobPart): Observable<string> {
+    return new Observable<string>((observer) => {
+      const formData = new FormData();
+
+      // Skapa ett nytt filnamn baserat på ett unikt ID
+      const uniqueFileName = `image_${Date.now()}.jpg`; // Eller använd någon annan logik för att skapa filnamn
+
+      // Skapa en Blob från den faktiska filen
+      const fileBlob = new Blob([newsletterSectionImage], {
+        type: 'application/jpg',
+      });
+
+      // Lägg till filen med det nya unika filnamnet
+      formData.append('file', fileBlob, uniqueFileName);
+
+      console.log('Uploading file:', uniqueFileName);
+
+      // Skicka FormData till API
+      this.httpClient
+        .post(
+          'http://localhost:7126/api/Upload?containerName=newsletterimages',
+          formData
+        )
+        .subscribe({
+          next: (response) => {
+            console.log('Server response:', response);
+
+            // Kontrollera om servern skickar tillbaka en korrekt filväg
+            const fileUrl = response ? (response as any).filePath : '';
+            if (fileUrl) {
+              console.log('Uploaded image URL:', fileUrl);
+              observer.next(fileUrl);
+              observer.complete();
+            } else {
+              console.error('No filePath returned from server.');
+              observer.error('No filePath in response');
+            }
+          },
+          error: (error) => {
+            console.error('Error uploading image:', error);
+            observer.error('Error uploading image: ' + error);
+          },
+        });
+    });
+  }
+  
+  createAndUploadSection(newsletterSection: BlobPart): Observable<string> {
+    return new Observable<string>((observer) => {
+      const formData = new FormData();
+
+      // Skapa ett nytt filnamn baserat på ett unikt ID
+      const uniqueFileName = `image_${Date.now()}.jpg`; // Eller använd någon annan logik för att skapa filnamn
+
+      // Skapa en Blob från den faktiska filen
+      const fileBlob = new Blob([newsletterSection], {
+        type: 'application/jpg',
+      });
+
+      // Lägg till filen med det nya unika filnamnet
+      formData.append('file', fileBlob, uniqueFileName);
+
+      console.log('Uploading file:', uniqueFileName);
+
+      // Skicka FormData till API
+      this.httpClient
+        .post(
+          'http://localhost:7126/api/Upload?containerName=newslettersections',
+          formData
+        )
+        .subscribe({
+          next: (response) => {
+            console.log('Server response:', response);
+
+            // Kontrollera om servern skickar tillbaka en korrekt filväg
+            const fileUrl = response ? (response as any).filePath : '';
+            if (fileUrl) {
+              console.log('Uploaded image URL:', fileUrl);
+              observer.next(fileUrl);
+              observer.complete();
+            } else {
+              console.error('No filePath returned from server.');
+              observer.error('No filePath in response');
+            }
+          },
+          error: (error) => {
+            console.error('Error uploading image:', error);
+            observer.error('Error uploading image: ' + error);
+          },
+        });
+    });
   }
 
   private scaleImageToFit(
@@ -143,17 +249,17 @@ export class FileService {
   ): { width: number; height: number } {
     const imgWidth = embeddedImage.width;
     const imgHeight = embeddedImage.height;
-
+  
     if (!imgWidth || !imgHeight) {
       console.error('Invalid image dimensions:', embeddedImage);
       return { width: 0, height: 0 };
     }
-
+  
     if (imgWidth > maxWidth) {
       const scaleFactor = maxWidth / imgWidth;
       return { width: maxWidth, height: imgHeight * scaleFactor };
     }
-
+  
     return { width: imgWidth, height: imgHeight };
   }
 
@@ -206,54 +312,8 @@ export class FileService {
     });
   }
 
-  createAndUploadImage(newsletterSectionImage: BlobPart): Observable<string> {
-    return new Observable<string>((observer) => {
-      const formData = new FormData();
-
-      // Skapa ett nytt filnamn baserat på ett unikt ID
-      const uniqueFileName = `image_${Date.now()}.jpg`; // Eller använd någon annan logik för att skapa filnamn
-
-      // Skapa en Blob från den faktiska filen
-      const fileBlob = new Blob([newsletterSectionImage], {
-        type: 'application/jpg',
-      });
-
-      // Lägg till filen med det nya unika filnamnet
-      formData.append('file', fileBlob, uniqueFileName);
-
-      console.log('Uploading file:', uniqueFileName);
-
-      // Skicka FormData till API
-      this.httpClient
-        .post(
-          'http://localhost:7126/api/Upload?containerName=newsletterimages',
-          formData
-        )
-        .subscribe({
-          next: (response) => {
-            console.log('Server response:', response);
-
-            // Kontrollera om servern skickar tillbaka en korrekt filväg
-            const fileUrl = response ? (response as any).filePath : '';
-            if (fileUrl) {
-              console.log('Uploaded image URL:', fileUrl);
-              observer.next(fileUrl);
-              observer.complete();
-            } else {
-              console.error('No filePath returned from server.');
-              observer.error('No filePath in response');
-            }
-          },
-          error: (error) => {
-            console.error('Error uploading image:', error);
-            observer.error('Error uploading image: ' + error);
-          },
-        });
-    });
-  }
-
   // Get theme colors based on the selected theme
-  getThemeColors(theme: string): ThemeColors {
+  private getThemeColors(theme: string): ThemeColors {
     switch (theme) {
       case 'default-theme':
         return {
@@ -363,7 +423,7 @@ export class FileService {
   }
 
   // Konvertera hex till RGB
-  hexToRgb(hex: string): number[] {
+  private hexToRgb(hex: string): number[] {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? [

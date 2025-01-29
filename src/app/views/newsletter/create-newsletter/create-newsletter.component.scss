@@ -41,8 +41,13 @@
                 justify-content: center;
                 align-items: center;
                 text-align: left;
+                
                 .form-group {
                     width: 50%;
+                }
+
+                .validateText {
+                    border: 1px solid red;
                 }
     
                 #releaseDate, #theme {

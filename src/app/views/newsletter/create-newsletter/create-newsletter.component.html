@@ -1,30 +1,29 @@
 <section id="createNewsletterSection">
   <div class="container">
     <h2>Create Newsletter</h2>
-    <form (ngSubmit)="saveNewsletter()" [ngClass]="newsletter.theme?.className">
+    <form (ngSubmit)="saveNewsletter()" [ngClass]="newsletter()?.theme?.className">
       <div id="newsletter-content">
         <div class="form-group-content">
           <div class="form-group">
             <label for="Title" class="form-label">Title:</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Title"
-              name="title"
-              required
-              [(ngModel)]="newsletter.title"
-            />
+            @if (validateInput) {
+              <input type="text" class="form-control validateText" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
+            }
+            @else {
+              <input type="text" class="form-control" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
+            }
+
           </div>
 
           <div class="form-group" id="releaseDate">
             <label for="Release date" class="form-label">Release date:</label>
-            <input
-              class="form-control"
-              type="date"
-              name="releaseDate"
-              [(ngModel)]="newsletter.releaseDate"
-            />
-          </div>
+            @if (validateInput) {
+              <input class="form-control validateText" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
+            }
+            @else {
+              <input class="form-control" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
+            }
+            </div>
 
           <div class="form-group" id="theme">
             <label for="theme" class="form-label">Theme:</label>
@@ -51,33 +50,35 @@
         </div>
 
         <div class="sectionContent">
-          @if(newsletter.sections.length > 0) { 
-            @for (section of newsletter.sections; track section) {
+          @if(newsletter()!.sections.length > 0) { 
+            @for (section of newsletter()!.sections; track section) {
               <div>
-                <img src="{{section.content}}" alt="">
+                <img [src]="section.content" alt="Section Image">
               </div>
-
-          <button type="button" class="btn btn-danger" (click)="removeSection(section)">Remove Section</button>
-        } } @if(showSection) {
-          <app-create-newsletter-section (save)="saveSection($event)">
-          </app-create-newsletter-section>
+              <button type="button" class="btn btn-danger" (click)="removeSection(section)">
+                Remove Section
+              </button>
+            } 
+          } 
+          @if(showSection) {
+            <app-create-newsletter-section (save)="saveSection($event)">
+            </app-create-newsletter-section>
+            <button class="btn btn-warning" type="button" (click)="toggleSection()">
+              Close Section
+            </button>
           }
-
-          <button class="btn btn-main" type="button" (click)="toggleSection()">
-            Add Section
-          </button>
-          <button
-            class="btn btn-main"
-            type="submit"
-            (click)="saveAsPdf(newsletter.id)"
-          >
+          @if (!showSection) {
+            <button class="btn btn-primary" type="button" (click)="toggleSection()">
+              Add Section
+            </button>
+          }
+          <button class="btn btn-success" type="submit" (click)="saveAsPdf(newsletter()!.id)">
             Save newsletter
           </button>
-          
           @if(statusMessage) {
-          <div [class]="statusClass" role="alert">
-            {{ statusMessage }}
-          </div>
+            <div [class]="statusClass" role="alert">
+              {{ statusMessage }}
+            </div>
           }
         </div>
       </div>

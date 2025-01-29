@@ -2,10 +2,7 @@
   <div class="container">
     <h2>Update Newsletter</h2>
     @if(newsletter()) {
-    <form
-      (ngSubmit)="updateNewsletter()"
-      [ngClass]="newsletter()?.theme?.className"
-    >
+    <form (ngSubmit)="updateNewsletter()" [ngClass]="newsletter()?.theme?.className">
       <div id="newsletter-content">
         <div class="form-group-content">
           <div class="form-group">
@@ -57,54 +54,44 @@
         </div>
 
         <div class="sectionContent">
-          @if(newsletter()?.sections!.length > 0) { @for (section of
-          newsletter()?.sections; track section) {
-          <!-- <div [innerHTML]="section.content"></div> -->
-
-            <div>
-              <img src="{{section.content}}" alt="">
-            </div>
-
-          <!-- @for (image of section.newsletterSectionImages; track image) {
-          <div>
-            <img src="{{ image.url }}" alt="{{ image.altText }}" />
-          </div>
-          } -->
-          <button
-            type="button"
-            class="btn btn-danger"
-            (click)="removeSection(section)"
-          >
-            Remove Section
-          </button>
-          } } @if(showSection) {
-          <app-create-newsletter-section (save)="saveSection($event)">
-          </app-create-newsletter-section>
-          <button
-            class="btn btn-warning"
-            type="button"
-            (click)="toggleSection()"
-          >
-            Close Section
-          </button>
-          } @if (!showSection) {
-          <button
-            class="btn btn-primary"
-            type="button"
-            (click)="toggleSection()"
-          >
-            Add Section
-          </button>
+          @if(newsletter()?.sections!.length > 0 && newsletter()?.sections?.sort()) 
+          { 
+            @for (section of newsletter()?.sections; track section) 
+            {
+              <div>
+                <img src="{{section.content}}" alt="">
+              </div>
+              <button type="button" class="btn btn-danger" (click)="removeSection(section)">
+                Remove Section
+              </button>
+            } 
+          } 
+          
+          @if(showSection) 
+          {
+            <app-create-newsletter-section (save)="saveSection($event)">
+            </app-create-newsletter-section>
+            <button class="btn btn-warning" type="button" (click)="toggleSection()">
+              Close Section
+            </button>
+          } 
+          
+          @if (!showSection) 
+          {
+            <button class="btn btn-primary" type="button" (click)="toggleSection()">
+              Add Section
+            </button>
           }
 
           <button class="btn btn-success" type="submit">
             Update newsletter
           </button>
 
-          @if(statusMessage) {
-          <div [class]="statusClass" role="alert">
-            {{ statusMessage }}
-          </div>
+          @if(statusMessage) 
+          {
+            <div [class]="statusClass" role="alert">
+              {{ statusMessage }}
+            </div>
           }
         </div>
       </div>
