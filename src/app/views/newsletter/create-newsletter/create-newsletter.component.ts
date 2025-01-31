@@ -83,29 +83,42 @@ export class CreateNewsletterComponent {
       this.validateInput = false;
   
       try {
-        const response = await this.newsletterService.createNewsletter(this.newsletter()).toPromise();
-        this.statusMessage = 'Newsletter was created!';
-        this.statusClass = 'alert alert-success';
+        const subscription = this.newsletterService.createNewsletter(this.newsletter()).subscribe({
+          next: (response) => {
+            this.statusMessage = 'Newsletter was created!';
+            this.statusClass = 'alert alert-success';
+            
+            if (response.id !== "") {
+              // Sätt ID för nyhetsbrevet här
+              this.newsletter()!.id = response.id;
+              console.log('Created newsletter with ID:', this.newsletter()!.id);
         
-        // Sätt ID för nyhetsbrevet här
-        this.newsletter()!.id = response.id;
-        console.log('Created newsletter with ID:', this.newsletter()!.id);
-  
-        // Kontrollera att ID finns innan vi anropar saveAsPdf
-        if (this.newsletter()!.id) {
-          // Anropa saveAsPdf enbart om ID är korrekt tilldelat
-          await this.saveAsPdf(this.newsletter()!.id);
-        }
-  
-        setTimeout(() => {
-          this.goBack();
-        }, 1000);
-      } catch (error) {
+              // Kontrollera att ID finns innan vi anropar saveAsPdf
+              if (this.newsletter()!.id) {
+              // Anropa saveAsPdf enbart om ID är korrekt tilldelat
+               this.saveAsPdf(this.newsletter()!.id);
+            } 
+            }
+          },
+          error: (err) => {            
+            this.statusMessage = 'Newsletter was not created!';
+            this.statusClass = 'alert alert-danger';
+            console.log('Newsletter was not created!', err);
+          },
+          complete: () => {
+            setTimeout(() => {
+              this.goBack();
+            }, 1000);              
+          },
+        });
+      } 
+      catch (error) {
         this.statusMessage = 'Newsletter was not created!';
         this.statusClass = 'alert alert-danger';
         console.log('Newsletter was not created!', error);
       }
-    } else {
+    } 
+    else {
       this.statusMessage = 'Please ensure the newsletter has a title, release date and at least one section!';
       this.statusClass = 'alert alert-warning';
       this.validationClass = 'form-control validateText';

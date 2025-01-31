@@ -32,7 +32,8 @@
             transition: transform 0.3s ease-in-out, border-color 0.3s ease-out, background-color 0.8s ease-in;
             background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
             box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
-
+            overflow: hidden;
+            
             &:hover {
                 border: 2px solid #12ABDB;
                 background-image: linear-gradient(to bottom, white, #0070AD);
@@ -48,7 +49,8 @@
 
             img {
                 border-radius: 8px;
-                width: 95%;
+                height: 200px;
+                
             }
 
         }
