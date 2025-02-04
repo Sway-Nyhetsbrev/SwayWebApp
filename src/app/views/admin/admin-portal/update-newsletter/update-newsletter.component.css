@@ -53,6 +53,13 @@
   padding: 0;
   list-style-type: none;
 }
+#updateNewsletterSection .container form .sectionContent .buttonContent {
+  display: flex;
+}
+#updateNewsletterSection .container form .sectionContent .buttonContent button {
+  padding: 10px;
+  margin: 10px;
+}
 #updateNewsletterSection .container form button {
   width: 100%;
   margin: 10px 0px 10px 0px;

@@ -8,10 +8,11 @@ import { CreateNewsletterSectionComponent } from '../../../newsletter/create-new
 import { FileService } from '../../../../services/file.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { themeColorsMap } from '../../../../models/themecolor';
+import { EditNewsletterSectionComponent } from "./edit-newsletter-section/edit-newsletter-section.component";
 
 @Component({
   selector: 'app-update-newsletter',
-  imports: [NgClass, FormsModule, DatePipe ,CreateNewsletterSectionComponent],
+  imports: [NgClass, FormsModule, DatePipe, CreateNewsletterSectionComponent, EditNewsletterSectionComponent],
   templateUrl: './update-newsletter.component.html',
   styleUrl: './update-newsletter.component.scss'
 })
@@ -25,6 +26,7 @@ export class UpdateNewsletterComponent implements OnInit {
   statusMessage = "";
   statusClass = "";
   showSection = false;
+  editSection = false;
   themeColorsMap: any;
   changeDetectorRef = inject(ChangeDetectorRef)
   
@@ -75,17 +77,17 @@ export class UpdateNewsletterComponent implements OnInit {
       const subscription = this.newsletterService.updateNewsletter(this.newsletter()!)
         .subscribe({
           next: (response) => {
-            this.statusMessage = 'Newsletter was created!';
+            this.statusMessage = 'Newsletter was updated!';
             this.statusClass = 'alert alert-success';
-            console.log('Newsletter was created!', response);
+            console.log('Newsletter was updated!', response);
 
             this.newsletterId == response.id;
             this.updateAsPdf(this.newsletterId);
           },
           error: (error) => {
-            this.statusMessage = 'Newsletter was not created!';
+            this.statusMessage = 'Newsletter was not updated!';
             this.statusClass = 'alert alert-danger';
-            console.log('Newsletter was not created!', error);
+            console.log('Newsletter was not updated!', error);
           },
         });
       this.destroyRef.onDestroy(() => {
@@ -173,6 +175,10 @@ export class UpdateNewsletterComponent implements OnInit {
   toggleSection() {
     this.showSection = !this.showSection;
     console.log(this.showSection);
+  }
+
+  toggleEditSection() {
+    this.editSection = true;
   }
 
   onThemeClick(themeClassName: string): void {

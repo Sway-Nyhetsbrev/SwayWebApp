@@ -1,0 +1,10 @@
+<div id="editNewsletterSection">
+    <quill-editor>
+    </quill-editor>
+    <button type="button" class="btn btn-success" (click)="editSection()" [disabled]="isUpdating">
+      {{isUpdating ? 'Updating...' : 'Update Section'}}
+    </button>
+    <button type="button" class="btn btn-warning">
+      Close
+    </button>
+</div>
