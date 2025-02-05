@@ -64,8 +64,7 @@
             { 
               @for (section of newsletter()?.sections; track section) 
               {
-                <div>
-                  <img src="{{section.content}}" alt="">
+                <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
                 </div>
                 <div class="buttonContent">
                   <button type="button" class="btn btn-warning" (click)="toggleEditSection()">

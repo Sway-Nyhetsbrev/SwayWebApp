@@ -20,8 +20,8 @@
               class="form-control"
               [(ngModel)]="selectedTheme"
               name="theme"
-              (ngModelChange)="selectTheme($event)"
-            >
+              (ngModelChange)="selectTheme($event)">
+
               <option value="default-theme">Default</option>
               <option value="light-theme">Light</option>
               <option value="blue-to-pink">Blue to Pink</option>
@@ -40,29 +40,40 @@
 
         <div class="sectionContent">
           @if(newsletter()!.sections.length > 0) { 
-            @for (section of newsletter()!.sections; track section) {
-              <div>
-                <img [src]="section.content" alt="Section Image">
-              </div>
-              <button type="button" class="btn btn-danger" (click)="removeSection(section)">
-                Remove Section
-              </button>
-            } 
-          } 
-          @if(showSection) {
-            <app-create-newsletter-section (save)="saveSection($event)">
-            </app-create-newsletter-section>
-            <button class="btn btn-warning" type="button" (click)="toggleSection()">
-              Close Section
-            </button>
+            @for(section of newsletter()!.sections; track section) {
+              @if(editingSection === section) {
+                <!-- Inline-redigering: visa editor istället för innehåll -->
+                <app-create-newsletter-section [section]="editingSection" (save)="saveSection($event)"></app-create-newsletter-section>
+                <button type="button" class="btn btn-warning" (click)="cancelEdit()">Cancel Edit</button>
+              } @else {
+                <!-- Visa sektionens innehåll -->
+                <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)"></div>
+                <div class="buttonContent">
+                  <button type="button" class="btn btn-warning" (click)="editSection(section)">
+                    Edit Section
+                  </button>
+                  <button type="button" class="btn btn-danger" (click)="removeSection(section)">
+                    Remove Section
+                  </button>
+                </div>
+              }
+            }
           }
-          @if (!showSection) {
-            <button class="btn btn-primary" type="button" (click)="toggleSection()">
+
+          @if(!editingSection && !showNewSection) {
+            <button type="button" class="btn btn-primary" (click)="openNewSection()">
               Add Section
             </button>
           }
+
+          @if(showNewSection) {
+            <!-- Editor för en ny sektion -->
+            <app-create-newsletter-section [section]="newSection" (save)="saveSection($event)"></app-create-newsletter-section>
+            <button type="button" class="btn btn-warning" (click)="cancelNewSection()">Close Section</button>
+          }
+
           <button class="btn btn-success" type="submit">
-            Save newsletter
+            Save Newsletter
           </button>
           @if(statusMessage) {
             <div [class]="statusClass" role="alert">

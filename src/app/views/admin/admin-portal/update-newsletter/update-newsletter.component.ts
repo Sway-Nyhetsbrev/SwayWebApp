@@ -9,6 +9,7 @@ import { FileService } from '../../../../services/file.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { themeColorsMap } from '../../../../models/themecolor';
 import { EditNewsletterSectionComponent } from "./edit-newsletter-section/edit-newsletter-section.component";
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-update-newsletter',
@@ -21,6 +22,7 @@ export class UpdateNewsletterComponent implements OnInit {
   newsletterService = inject(NewsletterService)
   destroyRef = inject(DestroyRef);
   fileService = inject(FileService)
+  sanitizer = inject(DomSanitizer);
   newsletterId = "";
   newsletter = signal<newsletter | undefined>(undefined);
   statusMessage = "";
@@ -29,7 +31,7 @@ export class UpdateNewsletterComponent implements OnInit {
   editSection = false;
   themeColorsMap: any;
   changeDetectorRef = inject(ChangeDetectorRef)
-  
+ 
   ngOnInit() {
     console.log('themeColorsMap:', themeColorsMap); // Kontrollera om themeColorsMap är tillgänglig här
     this.activatedRoute.params.subscribe((params) => {
@@ -80,7 +82,6 @@ export class UpdateNewsletterComponent implements OnInit {
             this.statusMessage = 'Newsletter was updated!';
             this.statusClass = 'alert alert-success';
             console.log('Newsletter was updated!', response);
-
             this.newsletterId == response.id;
             this.updateAsPdf(this.newsletterId);
           },

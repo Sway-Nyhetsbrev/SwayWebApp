@@ -9,26 +9,26 @@ import { AuthService } from '../../../services/auth.service';
 import { FileService } from '../../../services/file.service';
 import { themeColorsMap } from '../../../models/themecolor';
 import { Location } from '@angular/common';
-import Quill from 'quill';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-create-newsletter',
   standalone: true,
   imports: [FormsModule, CreateNewsletterSectionComponent, NgClass],
   templateUrl: './create-newsletter.component.html',
-  styleUrl: './create-newsletter.component.scss',
+  styleUrls: ['./create-newsletter.component.scss'],
 })
 export class CreateNewsletterComponent {
   showSection = false;
   validateInput = false;
   selectedTheme = 'default-theme';
   sanitizer = inject(DomSanitizer);
-  location = inject(Location)
+  location = inject(Location);
   private authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
   private destroyRef = inject(DestroyRef);
-  private fileService = inject(FileService)
-  private cdr = inject(ChangeDetectorRef)
+  private fileService = inject(FileService);
+  private cdr = inject(ChangeDetectorRef);
   
   statusMessage: string = '';
   statusClass: string = '';
@@ -44,28 +44,56 @@ export class CreateNewsletterComponent {
     theme: themeColorsMap['default-theme']
   });
 
-  toggleSection() {
-    this.showSection = !this.showSection;
-    console.log(this.showSection);
-    // Manuellt trigga change detection
+  // Håller reda på vilken sektion som för närvarande redigeras (om någon)
+  editingSection: newsletterSection | null = null;
+  // För nya sektioner kan du använda en separat flagga om du vill
+  showNewSection = false;
+  newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
+
+  // Starta redigering – vi sätter editingSection till den valda sektionen (referensjämförelse)
+  editSection(section: newsletterSection) {
+    this.editingSection = section;
     this.cdr.detectChanges();
   }
 
+  // Avbryt redigering
+  cancelEdit() {
+    this.editingSection = null;
+    this.cdr.detectChanges();
+  }
+
+  // Sparfunktion – används både vid redigering och vid tillägg av ny sektion  
   saveSection(section: newsletterSection) {
     if (section.content) {
-      this.newsletter()!.sections.push(section); // Lägg till sektionen i listan
-      console.log('Sektioner:', this.newsletter()!.sections);
-      this.showSection = false; // Dölj formuläret efter att sektionen sparats
-
-      // Manuellt trigga change detection
+      // Om sektionen inte redan finns i listan (då vi lägger till en ny) så pushar vi den
+      if (!this.newsletter()!.sections.includes(section)) {
+        this.newsletter()!.sections.push(section);
+        console.log('Ny sektion tillagd:', section);
+      } else {
+        console.log('Sektion uppdaterad:', section);
+      }
+      // Rensa redigeringsläge och eventuellt dölja den nya sektionens editor
+      this.editingSection = null;
+      this.showNewSection = false;
       this.cdr.detectChanges();
     } else {
       console.log('Sektionen är inte fullständig.');
     }
   }
 
+  // Om du vill lägga till en ny sektion
+  openNewSection() {
+    this.showNewSection = true;
+    this.newSection = { content: "", newsletterSectionImages: [] };
+    this.cdr.detectChanges();
+  }
+  
+  cancelNewSection() {
+    this.showNewSection = false;
+    this.cdr.detectChanges();
+  }
+
   selectTheme(theme: string) {
-    this.selectedTheme = theme;
     this.newsletter()!.theme = themeColorsMap[theme];
   }
 
@@ -89,15 +117,12 @@ export class CreateNewsletterComponent {
             this.statusClass = 'alert alert-success';
             
             if (response.id !== "") {
-              // Sätt ID för nyhetsbrevet här
               this.newsletter()!.id = response.id;
               console.log('Created newsletter with ID:', this.newsletter()!.id);
-        
-              // Kontrollera att ID finns innan vi anropar saveAsPdf
               if (this.newsletter()!.id) {
-              // Anropa saveAsPdf enbart om ID är korrekt tilldelat
-               this.saveAsPdf(this.newsletter()!.id);
-            } 
+                // Konvertera alla sektioner till bilder och skapa PDF
+                this.saveAsPdf(this.newsletter()!.id);
+              }
             }
           },
           error: (err) => {            
@@ -111,14 +136,12 @@ export class CreateNewsletterComponent {
             }, 1000);              
           },
         });
-      } 
-      catch (error) {
+      } catch (error) {
         this.statusMessage = 'Newsletter was not created!';
         this.statusClass = 'alert alert-danger';
         console.log('Newsletter was not created!', error);
       }
-    } 
-    else {
+    } else {
       this.statusMessage = 'Please ensure the newsletter has a title, release date and at least one section!';
       this.statusClass = 'alert alert-warning';
       this.validationClass = 'form-control validateText';
@@ -130,26 +153,16 @@ export class CreateNewsletterComponent {
   async saveAsPdf(newsletterId: string) {
     console.log("saveAsPdf anropas för id:", newsletterId); 
     if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
-      const sectionsHtml = this.newsletter()!.sections.map(section => {
-        try {
-          // Om innehållet är JSON, konvertera det till HTML med Quill
-          const quillContent = JSON.parse(section.content);
-
-          console.log("quillContent", quillContent.innerText);
-
-          const tempQuill = new Quill(document.createElement('div'));
-          tempQuill.setContents(quillContent);
-          return tempQuill.root.innerHTML;
-        } catch {
-          // Om det redan är HTML, returnera som det är
-          return section.content;
-        }
-      });
-  
       try {
+        // För varje sektion: skapa ett temporärt element, rendera med html2canvas, konvertera till blob och ladda upp
+        const imageUrls = await Promise.all(
+          this.newsletter()!.sections.map(section => this.convertSectionToImage(section))
+        );
+  
+        // Skapa och ladda upp PDF med de genererade bild-URL:erna
         const pdfUrl$ = await this.fileService.createAndUploadPdf(
           this.newsletter()!.title,
-          sectionsHtml,
+          imageUrls,
           this.selectedTheme,
           newsletterId
         );
@@ -169,22 +182,54 @@ export class CreateNewsletterComponent {
         this.statusClass = 'alert alert-danger';
         console.error('Error creating PDF:', error);
       }
-    } 
+    }
+  }
+
+  // Hjälpmetod: konvertera en sektion till en bild (blob) och ladda upp den
+  private convertSectionToImage(section: newsletterSection): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      // Skapa ett temporärt element för att rendera sektionens innehåll
+      const tempDiv = document.createElement('div');
+      tempDiv.style.width = '800px'; // Ange en lämplig bredd
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.left = '-9999px';
+      tempDiv.innerHTML = section.content;
+      document.body.appendChild(tempDiv);
+      try {
+        const canvas = await html2canvas(tempDiv, {
+          backgroundColor: null,
+          logging: true,
+          useCORS: true,
+          scale: 4,
+        });
+        canvas.toBlob((blob) => {
+          if (blob) {
+            this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
+              next: (url) => resolve(url),
+              error: (err) => reject(err)
+            });
+          } else {
+            reject(new Error("Kunde inte generera blob från canvas"));
+          }
+        }, 'image/png');
+      } catch (err) {
+        reject(err);
+      } finally {
+        document.body.removeChild(tempDiv);
+      }
+    });
   }
 
   removeSection(section: newsletterSection) {
     if (section != null) {
-      // Hitta indexet för sektionen baserat på dess id
       const index = this.newsletter()?.sections.findIndex(s => s === section);
-  
-      // Om sektionen finns (index > -1)
       if (index !== undefined && index !== -1) {
-        // Ta bort sektionen från listan
         this.newsletter()?.sections.splice(index, 1);
         this.cdr.detectChanges();
         console.log('Sektion borttagen:', section);
       }
-    } 
+    }
   }
   
   goBack() {

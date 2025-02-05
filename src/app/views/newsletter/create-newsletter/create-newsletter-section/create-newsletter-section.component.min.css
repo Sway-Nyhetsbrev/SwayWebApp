@@ -1,1 +1,1 @@
-#newsletterSection,.quillEditor,button{width:100%;margin-top:10px}#newsletterSection button,.quillEditor button,button button{margin:10px 0px 10px 0px}
+#newsletterSection{width:100%}#newsletterSection quill-editor{width:100%}#newsletterSection .buttonContainer{display:flex;justify-content:center}#newsletterSection .buttonContainer button{margin:10px 0px 10px 0px}

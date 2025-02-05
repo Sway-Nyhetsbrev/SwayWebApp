@@ -190,7 +190,7 @@ export class FileService {
     });
   }
   
-  createAndUploadSection(newsletterSection: BlobPart): Observable<string> {
+  createAndUploadSection(newsletterSection: BlobPart, newsletterId: string): Observable<string> {
     return new Observable<string>((observer) => {
       const formData = new FormData();
 
@@ -204,9 +204,10 @@ export class FileService {
 
       // Lägg till filen med det nya unika filnamnet
       formData.append('file', fileBlob, uniqueFileName);
-
+      formData.append('newsletterId', newsletterId);
+      
       console.log('Uploading file:', uniqueFileName);
-
+      
       // Skicka FormData till API
       this.httpClient
         .post(
