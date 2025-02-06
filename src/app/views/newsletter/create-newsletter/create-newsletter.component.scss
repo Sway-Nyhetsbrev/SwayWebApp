@@ -43,7 +43,7 @@
                 text-align: left;
                 
                 .form-group {
-                    width: 50%;
+                    width: 60%;
                 }
 
                 .validateText {
@@ -61,8 +61,10 @@
 
             .sectionContent {
                 margin-top: 30px;
-                width: 50%;
-
+                width: 60%;
+                word-wrap: break-word;
+                overflow: hidden;
+                
                 ul {
                     padding: 0;
                     list-style-type: none;

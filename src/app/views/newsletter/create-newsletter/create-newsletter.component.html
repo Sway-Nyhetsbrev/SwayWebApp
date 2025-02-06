@@ -45,9 +45,12 @@
                 <!-- Inline-redigering: visa editor istället för innehåll -->
                 <app-create-newsletter-section [section]="editingSection" (save)="saveSection($event)"></app-create-newsletter-section>
                 <button type="button" class="btn btn-warning" (click)="cancelEdit()">Cancel Edit</button>
-              } @else {
+              }
+
+              @else {
                 <!-- Visa sektionens innehåll -->
-                <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)"></div>
+                <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
+                </div>
                 <div class="buttonContent">
                   <button type="button" class="btn btn-warning" (click)="editSection(section)">
                     Edit Section

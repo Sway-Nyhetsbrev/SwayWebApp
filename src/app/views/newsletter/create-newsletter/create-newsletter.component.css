@@ -41,7 +41,7 @@
   text-align: left;
 }
 #createNewsletterSection .container form .form-group-content .form-group, #createNewsletterSection .container form #newsletter-content .form-group {
-  width: 50%;
+  width: 60%;
 }
 #createNewsletterSection .container form .form-group-content .validateText, #createNewsletterSection .container form #newsletter-content .validateText {
   border: 1px solid red;
@@ -54,7 +54,9 @@
 }
 #createNewsletterSection .container form .sectionContent {
   margin-top: 30px;
-  width: 50%;
+  width: 60%;
+  word-wrap: break-word;
+  overflow: hidden;
 }
 #createNewsletterSection .container form .sectionContent ul {
   padding: 0;

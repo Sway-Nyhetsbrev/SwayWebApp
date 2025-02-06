@@ -10,7 +10,7 @@ import { AllUsersComponent } from './views/admin/admin-portal/all-users/all-user
 import { AllNewslettersComponent } from './views/admin/admin-portal/all-newsletters/all-newsletters.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { UserDetailsComponent } from './views/admin/admin-portal/user-details/user-details.component';
-import { UpdateNewsletterComponent } from './views/admin/admin-portal/update-newsletter/update-newsletter.component';
+import { UpdateNewsletterComponent } from './views/newsletter/update-newsletter/update-newsletter.component';
 
 export const routes: Routes = [
   {

@@ -160,6 +160,14 @@ img {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
+.ql-toolbar .ql-formats {
+  flex-grow: 0; /* Förhindrar att toolbaren växer och tar för mycket utrymme */
+  margin: 0 !important; /* Ta bort oönskade marginaler */
+  padding: 0 !important; /* Ta bort onödiga paddings */
+}
+.ql-toolbar .ql-formats .ql-picker-label svg {
+  padding-bottom: 5px !important; /* Ta bort oönskade marginaler */
+}
 .ql-toolbar .ql-stroke {
   stroke: #61dafb;
 }
@@ -177,7 +185,7 @@ img {
 }
 
 .default-theme {
-  background-color: #F5F5F7;
+  background-image: linear-gradient(45deg, #ffffff, #d9d9db);
 }
 
 .light-theme {

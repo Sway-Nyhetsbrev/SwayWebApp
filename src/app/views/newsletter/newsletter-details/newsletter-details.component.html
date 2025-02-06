@@ -2,9 +2,7 @@
   <div class="container">
     @if(newsletter()) 
     { 
-        @if (userRole()?.role == "Admin") 
-        {
-            <aside class="adminNavigationContent">
+        <div class="adminNavigationContent">
             <ul class="nav nav-pills">
                 <li class="nav-item">
                 <a
@@ -26,8 +24,8 @@
                 <i class="fa-solid fa-arrow-rotate-left"></i>
                 </button>
             </ul>
-            </aside>
-        } 
+        </div>
+        
         @if (statusMessage) 
         {
             <div [class]="statusClass" role="alert">

@@ -95,7 +95,7 @@ export class NewsletterDetailsComponent implements OnInit {
       },
     });
 
-    this.newsletterService.removeNewsletterPdf(this.newsletterId).subscribe({
+    this.newsletterService.removeNewsletterBlob(this.newsletterId).subscribe({
       next: () => {
         console.log('Newsletter was removed successfully');
         this.isRemoving.set(false);

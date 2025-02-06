@@ -1,14 +1,10 @@
 <section id="updateNewsletterSection">
   <div class="container">
     
-    <h2>{{editSection ? 'Update Newsletter Section' : 'Update Newsletter'}}</h2>
+    <h2>Update Newsletter</h2>
 
     @if(newsletter()) {
     <form (ngSubmit)="updateNewsletter()" [ngClass]="newsletter()?.theme?.className">
-      @if (editSection) {
-        <app-edit-newsletter-section [newsletterId]="newsletterId"/>
-      }
-      @else {
         <div id="newsletter-content">
           <div class="form-group-content">
             <div class="form-group">
@@ -60,52 +56,52 @@
           </div>
   
           <div class="sectionContent">
-            @if(newsletter()?.sections!.length > 0 && newsletter()?.sections?.sort()) 
-            { 
-              @for (section of newsletter()?.sections; track section) 
-              {
-                <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
-                </div>
-                <div class="buttonContent">
-                  <button type="button" class="btn btn-warning" (click)="toggleEditSection()">
-                    Edit Section
-                  </button>
-                  <button type="button" class="btn btn-danger" (click)="removeSection(section)">
-                    Remove Section
-                  </button>
-                </div>
-              } 
-            } 
-            
-            @if(showSection) 
-            {
-              <app-create-newsletter-section (save)="saveSection($event)">
-              </app-create-newsletter-section>
-              <button class="btn btn-warning" type="button" (click)="toggleSection()">
-                Close Section
-              </button>
-            } 
-            
-            @if (!showSection) 
-            {
-              <button class="btn btn-primary" type="button" (click)="toggleSection()">
+            @if(newsletter()!.sections.length > 0) { 
+              @for(section of newsletter()!.sections; track section) {
+                @if(editingSection === section) {
+                  <!-- Inline-redigering: visa editor istället för innehåll -->
+                  <app-create-newsletter-section [section]="editingSection" (save)="saveSection($event)"></app-create-newsletter-section>
+                  <button type="button" class="btn btn-warning" (click)="cancelEdit()">Cancel Edit</button>
+                }
+  
+                @else {
+                  <!-- Visa sektionens innehåll -->
+                  <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
+                  </div>
+                  <div class="buttonContent">
+                    <button type="button" class="btn btn-warning" (click)="editSection(section)">
+                      Edit Section
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="removeSection(section)">
+                      Remove Section
+                    </button>
+                  </div>
+                }
+              }
+            }
+  
+            @if(!editingSection && !showNewSection) {
+              <button type="button" class="btn btn-primary" (click)="openNewSection()">
                 Add Section
               </button>
             }
   
-            <button class="btn btn-success" type="submit">
-              Update newsletter
-            </button>
+            @if(showNewSection) {
+              <!-- Editor för en ny sektion -->
+              <app-create-newsletter-section [section]="newSection" (save)="saveSection($event)"></app-create-newsletter-section>
+              <button type="button" class="btn btn-warning" (click)="cancelNewSection()">Close Section</button>
+            }
   
-            @if(statusMessage) 
-            {
+            <button class="btn btn-success" type="submit">
+              Save Newsletter
+            </button>
+            @if(statusMessage) {
               <div [class]="statusClass" role="alert">
                 {{ statusMessage }}
               </div>
             }
           </div>
         </div>
-      }
 
     </form>
     }

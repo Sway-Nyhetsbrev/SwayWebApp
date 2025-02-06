@@ -41,7 +41,7 @@ private httpClient = inject(HttpClient);
     return this.httpClient.delete<newsletter>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/${newsletterId}`)
   }
 
-  removeNewsletterPdf(newsletterId: string) {
+  removeNewsletterBlob(newsletterId: string) {
     return this.httpClient.delete<string>(`http://localhost:7126/api/DeleteNewsletterFile?newsletterId=${newsletterId}`, { responseType: 'text' as 'json' });
   }
 }

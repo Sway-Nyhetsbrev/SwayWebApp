@@ -185,7 +185,6 @@ export class CreateNewsletterComponent {
     }
   }
 
-  // Hjälpmetod: konvertera en sektion till en bild (blob) och ladda upp den
   private convertSectionToImage(section: newsletterSection): Promise<string> {
     return new Promise(async (resolve, reject) => {
       // Skapa ett temporärt element för att rendera sektionens innehåll

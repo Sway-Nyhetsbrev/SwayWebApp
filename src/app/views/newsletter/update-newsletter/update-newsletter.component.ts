@@ -1,19 +1,18 @@
 import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NewsletterService } from '../../../../services/newsletter.service';
-import { newsletter, newsletterSection } from '../../../../models/newsletter';
+import { NewsletterService } from '../../../services/newsletter.service';
+import { newsletter, newsletterSection } from '../../../models/newsletter';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CreateNewsletterSectionComponent } from '../../../newsletter/create-newsletter/create-newsletter-section/create-newsletter-section.component';
-import { FileService } from '../../../../services/file.service';
+import { CreateNewsletterSectionComponent } from '../create-newsletter/create-newsletter-section/create-newsletter-section.component';
+import { FileService } from '../../../services/file.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { themeColorsMap } from '../../../../models/themecolor';
-import { EditNewsletterSectionComponent } from "./edit-newsletter-section/edit-newsletter-section.component";
+import { themeColorsMap } from '../../../models/themecolor';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-update-newsletter',
-  imports: [NgClass, FormsModule, DatePipe, CreateNewsletterSectionComponent, EditNewsletterSectionComponent],
+  imports: [NgClass, FormsModule, DatePipe, CreateNewsletterSectionComponent],
   templateUrl: './update-newsletter.component.html',
   styleUrl: './update-newsletter.component.scss'
 })
@@ -28,10 +27,19 @@ export class UpdateNewsletterComponent implements OnInit {
   statusMessage = "";
   statusClass = "";
   showSection = false;
-  editSection = false;
   themeColorsMap: any;
-  changeDetectorRef = inject(ChangeDetectorRef)
+  cdr = inject(ChangeDetectorRef)
  
+
+  // Håller reda på vilken sektion som för närvarande redigeras (om någon)
+  editingSection: newsletterSection | null = null;
+
+  // För nya sektioner kan du använda en separat flagga om du vill
+  showNewSection = false;
+
+  newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
+
+
   ngOnInit() {
     console.log('themeColorsMap:', themeColorsMap); // Kontrollera om themeColorsMap är tillgänglig här
     this.activatedRoute.params.subscribe((params) => {
@@ -109,7 +117,7 @@ export class UpdateNewsletterComponent implements OnInit {
       try {
         // Wait for the PDF removal to complete
         await new Promise<void>((resolve, reject) => {
-          const subscription = this.newsletterService.removeNewsletterPdf(newsletterId).subscribe({
+          const subscription = this.newsletterService.removeNewsletterBlob(newsletterId).subscribe({
             next: () => resolve(),
             error: (err: HttpErrorResponse) => {
               console.error('Error removing existing PDF:', err);
@@ -150,13 +158,42 @@ export class UpdateNewsletterComponent implements OnInit {
 
   saveSection(section: newsletterSection) {
     if (section.content) {
-      this.newsletter()?.sections.push(section);
-      console.log('Sektioner:', this.newsletter()?.sections);
-      this.showSection = false;
-    }
-    else {
+      // Om sektionen inte redan finns i listan (då vi lägger till en ny) så pushar vi den
+      if (!this.newsletter()!.sections.includes(section)) {
+        this.newsletter()!.sections.push(section);
+        console.log('Ny sektion tillagd:', section);
+      } else {
+        console.log('Sektion uppdaterad:', section);
+      }
+      // Rensa redigeringsläge och eventuellt dölja den nya sektionens editor
+      this.editingSection = null;
+      this.showNewSection = false;
+      this.cdr.detectChanges();
+    } else {
       console.log('Sektionen är inte fullständig.');
     }
+  }
+
+  // Starta redigering – vi sätter editingSection till den valda sektionen (referensjämförelse)
+  editSection(section: newsletterSection) {
+    this.editingSection = section;
+    this.cdr.detectChanges();
+  }
+  // Avbryt redigering
+  cancelEdit() {
+    this.editingSection = null;
+    this.cdr.detectChanges();
+  }
+
+  openNewSection() {
+    this.showNewSection = true;
+    this.newSection = { content: "", newsletterSectionImages: [] };
+    this.cdr.detectChanges();
+  }
+  
+  cancelNewSection() {
+    this.showNewSection = false;
+    this.cdr.detectChanges();
   }
 
   removeSection(section: newsletterSection) {
@@ -176,10 +213,6 @@ export class UpdateNewsletterComponent implements OnInit {
   toggleSection() {
     this.showSection = !this.showSection;
     console.log(this.showSection);
-  }
-
-  toggleEditSection() {
-    this.editSection = true;
   }
 
   onThemeClick(themeClassName: string): void {
@@ -205,7 +238,7 @@ export class UpdateNewsletterComponent implements OnInit {
       // Uppdatera temat
       this.newsletter()!.theme!.className = themeClassName;
       this.newsletter()!.theme = { ...this.newsletter()!.theme, ...selectedTheme };
-      this.changeDetectorRef.detectChanges();
+      this.cdr.detectChanges();
     }
   }
 }
