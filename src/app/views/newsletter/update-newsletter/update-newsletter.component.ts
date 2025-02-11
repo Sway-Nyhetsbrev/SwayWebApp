@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { newsletter, newsletterSection } from '../../../models/newsletter';
@@ -6,9 +6,10 @@ import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from '../create-newsletter/create-newsletter-section/create-newsletter-section.component';
 import { FileService } from '../../../services/file.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { themeColorsMap } from '../../../models/themecolor';
 import { DomSanitizer } from '@angular/platform-browser';
+import html2canvas from 'html2canvas';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-update-newsletter',
@@ -22,14 +23,23 @@ export class UpdateNewsletterComponent implements OnInit {
   destroyRef = inject(DestroyRef);
   fileService = inject(FileService)
   sanitizer = inject(DomSanitizer);
+  location = inject(Location)
   newsletterId = "";
-  newsletter = signal<newsletter | undefined>(undefined);
   statusMessage = "";
   statusClass = "";
   showSection = false;
   themeColorsMap: any;
   cdr = inject(ChangeDetectorRef)
  
+  newsletter = signal<newsletter | undefined>({
+    id: '',
+    title: '',
+    author: '',
+    releaseDate: '',
+    userId: '',
+    sections: [],
+    theme: themeColorsMap['default-theme']
+  });
 
   // Håller reda på vilken sektion som för närvarande redigeras (om någon)
   editingSection: newsletterSection | null = null;
@@ -81,78 +91,78 @@ export class UpdateNewsletterComponent implements OnInit {
     });
   }
 
-  updateNewsletter() {
-    if (this.newsletter()?.title && this.newsletter()?.releaseDate) {
-      console.log("updatedNewsletter::", this.newsletter())
-      const subscription = this.newsletterService.updateNewsletter(this.newsletter()!)
-        .subscribe({
+  async updateNewsletter() {
+    if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
+  
+      try {
+        const subscription = this.newsletterService.updateNewsletter(this.newsletter()).subscribe({
           next: (response) => {
-            this.statusMessage = 'Newsletter was updated!';
+            this.statusMessage = 'Newsletter was created!';
             this.statusClass = 'alert alert-success';
-            console.log('Newsletter was updated!', response);
-            this.newsletterId == response.id;
-            this.updateAsPdf(this.newsletterId);
+            
+            if (response.id !== "") {
+              this.newsletter()!.id = response.id;
+              console.log('Created newsletter with ID:', this.newsletter()!.id);
+              if (this.newsletter()!.id) {
+                // Konvertera alla sektioner till bilder och skapa PDF
+                this.updateAsPdf(this.newsletter()!.id);
+              }
+            }
           },
-          error: (error) => {
-            this.statusMessage = 'Newsletter was not updated!';
+          error: (err) => {            
+            this.statusMessage = 'Newsletter was not created!';
             this.statusClass = 'alert alert-danger';
-            console.log('Newsletter was not updated!', error);
+            console.log('Newsletter was not created!', err);
+          },complete: () => {
+            setTimeout(() => {
+              this.goBack();
+            }, 1000);              
           },
         });
-      this.destroyRef.onDestroy(() => {
-        subscription.unsubscribe();
-      });
-    } 
-    else {
-      this.statusMessage = 'Newslettertitle or release date missing!';
+      } catch (error) {
+        this.statusMessage = 'Newsletter was not created!';
+        this.statusClass = 'alert alert-danger';
+        console.log('Newsletter was not created!', error);
+      }
+    } else {
+      this.statusMessage = 'Please ensure the newsletter has a title, release date and at least one section!';
       this.statusClass = 'alert alert-warning';
+      this.cdr.detectChanges();
     }
   }
 
   async updateAsPdf(newsletterId: string) {
-    // Check if the newsletter's title and sections are filled
-    if (this.newsletter()?.title && this.newsletter()!.sections.length > 0) {
-      const sectionsContent = this.newsletter()!.sections.map(section => section.content);  
-      
+    console.log("saveAsPdf anropas för id:", newsletterId); 
+    if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
       try {
-        // Wait for the PDF removal to complete
-        await new Promise<void>((resolve, reject) => {
-          const subscription = this.newsletterService.removeNewsletterBlob(newsletterId).subscribe({
-            next: () => resolve(),
-            error: (err: HttpErrorResponse) => {
-              console.error('Error removing existing PDF:', err);
-              reject(err);
-            }
-          });
-          this.destroyRef.onDestroy(() => subscription.unsubscribe());
-        });
+        // För varje sektion: skapa ett temporärt element, rendera med html2canvas, konvertera till blob och ladda upp
+        const imageUrls = await Promise.all(
+          this.newsletter()!.sections.map(section => this.convertSectionToImage(section))
+        );
   
-        // Create and upload the new PDF
-        const pdfUrl$ = await this.fileService.createAndUploadPdf(this.newsletter()!.title, sectionsContent, this.newsletter()!.theme!.className!, newsletterId);
-        
+        // Skapa och ladda upp PDF med de genererade bild-URL:erna
+        const pdfUrl$ = await this.fileService.createAndUploadPdf(
+          this.newsletter()!.title,
+          imageUrls,
+          this.newsletter()!.theme!.className,
+          newsletterId
+        );
+  
         pdfUrl$.subscribe({
           next: (pdfUrl) => {
-            // If successful, update the status message
             console.log('PDF uploaded:', pdfUrl);
           },
           error: (error) => {
-            // Catch any errors and handle them
             this.statusMessage = 'Error uploading PDF!';
             this.statusClass = 'alert alert-danger';
             console.error('Error uploading PDF:', error);
           }
         });
-  
       } catch (error) {
-        // Catch any errors that occur when creating the PDF
         this.statusMessage = 'Error creating PDF!';
         this.statusClass = 'alert alert-danger';
         console.error('Error creating PDF:', error);
       }
-    } else {
-      // If title or sections are missing, show a warning
-      this.statusMessage = 'Please ensure the newsletter has a title and at least one section.';
-      this.statusClass = 'alert alert-warning';
     }
   }
 
@@ -174,11 +184,47 @@ export class UpdateNewsletterComponent implements OnInit {
     }
   }
 
+  private convertSectionToImage(section: newsletterSection): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      // Skapa ett temporärt element för att rendera sektionens innehåll
+      const tempDiv = document.createElement('div');
+      tempDiv.style.width = '800px'; // Ange en lämplig bredd
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.left = '-9999px';
+      tempDiv.innerHTML = section.content;
+      document.body.appendChild(tempDiv);
+      try {
+        const canvas = await html2canvas(tempDiv, {
+          backgroundColor: null,
+          logging: true,
+          useCORS: true,
+          scale: 4,
+        });
+        canvas.toBlob((blob) => {
+          if (blob) {
+            this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
+              next: (url) => resolve(url),
+              error: (err) => reject(err)
+            });
+          } else {
+            reject(new Error("Kunde inte generera blob från canvas"));
+          }
+        }, 'image/png');
+      } catch (err) {
+        reject(err);
+      } finally {
+        document.body.removeChild(tempDiv);
+      }
+    });
+  }
+
   // Starta redigering – vi sätter editingSection till den valda sektionen (referensjämförelse)
   editSection(section: newsletterSection) {
     this.editingSection = section;
     this.cdr.detectChanges();
   }
+
   // Avbryt redigering
   cancelEdit() {
     this.editingSection = null;
@@ -240,5 +286,9 @@ export class UpdateNewsletterComponent implements OnInit {
       this.newsletter()!.theme = { ...this.newsletter()!.theme, ...selectedTheme };
       this.cdr.detectChanges();
     }
+  }
+
+  goBack() {
+    this.location.forward();
   }
 }

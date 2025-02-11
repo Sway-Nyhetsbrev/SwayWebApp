@@ -33,7 +33,7 @@ private httpClient = inject(HttpClient);
     return this.httpClient.get<any>(`https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/?page=${page}&pageSize=${pageSize}`)
   }
   
-  updateNewsletter(newsletter: newsletter) {
+  updateNewsletter(newsletter: any) {
     return this.httpClient.put<newsletter>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/update', newsletter)
   }
 

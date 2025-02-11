@@ -38,6 +38,7 @@
                 justify-content: center;
                 align-items: center;
                 text-align: left;
+                
                 .form-group {
                     width: 50%;
                 }
@@ -54,6 +55,11 @@
             .sectionContent {
                 margin-top: 30px;
                 width: 50%;
+                
+                .innerSectionContent {
+                    border-bottom: 1px solid black;
+                    padding: 10px;
+                }
 
                 ul {
                     padding: 0;
