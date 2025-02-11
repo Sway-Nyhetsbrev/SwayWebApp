@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { newsletterSection } from '../../../../models/newsletter';
 import { QuillEditorComponent, QuillModule } from 'ngx-quill';
 import { FileService } from '../../../../services/file.service';
 import { FormsModule } from '@angular/forms';
 import Quill from 'quill';
 import { VideoHandler, ImageHandler } from 'ngx-quill-upload';
+import { PixabayImageSearchComponent } from '../../../../components/pixabay-image-search/pixabay-image-search.component';
 
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/videoHandler', VideoHandler);
@@ -22,13 +23,15 @@ Quill.register('modules/font', {
 @Component({
   selector: 'app-create-newsletter-section',
   standalone: true,
-  imports: [FormsModule, QuillModule],
+  imports: [FormsModule, QuillModule, PixabayImageSearchComponent],
   templateUrl: './create-newsletter-section.component.html',
   styleUrls: ['./create-newsletter-section.component.scss'],
 })
 export class CreateNewsletterSectionComponent{
   private fileService = inject(FileService);
+  crd = inject(ChangeDetectorRef);
   isSaving = false;
+  showDialog = false;
 
   @ViewChild(QuillEditorComponent) quillEditor?: QuillEditorComponent;
 
@@ -55,8 +58,7 @@ export class CreateNewsletterSectionComponent{
     toolbar: {
       container: '#toolbar', // Använd vår egna toolbar-container
       handlers: {
-        // Handler för den custom-knappen
-        
+        customImage: () => this.openPixabaySearch()
       }
     },
     imageHandler: {
@@ -78,5 +80,28 @@ export class CreateNewsletterSectionComponent{
         error: (error) => reject(error),
       });
     });
+  }
+
+  openPixabaySearch() {
+    this.showDialog = true;
+    this.crd.detectChanges();
+  }
+
+  insertImage(imageUrl: string) {
+    const quill = this.quillEditor?.quillEditor;
+    const range = quill?.getSelection(true);
+    if (range && quill) {
+      quill.insertEmbed(range.index, 'image', imageUrl);
+    } 
+    else {
+      const length = quill?.getLength() || 0;
+      quill?.insertEmbed(length, 'image', imageUrl);
+    }
+    
+  }
+  
+  handleClose() {
+    this.showDialog = false;
+    this.crd.detectChanges();
   }
 }

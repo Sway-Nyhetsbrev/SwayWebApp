@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 
@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class PixabayImageSearchComponent {
   searchTerm = '';
   images: any[] = [];
+  cdr = inject(ChangeDetectorRef)
 
   @Output() imageSelected = new EventEmitter<string>();
   @Output() closeDialog = new EventEmitter<void>();
@@ -24,11 +25,11 @@ export class PixabayImageSearchComponent {
     const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(this.searchTerm)}&image_type=photo`;
     this.http.get(url).subscribe((data: any) => {
       this.images = data.hits;
+      this.cdr.detectChanges();
     });
   }
 
   selectImage(image: any) {
-    // Skicka vald bild (exempelvis largeImageURL) till föräldern
     this.imageSelected.emit(image.largeImageURL);
   }
 

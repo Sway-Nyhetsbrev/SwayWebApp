@@ -65,7 +65,11 @@
 #createNewsletterSection .container form .sectionContent .buttonContent {
   display: flex;
 }
+#createNewsletterSection .container form .sectionContent #closeSectionBtn {
+  border-bottom: 2px solid black;
+  margin: 0px 0px 10px 0px;
+}
 #createNewsletterSection .container form button {
   width: 100%;
-  margin: 10px 0px 10px 0px;
+  margin: 10px 1px 10px 0px;
 }

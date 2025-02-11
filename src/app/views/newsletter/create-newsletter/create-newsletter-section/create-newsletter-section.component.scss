@@ -1,4 +1,5 @@
 #newsletterSection {
+    margin-bottom: 10px;
 
     quill-editor {
         width: 100%;
@@ -7,9 +8,25 @@
     .buttonContainer {
         display: flex;
         justify-content: center;
+        width: 100%;
         
         button {
             margin: 10px 0px 10px 0px;
+            width: 100%;
+        }
+    }
+
+    .pixabayImageSearch {
+        margin-top: 15px;
+    }
+}
+
+#toolbar {
+    .ql-formats {
+
+        .ql-customImage {
+            margin: 0;
+            padding: 0;
         }
     }
 }

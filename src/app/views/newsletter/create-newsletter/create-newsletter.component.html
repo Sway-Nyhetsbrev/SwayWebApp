@@ -72,7 +72,9 @@
           @if(showNewSection) {
             <!-- Editor för en ny sektion -->
             <app-create-newsletter-section [section]="newSection" (save)="saveSection($event)"></app-create-newsletter-section>
-            <button type="button" class="btn btn-warning" (click)="cancelNewSection()">Close Section</button>
+            <div id="closeSectionBtn">
+              <button  type="button" class="btn btn-warning" (click)="cancelNewSection()">Close Section</button>
+            </div>
           }
 
           <button class="btn btn-success" type="submit">

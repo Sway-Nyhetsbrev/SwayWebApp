@@ -1,20 +1,28 @@
-<div class="modal-content">
-    <h2>Sök efter bilder</h2>
+<div class="pixabay-content">
     <input
       type="text"
-      placeholder="Sök..."
+      class="form-control"
+      placeholder="Search after image..."
       [(ngModel)]="searchTerm"
-      (keyup.enter)="searchImages()"
-    />
-    <button (click)="searchImages()">Sök</button>
-    <div class="image-results" *ngIf="images?.length">
-      <div class="image-result" *ngFor="let image of images">
-        <img
-          [src]="image.previewURL"
-          [alt]="image.tags"
-          (click)="selectImage(image)"
-        />
-      </div>
+      (keyup.enter)="searchImages()"/>
+      
+    <div class="button-content">
+      <button type="button" class="btn btn-success" (click)="searchImages()">Sök</button>
+      <button type="button" class="btn btn-danger" (click)="close()">Stäng</button>
     </div>
-    <button (click)="close()">Stäng</button>
-  </div>
+    
+    @if (images.length > 0) {
+        <div class="image-results">
+            @for (image of images; track image) {
+                <div class="image-result">
+                    <img
+                      [src]="image.previewURL"
+                      [alt]="image.tags"
+                      (click)="selectImage(image)"
+                    />
+                </div>
+            }
+        </div>
+    }
+    
+</div>

@@ -13,6 +13,10 @@
   <select class="ql-header">
     <option value="1"></option>
     <option value="2"></option>
+    <option value="3"></option>
+    <option value="4"></option>
+    <option value="5"></option>
+    <option value="6"></option>
     <option selected></option>
   </select>
 
@@ -29,6 +33,15 @@
   </span>
 
   <span class="ql-formats">
+    <select class="ql-align">
+      <option selected></option>
+      <option value="center"></option>
+      <option value="right"></option>
+      <option value="justify"></option>
+    </select>
+  </span>
+
+  <span class="ql-formats">
     <button class="ql-link"></button>
     <button class="ql-image"></button>
     <button class="ql-video"></button>
@@ -37,7 +50,7 @@
   <!--custom knapp -->
   <span class="ql-formats">
     <button class="ql-customImage">
-      <i class="fa fa-search"></i>
+      <i class="fa-solid fa-globe"></i>
     </button>
   </span>
 </div>
@@ -55,4 +68,13 @@
       {{isSaving ? 'Saving...' : 'Save Section'}}
     </button>
   </div>
+
+  @if (showDialog) {
+    <div class="pixabayImageSearch"></div>
+    <app-pixabay-image-search
+    (imageSelected)="insertImage($event)"
+    (closeDialog)="handleClose()">
+  </app-pixabay-image-search>
+  }
+
 </div>
