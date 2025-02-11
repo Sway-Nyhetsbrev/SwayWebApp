@@ -91,6 +91,8 @@ export class UpdateNewsletterComponent implements OnInit {
     });
   }
 
+  
+
   async updateNewsletter() {
     if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
   
@@ -178,7 +180,7 @@ export class UpdateNewsletterComponent implements OnInit {
       // Rensa redigeringsläge och eventuellt dölja den nya sektionens editor
       this.editingSection = null;
       this.showNewSection = false;
-      this.cdr.detectChanges();
+      // this.cdr.detectChanges();
     } else {
       console.log('Sektionen är inte fullständig.');
     }
@@ -228,18 +230,15 @@ export class UpdateNewsletterComponent implements OnInit {
   // Avbryt redigering
   cancelEdit() {
     this.editingSection = null;
-    this.cdr.detectChanges();
   }
 
   openNewSection() {
     this.showNewSection = true;
     this.newSection = { content: "", newsletterSectionImages: [] };
-    this.cdr.detectChanges();
   }
   
   cancelNewSection() {
     this.showNewSection = false;
-    this.cdr.detectChanges();
   }
 
   removeSection(section: newsletterSection) {
@@ -289,6 +288,6 @@ export class UpdateNewsletterComponent implements OnInit {
   }
 
   goBack() {
-    this.location.forward();
+    this.location.back();
   }
 }
