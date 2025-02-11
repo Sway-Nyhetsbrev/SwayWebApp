@@ -1,13 +1,58 @@
-<div id="newsletterSection">
-    <quill-editor
-      [ngModel]="section.content"
-      [modules]="editorModules"
-      (ngModelChange)="section.content = $event">
-    </quill-editor>
+<div id="toolbar">
+  <select class="ql-font">
+    <option value="bebas">Bebas Neue</option>
+    <option value="dm-sans">DM Sans</option>
+    <option value="inter">Inter</option>
+    <option value="poppins">Poppins</option>
+    <option value="roboto">Roboto</option>
+    <option value="roboto-mono">Roboto Mono</option>
+    <option value="roboto-slab">Roboto Slab</option>
+    <option value="oswald">Oswald</option>
+  </select>
 
-    <div class="buttonContainer">
-      <button type="button" class="btn btn-success" (click)="saveSection()" [disabled]="isSaving">
-        {{isSaving ? 'Saving...' : 'Save Section'}}
-      </button>
-    </div>
+  <select class="ql-header">
+    <option value="1"></option>
+    <option value="2"></option>
+    <option selected></option>
+  </select>
+
+  <span class="ql-formats">
+    <button class="ql-bold"></button>
+    <button class="ql-italic"></button>
+    <button class="ql-underline"></button>
+    <button class="ql-strike"></button>
+  </span>
+
+  <span class="ql-formats">
+    <select class="ql-color"></select>
+    <select class="ql-background"></select>
+  </span>
+
+  <span class="ql-formats">
+    <button class="ql-link"></button>
+    <button class="ql-image"></button>
+    <button class="ql-video"></button>
+  </span>
+
+  <!--custom knapp -->
+  <span class="ql-formats">
+    <button class="ql-customImage">
+      <i class="fa fa-search"></i>
+    </button>
+  </span>
+</div>
+
+<!-- Quill editorn använder vår anpassade toolbar -->
+<div id="newsletterSection">
+  <quill-editor
+    [ngModel]="section.content"
+    [modules]="editorModules"
+    (ngModelChange)="section.content = $event">
+  </quill-editor>
+
+  <div class="buttonContainer">
+    <button type="button" class="btn btn-success" (click)="saveSection()" [disabled]="isSaving">
+      {{isSaving ? 'Saving...' : 'Save Section'}}
+    </button>
   </div>
+</div>

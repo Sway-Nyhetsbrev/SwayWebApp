@@ -52,19 +52,13 @@ export class CreateNewsletterSectionComponent{
 
   // Konfiguration för Quill-editorn
   editorModules = {
-    toolbar: [
-      [{ font: ['bebas', 'dm-sans', 'inter', 'poppins', 'roboto', 'roboto-mono', 'roboto-slab', 'oswald'] }],
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ background: [] }, { color: [] }],
-      ['link', 'image','image', 'video'],
-      [{ header: 1 }, { header: 2 }],
-      [{ list: 'ordered' }],
-      [{ script: 'sub' }, { script: 'super' }],
-      [{ indent: '-1' }, { indent: '+1' }],
-      [{ align: [] }],
-      [{ direction: 'rtl' }],
-    ],
+    toolbar: {
+      container: '#toolbar', // Använd vår egna toolbar-container
+      handlers: {
+        // Handler för den custom-knappen
+        
+      }
+    },
     imageHandler: {
       upload: (file: Blob) => this.uploadSectionImage(file),
       accepts: ['png', 'jpg', 'jpeg', 'jfif'],

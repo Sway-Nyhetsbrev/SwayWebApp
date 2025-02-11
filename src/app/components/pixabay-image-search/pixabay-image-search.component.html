@@ -1,0 +1,20 @@
+<div class="modal-content">
+    <h2>Sök efter bilder</h2>
+    <input
+      type="text"
+      placeholder="Sök..."
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="searchImages()"
+    />
+    <button (click)="searchImages()">Sök</button>
+    <div class="image-results" *ngIf="images?.length">
+      <div class="image-result" *ngFor="let image of images">
+        <img
+          [src]="image.previewURL"
+          [alt]="image.tags"
+          (click)="selectImage(image)"
+        />
+      </div>
+    </div>
+    <button (click)="close()">Stäng</button>
+  </div>
