@@ -11,7 +11,7 @@
         width: 100%;
         
         button {
-            margin: 10px 0px 10px 0px;
+            margin-top: 50px;
             width: 100%;
         }
     }
@@ -24,7 +24,7 @@
 #toolbar {
     .ql-formats {
 
-        .ql-customImage {
+        .ql-customImage, .ql-customVideo {
             margin: 0;
             padding: 0;
         }

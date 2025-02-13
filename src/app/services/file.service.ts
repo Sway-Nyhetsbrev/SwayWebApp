@@ -18,22 +18,23 @@ export class FileService {
           const pdfDoc = await PDFDocument.create();
           let page = pdfDoc.addPage([600, 800]);
           let yOffset = 750;
-
+  
           const { backgroundStart, backgroundEnd, textColor } = this.getThemeColors(
             theme
           );
           const gradientSteps = 100;
-
+  
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-
+  
           const [rTitle, gTitle, bTitle] = this.hexToRgb(textColor).map((val) => val / 255);
           page.drawText(title, { x: 50, y: 770, size: 24, color: rgb(rTitle, gTitle, bTitle) });
-
+  
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
             let sectionHeight = 35;
-
+  
             const isUrlImage = section.startsWith('https');
+            const isVideoUrl = section.endsWith('.mp4');
 
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
@@ -43,17 +44,29 @@ export class FileService {
               }
             }
 
+            if (isVideoUrl) {
+              // Lägg till en länk för videon
+              page.drawText('Video: ' + section, {
+                x: 50,
+                y: yOffset,
+                size: 12,
+                color: rgb(rTitle, gTitle, bTitle)
+              });
+              yOffset -= 20;
+              sectionHeight += 20;
+            }
+
             if (yOffset - sectionHeight < 50) {
               page = pdfDoc.addPage([600, 800]);
               yOffset = 750;
               this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
             }
-
-            if (!isUrlImage) {
+  
+            if (!isUrlImage && !isVideoUrl) {
               page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
               yOffset -= 20;
             }
-
+  
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
@@ -68,7 +81,7 @@ export class FileService {
               }
             }
           }
-
+  
           const pdfBytes = await pdfDoc.save();
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -76,7 +89,7 @@ export class FileService {
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
           console.log('HTTP POST request sent for:', fileName);
-
+  
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {
               const fileUrl = response ? (response as any).filePath : '';

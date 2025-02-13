@@ -9,6 +9,7 @@
   display: flex;
   justify-content: space-evenly;
   margin-top: 10px;
+  margin-bottom: 20px;
   width: 100%;
 }
 .pixabay-content .button-content button {
@@ -19,6 +20,7 @@
 .pixabay-content .image-results {
   display: grid;
   grid-template-columns: auto auto auto auto;
+  margin-bottom: 20px;
 }
 .pixabay-content .image-results .image-result {
   margin: 5px;

@@ -53,6 +53,12 @@
       <i class="fa-solid fa-globe"></i>
     </button>
   </span>
+
+  <span class="ql-formats">
+    <button class="ql-customVideo">
+      <i class="fa-regular fa-circle-play"></i>
+    </button>
+  </span>
 </div>
 
 <!-- Quill editorn använder vår anpassade toolbar -->
@@ -63,18 +69,26 @@
     (ngModelChange)="section.content = $event">
   </quill-editor>
 
+  @if (showPixabayImageSearch) {
+    <div class="pixabayImageSearch"></div>
+    <app-pixabay-image-search
+    (imageSelected)="insertImage($event)"
+    (closeDialog)="handleImageClose()">
+  </app-pixabay-image-search>
+  }
+
+  @if (showPixabayVideoSearch) {
+    <div class="showPixabayVideoSearch"></div>
+    <app-pixabay-video-search
+      (videoSelected)="handleVideoSelected($event)"
+      (closeDialog)="handleVideoClose()">
+    </app-pixabay-video-search>
+  }
+
   <div class="buttonContainer">
     <button type="button" class="btn btn-success" (click)="saveSection()" [disabled]="isSaving">
       {{isSaving ? 'Saving...' : 'Save Section'}}
     </button>
   </div>
-
-  @if (showDialog) {
-    <div class="pixabayImageSearch"></div>
-    <app-pixabay-image-search
-    (imageSelected)="insertImage($event)"
-    (closeDialog)="handleClose()">
-  </app-pixabay-image-search>
-  }
 
 </div>

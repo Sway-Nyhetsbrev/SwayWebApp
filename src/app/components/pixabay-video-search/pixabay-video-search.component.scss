@@ -19,22 +19,30 @@
         }
     }
 
-    .image-results {
+    .video-results {
         display: grid;
-        grid-template-columns: auto auto auto auto;
-        margin-bottom: 20px;
-        
-        .image-result {
+        grid-template-columns: auto auto;
+
+        .video-result {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             margin: 5px;
 
-            img {
-                transition: transform 0.3s ease-in-out;
-
-                &:hover {
-                    transform: rotate(1deg);
-                    box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
-                }
+            video {
+                width: 280px;
             }
+
+            p {
+                display: none;
+            }
+
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
         }
     }
 }

@@ -193,15 +193,41 @@ export class CreateNewsletterComponent {
       tempDiv.style.position = 'absolute';
       tempDiv.style.top = '-9999px';
       tempDiv.style.left = '-9999px';
+  
+      // Lägg till sektionens innehåll
       tempDiv.innerHTML = section.content;
+  
+      if (section.newsletterSectionVideos && section.newsletterSectionVideos.length > 0) {
+        const video = section.newsletterSectionVideos[0]; // Tar första videon i listan
+        
+        const thumbnailUrl = video.thumbnail;
+        const videoUrl = video.url;
+  
+        if (thumbnailUrl && videoUrl) {
+          const imgElement = document.createElement('img');
+          imgElement.src = thumbnailUrl;
+          imgElement.style.width = '100%';
+          imgElement.style.cursor = 'pointer';
+  
+          const linkElement = document.createElement('a');
+          linkElement.href = videoUrl;
+          linkElement.target = '_blank'; // Öppna länken i ett nytt fönster
+          linkElement.textContent = 'Play Video'; // Lägg till text så att användaren kan se länken
+          linkElement.appendChild(imgElement);
+          tempDiv.appendChild(linkElement);
+        }
+      }
       document.body.appendChild(tempDiv);
+  
       try {
         const canvas = await html2canvas(tempDiv, {
           backgroundColor: null,
           logging: true,
           useCORS: true,
           scale: 4,
+          allowTaint: true,
         });
+  
         canvas.toBlob((blob) => {
           if (blob) {
             this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
@@ -219,7 +245,7 @@ export class CreateNewsletterComponent {
       }
     });
   }
-
+  
   removeSection(section: newsletterSection) {
     if (section != null) {
       const index = this.newsletter()?.sections.findIndex(s => s === section);

@@ -2,26 +2,29 @@
     <input
       type="text"
       class="form-control"
-      placeholder="Search after image..."
+      placeholder="Search after video..."
       [(ngModel)]="searchTerm"
-      (keyup.enter)="searchImages()"/>
+      (keyup.enter)="searchVideos()"/>
       
     <div class="button-content">
-      <button type="button" class="btn btn-success" (click)="searchImages()">Search</button>
+      <button type="button" class="btn btn-success" (click)="searchVideos()">Search</button>
       <button type="button" class="btn btn-danger" (click)="close()">Close Searchbar</button>
     </div>
     
-    @if (images.length > 0) {
-        <div class="image-results">
-            @for (image of images; track image) {
-                <div class="image-result">
-                    <img
-                      [src]="image.previewURL"
-                      [alt]="image.tags"
-                      (click)="selectImage(image)"
-                    />
-                </div>
-            }
+    @if (videos.length > 0) {
+        <div class="video-results">
+          @for (video of videos; track video) {
+            <div class="video-result">
+              <video width="320" height="240" controls>
+                <source [src]="video.videos.large.url" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <p>{{ video.tags }}</p>
+              <button type="button" class="btn btn-primary" (click)="selectVideo(video)">
+                Select Video
+              </button>
+            </div>
+          }
         </div>
 
       @if(totalPages > 1) 

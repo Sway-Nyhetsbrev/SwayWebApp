@@ -13,20 +13,38 @@ import { FormsModule } from '@angular/forms';
 export class PixabayImageSearchComponent {
   searchTerm = '';
   images: any[] = [];
-  cdr = inject(ChangeDetectorRef)
+  currentPage = 1;
+  totalPages = 1;
+  cdr = inject(ChangeDetectorRef);
 
   @Output() imageSelected = new EventEmitter<string>();
   @Output() closeDialog = new EventEmitter<void>();
 
   constructor(private http: HttpClient) {}
 
-  searchImages() {
+  searchImages(page: number = 1) {
     const apiKey = '48774135-ef6cff025934c628b9572ed45';
-    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(this.searchTerm)}&image_type=photo`;
+    const perPage = 20;
+    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(this.searchTerm)}&image_type=photo&page=${page}&per_page=${perPage}`;
+    
     this.http.get(url).subscribe((data: any) => {
       this.images = data.hits;
+      this.totalPages = Math.ceil(data.totalHits / perPage);
+      this.currentPage = page;
       this.cdr.detectChanges();
     });
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.searchImages(this.currentPage + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.searchImages(this.currentPage - 1);
+    }
   }
 
   selectImage(image: any) {
@@ -37,3 +55,4 @@ export class PixabayImageSearchComponent {
     this.closeDialog.emit();
   }
 }
+
