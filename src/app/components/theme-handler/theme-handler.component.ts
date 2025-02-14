@@ -1,0 +1,101 @@
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { ThemeColors } from '../../models/themecolor';
+import { ThemeService } from '../../services/theme.service';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-theme-handler',
+  imports: [FormsModule],
+  templateUrl: './theme-handler.component.html',
+  styleUrl: './theme-handler.component.scss'
+})
+export class ThemeHandlerComponent implements OnInit {
+  private themeService = inject(ThemeService);
+  showCreateTheme = false;
+  dropdownOpen = false;
+  
+  // Skickar ut valt tema till föräldern
+  @Output() themeChanged = new EventEmitter<ThemeColors>();
+
+  // Lista med teman (enbart de som finns i backend)
+  themes: ThemeColors[] = [];
+
+  // Modell för att skapa ett nytt tema
+  newTheme: ThemeColors = {
+    name: 'Default',
+    backgroundStart: '#F5F5F7',
+    backgroundEnd: '#F5F5F7',
+    textColor: 'black'
+  };
+
+  ngOnInit(): void {
+    this.loadThemes();
+    this.themeChanged.emit({ ...this.newTheme });
+  }
+
+  // Hämtar alla teman från backend
+  loadThemes(): void {
+    this.themeService.getAllNewslettersThemes().subscribe({
+      next: (data) => {
+        this.themes = data;
+        console.log("loadThemes:", data);
+      },
+      error: (err) => console.error('Fel vid hämtning av teman:', err)
+    });
+  }
+
+  // Skapar ett nytt tema
+  createTheme(): void {
+    this.themeService.createNewsletterTheme(this.newTheme).subscribe({
+      next: (createdTheme) => {
+        // Lägg till det nyskapade temat i listan
+        this.themes.push(createdTheme);
+        // Nollställ formuläret
+        this.newTheme = {
+          name: 'Default',
+          backgroundStart: '#F5F5F7',
+          backgroundEnd: '#F5F5F7',
+          textColor: 'black'
+        };
+      },
+      error: (err) => console.error('Fel vid skapande av tema:', err)
+    });
+  }
+
+  // Tar bort ett tema
+  removeTheme(theme: ThemeColors): void {
+    if (confirm(`Är du säker på att du vill ta bort temat "${theme.name}"?`)) {
+      this.themeService.removeNewsletterTheme(theme.name).subscribe({
+        next: () => {
+          this.themes = this.themes.filter(t => t.name !== theme.name);
+        },
+        error: (err) => console.error('Fel vid borttagning av tema:', err)
+      });
+    }
+  }
+
+  // Anropas när användaren klickar på ett tema – skickar ut valt tema till föräldern
+  selectTheme(theme: ThemeColors): void {
+    this.themeChanged.emit(theme);
+    console.log("selectTheme:", theme);
+  }
+
+  // trackBy-metod för ngFor
+  trackTheme(index: number, theme: ThemeColors): string {
+    console.log("trackTheme:", theme);
+    return theme.name;
+  }
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+  
+  openCreateTheme(): void {
+    this.showCreateTheme = true;
+    this.dropdownOpen = false;
+  }
+
+  closeCreateTheme() {
+    this.showCreateTheme = false;
+  }
+}

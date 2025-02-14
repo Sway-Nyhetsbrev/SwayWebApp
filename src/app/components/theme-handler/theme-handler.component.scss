@@ -1,0 +1,90 @@
+.theme-manager {
+    .dropdown {
+      button {
+        width: 100%;
+      }
+  
+      .dropdown-menu {
+        width: 100%;
+        padding: 10px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: auto;
+        gap: 10px;
+        text-align: center;
+  
+        .dropdown-item {
+          position: relative;
+          background: transparent;
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+  
+          .theme-preview {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s;
+          }
+  
+          .themeName {
+            display: none;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333;
+          }
+  
+          &:hover {
+            .themeName {
+              display: block;
+            }
+            .theme-preview {
+              transform: scale(1.1);
+            }
+          }
+        }
+  
+        .dropdown-divider {
+          grid-column: 1 / -1;
+          margin: 10px 0;
+        }
+  
+        .create-btn {
+          grid-column: 1 / -1;
+          background-color: #f0f0f0;
+          border-radius: 4px;
+          font-weight: bold;
+          padding: 15px;
+        }
+      }
+    }
+    .createNewsletterThemeSection {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      h3 {
+        margin-bottom: 30px;
+      }
+
+      button {
+        margin: 1px;
+      }
+      .showBox {
+        width: 300px;
+        height: 380px;
+        border: 1px solid black;
+        margin: 80px 0px 0px 30px;
+        border-radius: 50px;
+        text-align: center;
+
+        h1 {
+          margin-top: 50%;
+        }
+      }
+    }
+}

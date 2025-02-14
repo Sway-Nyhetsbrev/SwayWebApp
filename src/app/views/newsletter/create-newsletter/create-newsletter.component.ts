@@ -2,19 +2,26 @@ import { ChangeDetectorRef, Component, DestroyRef, inject, signal } from '@angul
 import { newsletter, newsletterSection } from '../../../models/newsletter';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
-import { NgClass } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { AuthService } from '../../../services/auth.service';
 import { FileService } from '../../../services/file.service';
-import { themeColorsMap } from '../../../models/themecolor';
 import { Location } from '@angular/common';
 import html2canvas from 'html2canvas';
+import { ThemeHandlerComponent } from "../../../components/theme-handler/theme-handler.component";
+
+const DEFAULT_THEME = {
+  name: '',
+  backgroundStart: '#ffffff',
+  backgroundEnd: '#ffffff',
+  textColor: '#000000'
+};
 
 @Component({
   selector: 'app-create-newsletter',
   standalone: true,
-  imports: [FormsModule, CreateNewsletterSectionComponent, NgClass],
+  imports: [FormsModule, CreateNewsletterSectionComponent, NgStyle, ThemeHandlerComponent],
   templateUrl: './create-newsletter.component.html',
   styleUrls: ['./create-newsletter.component.scss'],
 })
@@ -41,7 +48,7 @@ export class CreateNewsletterComponent {
     releaseDate: '',
     userId: '',
     sections: [],
-    theme: themeColorsMap['default-theme']
+    theme: DEFAULT_THEME
   });
 
   // Håller reda på vilken sektion som för närvarande redigeras (om någon)
@@ -93,8 +100,9 @@ export class CreateNewsletterComponent {
     this.cdr.detectChanges();
   }
 
-  selectTheme(theme: string) {
-    this.newsletter()!.theme = themeColorsMap[theme];
+  onThemeChanged(theme: any) {
+    this.newsletter()!.theme = theme;
+    this.cdr.detectChanges();
   }
 
   async saveNewsletter() {

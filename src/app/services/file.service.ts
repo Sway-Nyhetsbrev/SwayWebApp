@@ -1,27 +1,35 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PDFDocument, PDFImage, rgb } from 'pdf-lib';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { ThemeColors } from '../models/themecolor';
+import { ThemeService } from './theme.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
   private httpClient = inject(HttpClient);
+  private themeService = inject(ThemeService);
 
   async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string): Promise<Observable<string>> {
     console.log("Skapar PDF för:", title);
     return new Observable<string>((observer) => {
       (async () => {
         try {
+                // Hämta temat från ThemeService
+          const themeData = await firstValueFrom(this.themeService.getOneNewsletterTheme(theme));
+
+          if (!themeData) {
+            observer.error('Kunde inte hämta tema från ThemeService');
+            return;
+          }
+
+          const { backgroundStart, backgroundEnd, textColor } = themeData;
           const pdfDoc = await PDFDocument.create();
           let page = pdfDoc.addPage([600, 800]);
           let yOffset = 750;
   
-          const { backgroundStart, backgroundEnd, textColor } = this.getThemeColors(
-            theme
-          );
           const gradientSteps = 100;
   
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
@@ -319,115 +327,115 @@ export class FileService {
     });
   }
 
-  // Get theme colors based on the selected theme
-  private getThemeColors(theme: string): ThemeColors {
-    switch (theme) {
-      case 'default-theme':
-        return {
-          name: 'default-theme',
-          backgroundStart: '#F5F5F7',
-          backgroundEnd: '#FFFFFF',
-          textColor: 'black',
-          className: 'default-theme',
-        };
-      case 'light-theme':
-        return {
-          name: 'light-theme',
-          backgroundStart: '#FFFFFF',
-          backgroundEnd: '#EEEEEE',
-          textColor: '#333333',
-          className: 'light-theme',
-        };
-      case 'blue-to-pink':
-        return {
-          name: 'blue-to-pink',
-          backgroundStart: '#1e3c72',
-          backgroundEnd: '#2a5298',
-          textColor: 'white',
-          className: 'blue-to-pink',
-        };
-      case 'purple-to-blue':
-        return {
-          name: 'purple-to-blue',
-          backgroundStart: '#6a11cb',
-          backgroundEnd: '#2575fc',
-          textColor: 'white',
-          className: 'purple-to-blue',
-        };
-      case 'red-to-orange':
-        return {
-          name: 'red-to-orange',
-          backgroundStart: '#ff416c',
-          backgroundEnd: '#ff4b2b',
-          textColor: 'white',
-          className: 'red-to-orange',
-        };
-      case 'green-to-blue':
-        return {
-          name: 'green-to-blue',
-          backgroundStart: '#00b09b',
-          backgroundEnd: '#96c93d',
-          textColor: 'white',
-          className: 'green-to-blue',
-        };
-      case 'yellow-to-red':
-        return {
-          name: 'yellow-to-red',
-          backgroundStart: '#f6d365',
-          backgroundEnd: '#fda085',
-          textColor: 'white',
-          className: 'yellow-to-red',
-        };
-      case 'blue-to-turquoise':
-        return {
-          name: 'blue-to-turquoise',
-          backgroundStart: '#4facfe',
-          backgroundEnd: '#00f2fe',
-          textColor: 'white',
-          className: 'blue-to-turquoise',
-        };
-      case 'pink-to-purple':
-        return {
-          name: 'pink-to-purple',
-          backgroundStart: '#ff9a9e',
-          backgroundEnd: '#fad0c4',
-          textColor: 'white',
-          className: 'pink-to-purple',
-        };
-      case 'orange-to-yellow':
-        return {
-          name: 'orange-to-yellow',
-          backgroundStart: '#ff7e5f',
-          backgroundEnd: '#feb47b',
-          textColor: 'white',
-          className: 'orange-to-yellow',
-        };
-      case 'blue-to-green':
-        return {
-          name: 'blue-to-green',
-          backgroundStart: '#00c6ff',
-          backgroundEnd: '#0072ff',
-          textColor: 'white',
-          className: 'blue-to-green',
-        };
-      case 'dark-purple-to-red':
-        return {
-          name: 'dark-purple-to-red',
-          backgroundStart: '#5f2c82',
-          backgroundEnd: '#49a09d',
-          textColor: 'white',
-          className: 'dark-purple-to-red',
-        };
-      default:
-        return {
-          name: 'default-theme',
-          backgroundStart: '#FFFFFF',
-          backgroundEnd: '#EEEEEE',
-          textColor: 'black',
-          className: 'default-theme',
-        };
-    }
-  }
+  // // Get theme colors based on the selected theme
+  // private getThemeColors(theme: string): ThemeColors {
+  //   switch (theme) {
+  //     case 'default-theme':
+  //       return {
+  //         name: 'default-theme',
+  //         backgroundStart: '#F5F5F7',
+  //         backgroundEnd: '#FFFFFF',
+  //         textColor: 'black',
+
+  //       };
+  //     case 'light-theme':
+  //       return {
+  //         name: 'light-theme',
+  //         backgroundStart: '#FFFFFF',
+  //         backgroundEnd: '#EEEEEE',
+  //         textColor: '#333333',
+  //         className: 'light-theme',
+  //       };
+  //     case 'blue-to-pink':
+  //       return {
+  //         name: 'blue-to-pink',
+  //         backgroundStart: '#1e3c72',
+  //         backgroundEnd: '#2a5298',
+  //         textColor: 'white',
+  //         className: 'blue-to-pink',
+  //       };
+  //     case 'purple-to-blue':
+  //       return {
+  //         name: 'purple-to-blue',
+  //         backgroundStart: '#6a11cb',
+  //         backgroundEnd: '#2575fc',
+  //         textColor: 'white',
+  //         className: 'purple-to-blue',
+  //       };
+  //     case 'red-to-orange':
+  //       return {
+  //         name: 'red-to-orange',
+  //         backgroundStart: '#ff416c',
+  //         backgroundEnd: '#ff4b2b',
+  //         textColor: 'white',
+  //         className: 'red-to-orange',
+  //       };
+  //     case 'green-to-blue':
+  //       return {
+  //         name: 'green-to-blue',
+  //         backgroundStart: '#00b09b',
+  //         backgroundEnd: '#96c93d',
+  //         textColor: 'white',
+  //         className: 'green-to-blue',
+  //       };
+  //     case 'yellow-to-red':
+  //       return {
+  //         name: 'yellow-to-red',
+  //         backgroundStart: '#f6d365',
+  //         backgroundEnd: '#fda085',
+  //         textColor: 'white',
+  //         className: 'yellow-to-red',
+  //       };
+  //     case 'blue-to-turquoise':
+  //       return {
+  //         name: 'blue-to-turquoise',
+  //         backgroundStart: '#4facfe',
+  //         backgroundEnd: '#00f2fe',
+  //         textColor: 'white',
+  //         className: 'blue-to-turquoise',
+  //       };
+  //     case 'pink-to-purple':
+  //       return {
+  //         name: 'pink-to-purple',
+  //         backgroundStart: '#ff9a9e',
+  //         backgroundEnd: '#fad0c4',
+  //         textColor: 'white',
+  //         className: 'pink-to-purple',
+  //       };
+  //     case 'orange-to-yellow':
+  //       return {
+  //         name: 'orange-to-yellow',
+  //         backgroundStart: '#ff7e5f',
+  //         backgroundEnd: '#feb47b',
+  //         textColor: 'white',
+  //         className: 'orange-to-yellow',
+  //       };
+  //     case 'blue-to-green':
+  //       return {
+  //         name: 'blue-to-green',
+  //         backgroundStart: '#00c6ff',
+  //         backgroundEnd: '#0072ff',
+  //         textColor: 'white',
+  //         className: 'blue-to-green',
+  //       };
+  //     case 'dark-purple-to-red':
+  //       return {
+  //         name: 'dark-purple-to-red',
+  //         backgroundStart: '#5f2c82',
+  //         backgroundEnd: '#49a09d',
+  //         textColor: 'white',
+  //         className: 'dark-purple-to-red',
+  //       };
+  //     default:
+  //       return {
+  //         name: 'default-theme',
+  //         backgroundStart: '#FFFFFF',
+  //         backgroundEnd: '#EEEEEE',
+  //         textColor: 'black',
+  //         className: 'default-theme',
+  //       };
+  //   }
+  // }
 
   // Konvertera hex till RGB
   private hexToRgb(hex: string): number[] {

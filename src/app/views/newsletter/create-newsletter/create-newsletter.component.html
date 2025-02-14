@@ -1,7 +1,11 @@
 <section id="createNewsletterSection">
   <div class="container">
     <h2>Create Newsletter</h2>
-    <form (ngSubmit)="saveNewsletter()" [ngClass]="newsletter()?.theme?.className">
+    <form (ngSubmit)="saveNewsletter()"
+      [ngStyle]="{
+        'background': 'linear-gradient(90deg, ' + newsletter()?.theme?.backgroundStart + ', ' + newsletter()?.theme?.backgroundEnd + ')',
+        'color': newsletter()?.theme?.textColor
+      }">
       <div id="newsletter-content">
         <div class="form-group-content">
           <div class="form-group">
@@ -15,26 +19,7 @@
           </div>
 
           <div class="form-group" id="theme">
-            <label for="theme" class="form-label">Theme:</label>
-            <select
-              class="form-control"
-              [(ngModel)]="selectedTheme"
-              name="theme"
-              (ngModelChange)="selectTheme($event)">
-
-              <option value="default-theme">Default</option>
-              <option value="light-theme">Light</option>
-              <option value="blue-to-pink">Blue to Pink</option>
-              <option value="purple-to-blue">Purple to Blue</option>
-              <option value="red-to-orange">Red to Orange</option>
-              <option value="green-to-blue">Green to Blue</option>
-              <option value="yellow-to-red">Yellow to Red</option>
-              <option value="blue-to-turquoise">Blue to Turquoise</option>
-              <option value="pink-to-purple">Pink to Purple</option>
-              <option value="orange-to-yellow">Orange to Yellow</option>
-              <option value="blue-to-green">Blue to Green</option>
-              <option value="dark-purple-to-red">Dark Purple to Red</option>
-            </select>
+            <app-theme-handler (themeChanged)="onThemeChanged($event)"></app-theme-handler>
           </div>
         </div>
 

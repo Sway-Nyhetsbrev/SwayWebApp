@@ -2,18 +2,25 @@ import { ChangeDetectorRef, Component, DestroyRef, inject, input, OnInit, signal
 import { ActivatedRoute } from '@angular/router';
 import { NewsletterService } from '../../../services/newsletter.service';
 import { newsletter, newsletterSection } from '../../../models/newsletter';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from '../create-newsletter/create-newsletter-section/create-newsletter-section.component';
 import { FileService } from '../../../services/file.service';
-import { themeColorsMap } from '../../../models/themecolor';
 import { DomSanitizer } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { Location } from '@angular/common';
+import { ThemeHandlerComponent } from "../../../components/theme-handler/theme-handler.component";
+
+const DEFAULT_THEME = {
+  name: '',
+  backgroundStart: '#ffffff',
+  backgroundEnd: '#ffffff',
+  textColor: '#000000'
+};
 
 @Component({
   selector: 'app-update-newsletter',
-  imports: [NgClass, FormsModule, DatePipe, CreateNewsletterSectionComponent],
+  imports: [NgStyle, FormsModule, DatePipe, CreateNewsletterSectionComponent, ThemeHandlerComponent],
   templateUrl: './update-newsletter.component.html',
   styleUrl: './update-newsletter.component.scss'
 })
@@ -38,7 +45,7 @@ export class UpdateNewsletterComponent implements OnInit {
     releaseDate: '',
     userId: '',
     sections: [],
-    theme: themeColorsMap['default-theme']
+    theme: DEFAULT_THEME
   });
 
   // Håller reda på vilken sektion som för närvarande redigeras (om någon)
@@ -46,12 +53,10 @@ export class UpdateNewsletterComponent implements OnInit {
 
   // För nya sektioner kan du använda en separat flagga om du vill
   showNewSection = false;
-
   newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
 
 
   ngOnInit() {
-    console.log('themeColorsMap:', themeColorsMap); // Kontrollera om themeColorsMap är tillgänglig här
     this.activatedRoute.params.subscribe((params) => {
       this.newsletterId = params['newsletterId'];
       this.loadNewsletterDetails();
@@ -62,10 +67,6 @@ export class UpdateNewsletterComponent implements OnInit {
     const datePipe = new DatePipe('en-US');
     const subscription = this.newsletterService.getOneNewsletter(this.newsletterId).subscribe({
       next: (response) => {
-
-      // Verifiera att temat finns i themeColorsMap
-      const theme = themeColorsMap[response.theme!.className] || response.theme;
-      response.theme = { ...theme, ...response.theme };
 
       // Använd DatePipe för att formatera releaseDate till yyyy-MM-dd
       console.log("ReleaseDate:", response.releaseDate)
@@ -91,7 +92,10 @@ export class UpdateNewsletterComponent implements OnInit {
     });
   }
 
-  
+  onThemeChanged(theme: any) {
+    this.newsletter()!.theme = theme;
+    this.cdr.detectChanges();
+  }
 
   async updateNewsletter() {
     if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
@@ -146,7 +150,7 @@ export class UpdateNewsletterComponent implements OnInit {
         const pdfUrl$ = await this.fileService.createAndUploadPdf(
           this.newsletter()!.title,
           imageUrls,
-          this.newsletter()!.theme!.className,
+          this.newsletter()!.theme!.name,
           newsletterId
         );
   
@@ -258,33 +262,6 @@ export class UpdateNewsletterComponent implements OnInit {
   toggleSection() {
     this.showSection = !this.showSection;
     console.log(this.showSection);
-  }
-
-  onThemeClick(themeClassName: string): void {
-    console.log('Theme clicked:', themeClassName);
-  
-    // Kontrollera att themeColorsMap finns
-    if (!themeColorsMap) {
-      console.error('themeColorsMap is undefined!');
-      return;
-    }
-  
-    // Kontrollera att tema finns i themeColorsMap
-    const selectedTheme = themeColorsMap[themeClassName];
-  
-    if (!selectedTheme) {
-      console.error('Theme not found in themeColorsMap:', themeClassName);
-      this.statusMessage = `Theme '${themeClassName}' not found!`;
-      this.statusClass = 'alert alert-warning';
-      return;
-    }
-  
-    if (this.newsletter()) {
-      // Uppdatera temat
-      this.newsletter()!.theme!.className = themeClassName;
-      this.newsletter()!.theme = { ...this.newsletter()!.theme, ...selectedTheme };
-      this.cdr.detectChanges();
-    }
   }
 
   goBack() {
