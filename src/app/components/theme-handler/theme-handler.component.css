@@ -24,20 +24,26 @@
 .theme-manager .dropdown .dropdown-menu .dropdown-item .theme-preview {
   width: 50px;
   height: 50px;
+  margin: 10px;
   border-radius: 50%;
   transition: transform 0.3s;
 }
+.theme-manager .dropdown .dropdown-menu .dropdown-item button {
+  display: none;
+}
 .theme-manager .dropdown .dropdown-menu .dropdown-item .themeName {
   display: none;
-  margin-top: 5px;
   font-size: 14px;
   color: #333;
 }
-.theme-manager .dropdown .dropdown-menu .dropdown-item:hover .themeName {
-  display: block;
+.theme-manager .dropdown .dropdown-menu .dropdown-item:hover .themeName, .theme-manager .dropdown .dropdown-menu .dropdown-item:hover button {
+  display: flex;
 }
-.theme-manager .dropdown .dropdown-menu .dropdown-item:hover .theme-preview {
-  transform: scale(1.1);
+.theme-manager .dropdown .dropdown-menu .dropdown-item:hover button {
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
 }
 .theme-manager .dropdown .dropdown-menu .dropdown-divider {
   grid-column: 1/-1;

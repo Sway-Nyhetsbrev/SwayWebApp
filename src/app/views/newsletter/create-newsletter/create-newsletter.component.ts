@@ -171,7 +171,7 @@ export class CreateNewsletterComponent {
         const pdfUrl$ = await this.fileService.createAndUploadPdf(
           this.newsletter()!.title,
           imageUrls,
-          this.selectedTheme,
+          this.newsletter()!.theme!.name!,
           newsletterId
         );
   

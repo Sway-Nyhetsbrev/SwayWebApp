@@ -10,6 +10,7 @@ import { newsletterSectionVideos } from '../../models/newsletter';
   styleUrl: './pixabay-video-search.component.scss'
 })
 export class PixabayVideoSearchComponent {
+  private http = inject(HttpClient)
   searchTerm = '';
   videos: any[] = [];
   currentPage = 1;
@@ -20,8 +21,6 @@ export class PixabayVideoSearchComponent {
 
   @Output() videoSelected = new EventEmitter<newsletterSectionVideos>();
   @Output() closeDialog = new EventEmitter<void>();
-
-  constructor(private http: HttpClient) {}
 
   searchVideos(page: number = 1) {
     const apiKey = '48774135-ef6cff025934c628b9572ed45';

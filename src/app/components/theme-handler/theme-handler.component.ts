@@ -17,7 +17,6 @@ export class ThemeHandlerComponent implements OnInit {
   // Skickar ut valt tema till föräldern
   @Output() themeChanged = new EventEmitter<ThemeColors>();
 
-  // Lista med teman (enbart de som finns i backend)
   themes: ThemeColors[] = [];
 
   // Modell för att skapa ett nytt tema
@@ -40,7 +39,7 @@ export class ThemeHandlerComponent implements OnInit {
         this.themes = data;
         console.log("loadThemes:", data);
       },
-      error: (err) => console.error('Fel vid hämtning av teman:', err)
+      error: (err) => console.error('Error fetching theme:', err)
     });
   }
 
@@ -58,18 +57,18 @@ export class ThemeHandlerComponent implements OnInit {
           textColor: 'black'
         };
       },
-      error: (err) => console.error('Fel vid skapande av tema:', err)
+      error: (err) => console.error('Error theme not created:', err)
     });
   }
 
   // Tar bort ett tema
   removeTheme(theme: ThemeColors): void {
-    if (confirm(`Är du säker på att du vill ta bort temat "${theme.name}"?`)) {
+    if (confirm(`Are you shore that you want to remove "${theme.name}"?`)) {
       this.themeService.removeNewsletterTheme(theme.name).subscribe({
         next: () => {
           this.themes = this.themes.filter(t => t.name !== theme.name);
         },
-        error: (err) => console.error('Fel vid borttagning av tema:', err)
+        error: (err) => console.error('Error removing theme:', err)
       });
     }
   }
@@ -80,7 +79,6 @@ export class ThemeHandlerComponent implements OnInit {
     console.log("selectTheme:", theme);
   }
 
-  // trackBy-metod för ngFor
   trackTheme(index: number, theme: ThemeColors): string {
     console.log("trackTheme:", theme);
     return theme.name;

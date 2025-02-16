@@ -1,5 +1,4 @@
 <div class="theme-manager"> 
-  <!-- Dropdown-lista med teman -->
   <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownThemeButton" (click)="toggleDropdown()">
       Themes
@@ -8,11 +7,14 @@
       <ul class="dropdown-menu">
         @for (theme of themes; track theme) {
           <li class="dropdown-item" (click)="selectTheme(theme)">
-            <!-- Förhandsgranskning med en liten färgad cirkel -->
             <div class="theme-preview" 
                  [style.background]=" 'linear-gradient(90deg, ' + theme.backgroundStart + ', ' + theme.backgroundEnd + ')' ">
             </div>
-            <span class="themeName">{{ theme.name }}</span>
+            <span class="themeName">
+              {{ theme.name }}
+            </span>
+            <!-- <button type="button" class="btn btn-danger" (click)="removeTheme(theme)"><i class="fa-regular fa-trash-can"></i></button> -->
+            
           </li>
         }
         <!-- Knapp för att visa formuläret för nytt tema -->
@@ -27,30 +29,30 @@
    @if (showCreateTheme) {
     <div class="createNewsletterThemeSection">
       <div class="mt-3">
-        <h3>Skapa nytt tema</h3>
+        <h3>Create new theme</h3>
         <form (ngSubmit)="createTheme()" #themeForm="ngForm">
           <div class="mb-3">
-            <label for="themeName" class="form-label">Namn:</label>
+            <label for="themeName" class="form-label">Name:</label>
             <input id="themeName" type="text" class="form-control" [(ngModel)]="newTheme.name" name="themeName" required>
           </div>
           <div class="mb-3">
-            <label for="backgroundStart" class="form-label">Bakgrund Start:</label>
+            <label for="backgroundStart" class="form-label">Background Start:</label>
             <input id="backgroundStart" type="color" class="form-control form-control-color" [(ngModel)]="newTheme.backgroundStart" name="backgroundStart">
           </div>
           <div class="mb-3">
-            <label for="backgroundEnd" class="form-label">Bakgrund Slut:</label>
+            <label for="backgroundEnd" class="form-label">Background End:</label>
             <input id="backgroundEnd" type="color" class="form-control form-control-color" [(ngModel)]="newTheme.backgroundEnd" name="backgroundEnd">
           </div>
           <div class="mb-3">
-            <label for="textColor" class="form-label">Textfärg:</label>
+            <label for="textColor" class="form-label">Text Color:</label>
             <input id="textColor" type="color" class="form-control form-control-color" [(ngModel)]="newTheme.textColor" name="textColor">
           </div>
-          <button type="submit" class="btn btn-primary" [disabled]="!themeForm.valid">Skapa tema</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!themeForm.valid">Create theme</button>
           <button type="button" class="btn btn-warning" (click)="closeCreateTheme()">Close</button>
         </form>
       </div>
       <div class="showBox" [style.background]=" 'linear-gradient(90deg, ' + newTheme.backgroundStart + ', ' + newTheme.backgroundEnd + ')' ">
-        <h1 [style.color]="newTheme.textColor">Test text</h1>
+        <h1 [style.color]="newTheme.textColor">Sogeti</h1>
       </div>
     </div>
    }
