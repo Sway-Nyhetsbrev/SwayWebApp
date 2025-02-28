@@ -25,6 +25,7 @@ export class AllNewslettersComponent implements OnInit{
   ngOnInit() {
     this.loadNewsletters(this.currentPage);
   }
+
   loadNewsletters(page: number) {
     this.isFetching.set(true);
     this.newsletterService.getAllNewsletters(page, this.pageSize).subscribe({
@@ -62,12 +63,14 @@ export class AllNewslettersComponent implements OnInit{
       },
     });
   }
+
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.loadNewsletters(this.currentPage);
     }
   }
+  
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;

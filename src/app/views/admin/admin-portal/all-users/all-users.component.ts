@@ -17,6 +17,4 @@ export class AllUsersComponent implements OnInit {
     this.userService.getAllUsers();
     this.users()?.forEach(user => console.log(user))
   }
-
-
 }

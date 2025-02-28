@@ -58,7 +58,7 @@ export class CreateNewsletterSectionComponent{
   // Konfiguration för Quill-editorn
   editorModules = {
     toolbar: {
-      container: '#toolbar', // Använd vår egna toolbar-container
+      container: '#toolbar', // Egen toolbar-container
       handlers: {
         customImage: () => this.openPixabayImageSearch(),
         customVideo: () => this.openPixabayVideoSearch(),
@@ -96,6 +96,7 @@ export class CreateNewsletterSectionComponent{
   }
 
   insertImage(imageUrl: string) {
+    this.section.newsletterSectionImages.push({ url: imageUrl, altText: 'Uploaded Image' });
     const quill = this.quillEditor?.quillEditor;
     const range = quill?.getSelection(true);
     if (range && quill) {
@@ -139,7 +140,6 @@ export class CreateNewsletterSectionComponent{
   }
 
   handleVideoSelected(video: any) {
-    // Video är det valda objektet som skickas från PixabayVideoSearch
     const videoData = {
       url: video.url,
       title: video.title,

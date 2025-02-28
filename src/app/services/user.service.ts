@@ -44,7 +44,7 @@ export class UserService {
     return this.httpClient.put<any>(`https://userprovider20250119171348.azurewebsites.net/api/users/UpdateUser`, updatedUser)
   }
 
-  //Remove User
+  //Radera en användare
   removeUser(userEmail: string) {
     return this.httpClient.delete<User>(`https://userprovider20250119171348.azurewebsites.net/api/users/DeleteUser?userEmail=${userEmail}`)
   }

@@ -32,7 +32,6 @@ export class ThemeHandlerComponent implements OnInit {
     this.themeChanged.emit({ ...this.newTheme });
   }
 
-  // Hämtar alla teman från backend
   loadThemes(): void {
     this.themeService.getAllNewslettersThemes().subscribe({
       next: (data) => {
@@ -43,11 +42,9 @@ export class ThemeHandlerComponent implements OnInit {
     });
   }
 
-  // Skapar ett nytt tema
   createTheme(): void {
     this.themeService.createNewsletterTheme(this.newTheme).subscribe({
       next: (createdTheme) => {
-        // Lägg till det nyskapade temat i listan
         this.themes.push(createdTheme);
         // Nollställ formuläret
         this.newTheme = {
@@ -61,7 +58,6 @@ export class ThemeHandlerComponent implements OnInit {
     });
   }
 
-  // Tar bort ett tema
   removeTheme(theme: ThemeColors): void {
     if (confirm(`Are you shore that you want to remove "${theme.name}"?`)) {
       this.themeService.removeNewsletterTheme(theme.name).subscribe({

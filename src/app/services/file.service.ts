@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PDFDocument, PDFImage, rgb } from 'pdf-lib';
 import { firstValueFrom, Observable } from 'rxjs';
-import { ThemeColors } from '../models/themecolor';
 import { ThemeService } from './theme.service';
 
 @Injectable({
@@ -170,19 +169,18 @@ export class FileService {
       const formData = new FormData();
 
       // Skapa ett nytt filnamn baserat på ett unikt ID
-      const uniqueFileName = `image_${Date.now()}.jpg`; // Eller använd någon annan logik för att skapa filnamn
+      const uniqueFileName = `image_${Date.now()}.jpg`;
 
-      // Skapa en Blob från den faktiska filen
+      // Skapa en Blob
       const fileBlob = new Blob([newsletterSectionImage], {
         type: 'application/jpg',
       });
 
-      // Lägg till filen med det nya unika filnamnet
+      // Lägg till filen
       formData.append('file', fileBlob, uniqueFileName);
 
       console.log('Uploading file:', uniqueFileName);
 
-      // Skicka FormData till API
       this.httpClient
         .post(
           'http://localhost:7126/api/Upload?containerName=newsletterimages',
@@ -216,20 +214,19 @@ export class FileService {
       const formData = new FormData();
 
       // Skapa ett nytt filnamn baserat på ett unikt ID
-      const uniqueFileName = `image_${Date.now()}.jpg`; // Eller använd någon annan logik för att skapa filnamn
+      const uniqueFileName = `image_${Date.now()}.jpg`;
 
-      // Skapa en Blob från den faktiska filen
+      // Skapa en Blob
       const fileBlob = new Blob([newsletterSection], {
         type: 'application/jpg',
       });
 
-      // Lägg till filen med det nya unika filnamnet
+      // Lägg till filen
       formData.append('file', fileBlob, uniqueFileName);
       formData.append('newsletterId', newsletterId);
       
       console.log('Uploading file:', uniqueFileName);
       
-      // Skicka FormData till API
       this.httpClient
         .post(
           'http://localhost:7126/api/Upload?containerName=newslettersections',
@@ -278,7 +275,6 @@ export class FileService {
     return { width: imgWidth, height: imgHeight };
   }
 
-  // Method to add gradient to the page, ensuring it fills the entire page
   private addGradientToPage(
     page: any,
     backgroundStart: string,
@@ -312,7 +308,7 @@ export class FileService {
       });
     }
 
-    // Säkerställ att vi fyller längst ner
+    // Säkerställ att den går längst ner
     const finalColor = rgb(
       endColor[0] / 255,
       endColor[1] / 255,
@@ -320,124 +316,13 @@ export class FileService {
     );
     page.drawRectangle({
       x: 0,
-      y: 0, // Längst ner
+      y: 0,
       width: page.getWidth(),
-      height: 1, // 1 pixel extra för att täcka allt
+      height: 1,
       color: finalColor,
     });
   }
 
-  // // Get theme colors based on the selected theme
-  // private getThemeColors(theme: string): ThemeColors {
-  //   switch (theme) {
-  //     case 'default-theme':
-  //       return {
-  //         name: 'default-theme',
-  //         backgroundStart: '#F5F5F7',
-  //         backgroundEnd: '#FFFFFF',
-  //         textColor: 'black',
-
-  //       };
-  //     case 'light-theme':
-  //       return {
-  //         name: 'light-theme',
-  //         backgroundStart: '#FFFFFF',
-  //         backgroundEnd: '#EEEEEE',
-  //         textColor: '#333333',
-  //         className: 'light-theme',
-  //       };
-  //     case 'blue-to-pink':
-  //       return {
-  //         name: 'blue-to-pink',
-  //         backgroundStart: '#1e3c72',
-  //         backgroundEnd: '#2a5298',
-  //         textColor: 'white',
-  //         className: 'blue-to-pink',
-  //       };
-  //     case 'purple-to-blue':
-  //       return {
-  //         name: 'purple-to-blue',
-  //         backgroundStart: '#6a11cb',
-  //         backgroundEnd: '#2575fc',
-  //         textColor: 'white',
-  //         className: 'purple-to-blue',
-  //       };
-  //     case 'red-to-orange':
-  //       return {
-  //         name: 'red-to-orange',
-  //         backgroundStart: '#ff416c',
-  //         backgroundEnd: '#ff4b2b',
-  //         textColor: 'white',
-  //         className: 'red-to-orange',
-  //       };
-  //     case 'green-to-blue':
-  //       return {
-  //         name: 'green-to-blue',
-  //         backgroundStart: '#00b09b',
-  //         backgroundEnd: '#96c93d',
-  //         textColor: 'white',
-  //         className: 'green-to-blue',
-  //       };
-  //     case 'yellow-to-red':
-  //       return {
-  //         name: 'yellow-to-red',
-  //         backgroundStart: '#f6d365',
-  //         backgroundEnd: '#fda085',
-  //         textColor: 'white',
-  //         className: 'yellow-to-red',
-  //       };
-  //     case 'blue-to-turquoise':
-  //       return {
-  //         name: 'blue-to-turquoise',
-  //         backgroundStart: '#4facfe',
-  //         backgroundEnd: '#00f2fe',
-  //         textColor: 'white',
-  //         className: 'blue-to-turquoise',
-  //       };
-  //     case 'pink-to-purple':
-  //       return {
-  //         name: 'pink-to-purple',
-  //         backgroundStart: '#ff9a9e',
-  //         backgroundEnd: '#fad0c4',
-  //         textColor: 'white',
-  //         className: 'pink-to-purple',
-  //       };
-  //     case 'orange-to-yellow':
-  //       return {
-  //         name: 'orange-to-yellow',
-  //         backgroundStart: '#ff7e5f',
-  //         backgroundEnd: '#feb47b',
-  //         textColor: 'white',
-  //         className: 'orange-to-yellow',
-  //       };
-  //     case 'blue-to-green':
-  //       return {
-  //         name: 'blue-to-green',
-  //         backgroundStart: '#00c6ff',
-  //         backgroundEnd: '#0072ff',
-  //         textColor: 'white',
-  //         className: 'blue-to-green',
-  //       };
-  //     case 'dark-purple-to-red':
-  //       return {
-  //         name: 'dark-purple-to-red',
-  //         backgroundStart: '#5f2c82',
-  //         backgroundEnd: '#49a09d',
-  //         textColor: 'white',
-  //         className: 'dark-purple-to-red',
-  //       };
-  //     default:
-  //       return {
-  //         name: 'default-theme',
-  //         backgroundStart: '#FFFFFF',
-  //         backgroundEnd: '#EEEEEE',
-  //         textColor: 'black',
-  //         className: 'default-theme',
-  //       };
-  //   }
-  // }
-
-  // Konvertera hex till RGB
   private hexToRgb(hex: string): number[] {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
