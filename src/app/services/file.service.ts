@@ -182,15 +182,10 @@ export class FileService {
       console.log('Uploading file:', uniqueFileName);
 
       this.httpClient
-        .post(
-          'http://localhost:7126/api/Upload?containerName=newsletterimages',
-          formData
-        )
+        .post('http://localhost:7126/api/Upload?containerName=newsletterimages',formData)
         .subscribe({
           next: (response) => {
             console.log('Server response:', response);
-
-            // Kontrollera om servern skickar tillbaka en korrekt filväg
             const fileUrl = response ? (response as any).filePath : '';
             if (fileUrl) {
               console.log('Uploaded image URL:', fileUrl);

@@ -9,6 +9,7 @@ import { NewsletterSectionBase } from '../create-newsletter/create-newsletter-se
 
 @Component({
   selector: 'app-update-newsletter',
+  standalone: true,
   imports: [NgStyle, FormsModule, DatePipe, CreateNewsletterSectionComponent, ThemeHandlerComponent],
   templateUrl: './update-newsletter.component.html',
   styleUrl: './update-newsletter.component.scss'

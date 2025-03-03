@@ -13,7 +13,6 @@ const DEFAULT_THEME = {
 
 export abstract class NewsletterSectionBase {
   sanitizer = inject(DomSanitizer);
-  location = inject(Location);
   destroyRef = inject(DestroyRef);
   fileService = inject(FileService);
   cdr = inject(ChangeDetectorRef);

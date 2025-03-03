@@ -95,18 +95,40 @@ export class CreateNewsletterSectionComponent{
     this.crd.detectChanges();
   }
 
-  insertImage(imageUrl: string) {
-    this.section.newsletterSectionImages.push({ url: imageUrl, altText: 'Uploaded Image' });
-    const quill = this.quillEditor?.quillEditor;
-    const range = quill?.getSelection(true);
-    if (range && quill) {
-      quill.insertEmbed(range.index, 'image', imageUrl);
-    } 
-    else {
-      const length = quill?.getLength() || 0;
-      quill?.insertEmbed(length, 'image', imageUrl);
-    }
-    
+  insertImage(pixabayImageUrl: string) {
+    // Hämta bilden från Pixabay som en blob
+    fetch(pixabayImageUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Kunde inte hämta bilden från Pixabay');
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        // Ladda upp bloben till din blobcontainer
+        this.fileService.createAndUploadSectionImage(blob).subscribe({
+          next: (savedBlobUrl: string) => {
+            console.log('Saved blob URL:', savedBlobUrl);
+            // Spara den permanenta URL:en i din sektion
+            this.section.newsletterSectionImages.push({ url: savedBlobUrl, altText: 'Uploaded Image' });
+            // Infoga bilden i Quill-editorn med den permanenta URL:en
+            const quill = this.quillEditor?.quillEditor;
+            const range = quill?.getSelection(true);
+            if (range && quill) {
+              quill.insertEmbed(range.index, 'image', savedBlobUrl);
+            } else {
+              const length = quill?.getLength() || 0;
+              quill?.insertEmbed(length, 'image', savedBlobUrl);
+            }
+          },
+          error: (err) => {
+            console.error('Fel vid uppladdning av bild:', err);
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Fel vid hämtning av Pixabay-bild som blob:', error);
+      });
   }
 
   insertVideo(video: any) {
