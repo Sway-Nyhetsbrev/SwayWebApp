@@ -13,10 +13,18 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             margin: 20px auto;
             max-width: 850px;
-            height:1100px;
+            height: 400px;
 
-            @media(max-width: 320px) {
-                height:350px;
+            @media(min-width: 576px) {
+                height: 650px;
+            }
+        
+            @media(min-width: 768px) {
+                height: 950px;
+            }
+        
+            @media(min-width: 992px) {
+                height: 1150px;
             }
         }
         

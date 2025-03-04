@@ -1,6 +1,6 @@
 #newsletterSection {
     margin-bottom: 10px;
-
+    
     quill-editor {
         width: 100%;
     }
@@ -22,12 +22,45 @@
 }
 
 #toolbar {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(3, 85px);
+
+    @media(min-width: 576px) {
+        grid-template-columns: repeat(4, 85px);
+    }
+
+    @media(min-width: 768px) {
+        grid-template-columns: repeat(5, 85px);
+    }
+
+    @media(min-width: 992px) {
+        grid-template-columns: repeat(7, 85px);
+    }
+    
+    @media(min-width: 1024px) {
+        display: flex;
+        justify-content:space-evenly;
+    }
+
     .ql-formats {
+        display: flex;
+        justify-content: center;
 
         .ql-customImage, .ql-customVideo {
             margin: 0;
             padding: 0;
         }
     }
+
+    .ql-header, .ql-font { 
+        width: 75px;
+    }
+
+    .ql-font {
+        width: 105px;
+    }
 }
+
   
