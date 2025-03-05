@@ -19,7 +19,7 @@
         }
 
         form {
-            width: 100%;
+            width: 70%;
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -80,6 +80,15 @@
 
                 .buttonContent {
                     display: flex;
+                    flex-direction: column;
+
+                    @media(min-width: 576px) {
+                        flex-direction: row;
+                    }
+
+                    .btn-warning {
+                        margin-right: 5px;
+                    }
                 }
 
                 #closeSectionBtn {

@@ -1,19 +1,30 @@
 #adminPortalSection .container {
   display: grid;
-  grid-template-columns: 300px 2fr;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: auto;
   gap: 20px;
   padding: 50px;
+}
+@media (min-width: 1200px) {
+  #adminPortalSection .container {
+    grid-template-columns: 200px 2fr;
+  }
 }
 #adminPortalSection .container .adminNavigationContent {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 300px;
-  width: 200px;
-  margin-top: 50%;
   border-radius: 10px;
   background-image: linear-gradient(to bottom, white, #0070AD);
   box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
+}
+@media (min-width: 1200px) {
+  #adminPortalSection .container .adminNavigationContent {
+    height: 300px;
+    width: 200px;
+    margin-top: 50%;
+  }
 }
 #adminPortalSection .container .adminNavigationContent:hover {
   border: 2px solid #12ABDB;
@@ -21,8 +32,13 @@
   box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
 }
 #adminPortalSection .container .adminNavigationContent ul {
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+@media (min-width: 1200px) {
+  #adminPortalSection .container .adminNavigationContent ul {
+    flex-direction: column;
+  }
 }
 #adminPortalSection .container .adminNavigationContent ul li {
   padding: 10px;
@@ -52,5 +68,9 @@
 }
 #adminPortalSection .container .adminContent {
   padding: 20px;
-  min-height: 80vh;
+}
+@media (min-width: 1200px) {
+  #adminPortalSection .container .adminContent {
+    min-height: 80vh;
+  }
 }

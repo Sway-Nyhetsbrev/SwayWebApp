@@ -14,7 +14,7 @@
   text-shadow: #12ABDB 1px 1px 2px;
 }
 #updateNewsletterSection .container form {
-  width: 80%;
+  width: 70%;
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -37,7 +37,12 @@
   text-align: left;
 }
 #updateNewsletterSection .container form .form-group-content .form-group, #updateNewsletterSection .container form #newsletter-content .form-group {
-  width: 50%;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  #updateNewsletterSection .container form .form-group-content .form-group, #updateNewsletterSection .container form #newsletter-content .form-group {
+    width: 70%;
+  }
 }
 #updateNewsletterSection .container form .form-group-content #releaseDate, #updateNewsletterSection .container form .form-group-content #theme, #updateNewsletterSection .container form #newsletter-content #releaseDate, #updateNewsletterSection .container form #newsletter-content #theme {
   display: flex;
@@ -47,7 +52,17 @@
 }
 #updateNewsletterSection .container form .sectionContent {
   margin-top: 30px;
-  width: 50%;
+  word-wrap: break-word;
+  overflow: hidden;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  #updateNewsletterSection .container form .sectionContent {
+    width: 70%;
+  }
+}
+#updateNewsletterSection .container form .sectionContent .innerSectionContent {
+  border-bottom: 1px solid black;
 }
 #updateNewsletterSection .container form .sectionContent ul {
   padding: 0;
@@ -55,11 +70,17 @@
 }
 #updateNewsletterSection .container form .sectionContent .buttonContent {
   display: flex;
+  flex-direction: column;
 }
-#updateNewsletterSection .container form .sectionContent .buttonContent button {
-  margin: 10px;
+@media (min-width: 576px) {
+  #updateNewsletterSection .container form .sectionContent .buttonContent {
+    flex-direction: row;
+  }
+}
+#updateNewsletterSection .container form .sectionContent .buttonContent .btn-warning {
+  margin-right: 5px;
 }
 #updateNewsletterSection .container form button {
   width: 100%;
-  margin: 10px 0px 10px 0px;
+  margin: 10px 1px 10px 0px;
 }

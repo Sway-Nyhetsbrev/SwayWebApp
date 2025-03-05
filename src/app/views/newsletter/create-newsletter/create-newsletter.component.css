@@ -18,7 +18,7 @@
   text-shadow: #12ABDB 1px 1px 2px;
 }
 #createNewsletterSection .container form {
-  width: 80%;
+  width: 70%;
   padding: 30px;
   display: flex;
   flex-direction: column;
@@ -41,7 +41,12 @@
   text-align: left;
 }
 #createNewsletterSection .container form .form-group-content .form-group, #createNewsletterSection .container form #newsletter-content .form-group {
-  width: 60%;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  #createNewsletterSection .container form .form-group-content .form-group, #createNewsletterSection .container form #newsletter-content .form-group {
+    width: 70%;
+  }
 }
 #createNewsletterSection .container form .form-group-content .validateText, #createNewsletterSection .container form #newsletter-content .validateText {
   border: 1px solid red;
@@ -54,9 +59,14 @@
 }
 #createNewsletterSection .container form .sectionContent {
   margin-top: 30px;
-  width: 60%;
   word-wrap: break-word;
   overflow: hidden;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  #createNewsletterSection .container form .sectionContent {
+    width: 70%;
+  }
 }
 #createNewsletterSection .container form .sectionContent ul {
   padding: 0;
@@ -64,6 +74,15 @@
 }
 #createNewsletterSection .container form .sectionContent .buttonContent {
   display: flex;
+  flex-direction: column;
+}
+@media (min-width: 576px) {
+  #createNewsletterSection .container form .sectionContent .buttonContent {
+    flex-direction: row;
+  }
+}
+#createNewsletterSection .container form .sectionContent .buttonContent .btn-warning {
+  margin-right: 5px;
 }
 #createNewsletterSection .container form .sectionContent #closeSectionBtn {
   border-bottom: 2px solid black;

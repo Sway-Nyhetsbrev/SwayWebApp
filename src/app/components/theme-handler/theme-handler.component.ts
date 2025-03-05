@@ -19,7 +19,6 @@ export class ThemeHandlerComponent implements OnInit {
 
   themes: ThemeColors[] = [];
 
-  // Modell för att skapa ett nytt tema
   newTheme: ThemeColors = {
     name: 'Default',
     backgroundStart: '#F5F5F7',
@@ -59,7 +58,7 @@ export class ThemeHandlerComponent implements OnInit {
   }
 
   removeTheme(theme: ThemeColors): void {
-    if (confirm(`Are you shore that you want to remove "${theme.name}"?`)) {
+    if (confirm(`Are you sure that you want to remove "${theme.name}"?`)) {
       this.themeService.removeNewsletterTheme(theme.name).subscribe({
         next: () => {
           this.themes = this.themes.filter(t => t.name !== theme.name);

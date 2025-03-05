@@ -1,126 +1,136 @@
 .theme-manager {
-    .dropdown {
-      button {
-        width: 100%;
-      }
-  
-      .dropdown-menu {
-        width: 100%;
-        padding: 10px;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: auto;
-        gap: 10px;
-        text-align: center;
+  .dropdown {
+    button {
+      width: 100%;
+    }
 
-        @media(min-width: 768px) {
-          grid-template-columns: repeat(3, 1fr);
-        }
-        
-        @media(min-width: 992px) {
-          grid-template-columns: repeat(4, 1fr);
-        } 
-  
-        .dropdown-item {
-          position: relative;
-          background: transparent;
-          border: none;
-          padding: 10px;
-          cursor: pointer;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-  
-          .theme-preview {
-            width: 50px;
-            height: 50px;
-            margin: 10px;
-            border-radius: 50%;
-            transition: transform 0.3s;
-          }
-          button {
-            display: none;
-          }
+    .dropdown-menu {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      max-height: 230px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      text-align: center;
 
-          .themeName {
-            display: none;
-            font-size: 14px;
-            color: #333;
-          }
-  
-          &:hover {
-            .themeName, button {
-              display: flex;
-            }
-            button {
-              width: 30px;
-              height: 30px;
-              justify-content: center;
-              align-items: center;
-            }
-          }
-        }
-  
-        .dropdown-divider {
-          grid-column: 1 / -1;
-          margin: 10px 0;
-        }
-  
-        .create-btn {
-          grid-column: 1 / -1;
-          background-color: #f0f0f0;
-          border-radius: 4px;
-          font-weight: bold;
-          padding: 15px;
-        }
+      @media (min-width: 992px) {
+        max-height: 400px;
       }
     }
-    .createNewsletterThemeSection {
+
+    .dropdown-item {
+      position: relative;
+      background: transparent;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      
-      @media(max-width: 768px) {
-        flex-direction: column;
-      }
-      
-      .mt-3, label, input, button {
-        @media(max-width: 768px) {
-          width: 100%;
-        }  
+      justify-content: center;
+
+      .theme-preview {
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+        border-radius: 50%;
+        transition: transform 0.3s;
+
+        @media (min-width: 576px) {
+          width: 50px;
+          height: 50px;
+          margin: 10px;
+        }
       }
 
-      h3 {
-        margin-bottom: 30px;
+      .themeName, .removeTheme {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out;
       }
 
-      button {
-        margin: 1px;
+      &:hover {
+        .themeName,
+        .removeTheme {
+          opacity: 1;
+          visibility: visible;
+          display: flex;
+          align-items: baseline;
+          margin-left: 5px;
+        }
+
+        .removeTheme {
+          color: red;
+        }
       }
-      .showBox {
-        width: 300px;
-        height: 380px;
-        border: 1px solid black;
-        margin: 80px 0px 0px 30px;
-        border-radius: 50px;
-        text-align: center;
+
+      .themeName {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+
+    .dropdown-divider {
+      grid-column: 1 / -1;
+      margin: 10px 0;
+    }
+
+    .create-btn {
+      grid-column: 1 / -1;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      font-weight: bold;
+      padding: 15px;
+    }
+  }
+
+  .createNewsletterThemeSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .mt-3, label, input, button {
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+    }
+
+    h3 {
+      margin-bottom: 30px;
+    }
+
+    button {
+      margin: 1px;
+    }
+
+    .showBox {
+      width: 300px;
+      height: 380px;
+      border: 1px solid black;
+      margin: 80px 0px 0px 30px;
+      border-radius: 50px;
+      text-align: center;
+
+      h1 {
+        margin-top: 50%;
+      }
+
+      @media (max-width: 768px) {
+        margin: 20px 10px;
+        width: 100%;
+        height: 100px;
 
         h1 {
-          margin-top: 50%;
+          margin: 25px;
         }
-
-        @media(max-width: 768px) {
-          margin: 20px 10px;
-          width: 100%;
-          height: 100px;
-
-          h1 {
-            margin: 25px;  
-          }
-        }
-
-        
       }
     }
+  }
 }

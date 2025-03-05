@@ -12,8 +12,9 @@
             </div>
             <span class="themeName">
               {{ theme.name }}
+              <a type="button" class="removeTheme" (click)="removeTheme(theme)"><i class="fa-regular fa-circle-xmark"></i></a>
             </span>
-            <!-- <button type="button" class="btn btn-danger" (click)="removeTheme(theme)"><i class="fa-regular fa-trash-can"></i></button> -->
+            
             
           </li>
         }
