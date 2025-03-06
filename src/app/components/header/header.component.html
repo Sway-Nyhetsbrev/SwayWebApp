@@ -1,39 +1,101 @@
 <header>
-    <div class="container">
-        <div class="logotype">
-            <img src="./images/thumbnail_image002.png" alt="logotype">
-        </div>
-        <div class="signIn">
-            @if(!isLoggedIn) {
-                <a class="btn btn-signIn" (click)="login()">Sign in <i class="fa-solid fa-right-to-bracket"></i></a>
-            }
-            @else if(isLoggedIn) {
-
-                <a class="btn btn-signOut" (click)="logout()">Sign out <i class="fa-solid fa-right-to-bracket"></i></a>
-            } 
-        </div>
+  <div class="container">
+    <div class="logotype">
+      <img src="./images/thumbnail_image002.png" alt="logotype">
     </div>
 
-    <nav class="menuContent">
-        @if(isLoggedIn) {
+    @if(!isLoggedIn) {
+      <div class="signIn">
+        <a class="btn btn-signIn" (click)="login()">
+          Sign in <i class="fa-solid fa-right-to-bracket"></i>
+        </a>
+      </div>
+    }
+    <button class="btn btn-menu-toggle d-block d-md-none" (click)="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+  </div>
+
+   @if(isMenuOpen) {
+    <div class="menu-overlay">
+      <button class="close-button" (click)="toggleMenu()">X</button>
+      <nav class="menuContent">
         <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a [routerLink]="'/my-newsletters/' + user()?.id" routerLinkActive="active" 
+               class="nav-link btn btn-menu" aria-current="page" (click)="toggleMenu()">
+              My Newsletters
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/latest-newsletter" routerLinkActive="active" 
+               class="nav-link btn btn-menu" aria-current="page" (click)="toggleMenu()">
+              Latest Newsletter
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/create-newsletter" routerLinkActive="active" 
+               class="nav-link btn btn-menu" aria-current="page" (click)="toggleMenu()">
+              Create Newsletter
+            </a>
+          </li>
+          @if(user()?.role?.role === 'Admin') {
             <li class="nav-item">
-                <a [routerLink]="'/my-newsletters/' + user()?.id" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">My Newsletters</a>
+              <a [routerLink]="'/admin-portal/' + user()?.id" routerLinkActive="active" 
+                 class="nav-link btn btn-menu" aria-current="page" (click)="toggleMenu()">
+                Admin
+              </a>
             </li>
-            <li class="nav-item">
-                <a routerLink="/latest-newsletter" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Latest Newsletter</a>
-            </li>
-            <li class="nav-item">
-                <a routerLink="/create-newsletter" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Create Newsletter</a>
-            </li>
+          }
 
-            @if (user()?.role?.role === "Admin") {
-                <li class="nav-item">
-                    <a [routerLink]="'/admin-portal/' + user()?.id" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Admin</a>
-                </li>
-            }
+          @if(isLoggedIn) {
+            <li class="nav-item">
+              <a class="nav-link btn btn-menu" (click)="logout(); toggleMenu()">
+                Sign out <i class="fa-solid fa-right-to-bracket"></i>
+              </a>
+            </li>
+          }
+
         </ul>
-        }      
+      </nav>
+    </div>
+   }
+  
+  @if(isLoggedIn) {
+    <nav class="menuContent d-none d-md-block">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a [routerLink]="'/my-newsletters/' + user()?.id" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            My Newsletters
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/latest-newsletter" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            Latest Newsletter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/create-newsletter" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            Create Newsletter
+          </a>
+        </li>
+        @if(user()?.role?.role === 'Admin') {
+          <li class="nav-item">
+            <a [routerLink]="'/admin-portal/' + user()?.id" routerLinkActive="active" 
+               class="nav-link btn btn-menu" aria-current="page">
+              Admin
+            </a>
+          </li>
+        }
+        
+        <li class="nav-item">
+          <a class="nav-link btn btn-menu" (click)="logout()">
+            Sign out <i class="fa-solid fa-right-to-bracket"></i>
+          </a>
+        </li>
+      </ul>
     </nav>
-
+  }
+  
 </header>

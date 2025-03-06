@@ -4,15 +4,16 @@
   align-items: center;
   grid-template-columns: auto;
   gap: 20px;
-  padding: 50px;
+  padding-top: 20px;
 }
 @media (min-width: 1200px) {
   #adminPortalSection .container {
     grid-template-columns: 200px 2fr;
   }
 }
-#adminPortalSection .container .adminNavigationContent {
+#adminPortalSection .container .desktop-menu {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
@@ -20,53 +21,107 @@
   box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
 }
 @media (min-width: 1200px) {
-  #adminPortalSection .container .adminNavigationContent {
-    height: 300px;
+  #adminPortalSection .container .desktop-menu {
+    flex-direction: column;
     width: 200px;
-    margin-top: 50%;
+    height: 300px;
   }
 }
-#adminPortalSection .container .adminNavigationContent:hover {
+#adminPortalSection .container .desktop-menu:hover {
   border: 2px solid #12ABDB;
   background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
   box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
 }
-#adminPortalSection .container .adminNavigationContent ul {
+#adminPortalSection .container .desktop-menu ul {
   flex-direction: row;
   justify-content: space-evenly;
 }
 @media (min-width: 1200px) {
-  #adminPortalSection .container .adminNavigationContent ul {
+  #adminPortalSection .container .desktop-menu ul {
     flex-direction: column;
   }
 }
-#adminPortalSection .container .adminNavigationContent ul li {
+#adminPortalSection .container .desktop-menu ul li {
   padding: 10px;
 }
-#adminPortalSection .container .adminNavigationContent ul li .btn-menu {
+#adminPortalSection .container .desktop-menu ul li .btn-menu {
   border: 1px solid #2B0A3D;
   background-color: #0070AD;
   color: #F5F5F7;
   padding: 5px 10px;
   text-decoration: none;
 }
-#adminPortalSection .container .adminNavigationContent ul li .btn-menu:hover {
+#adminPortalSection .container .desktop-menu ul li .btn-menu:hover {
   background-color: #12ABDB;
   border-color: #F53B53;
   color: white;
 }
-#adminPortalSection .container .adminNavigationContent ul .active {
+#adminPortalSection .container .desktop-menu ul .active {
   text-align: center;
   border: 1px solid #F53B53;
   background-color: #F5F5F7;
   color: #2B0A3D;
 }
-#adminPortalSection .container .adminNavigationContent ul .active:hover {
+#adminPortalSection .container .desktop-menu ul .active:hover {
   background-color: #12ABDB;
   border: 1px solid #F53B53;
   color: white;
 }
+#adminPortalSection .container .overlay-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(to bottom, white, #0070AD);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#adminPortalSection .container .overlay-menu .close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+#adminPortalSection .container .overlay-menu ul {
+  flex-direction: column;
+  gap: 20px;
+}
+#adminPortalSection .container .overlay-menu ul li .btn-menu {
+  font-size: 1.5rem;
+  padding: 10px 20px;
+  border: 1px solid #2B0A3D;
+  background-color: #0070AD;
+  color: #F5F5F7;
+  text-decoration: none;
+}
+#adminPortalSection .container .overlay-menu ul li .btn-menu:hover {
+  background-color: #12ABDB;
+  border-color: #F53B53;
+  color: white;
+}
+#adminPortalSection .container .btn-menu-toggle {
+  background-color: #0070AD;
+  color: #F5F5F7;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+#adminPortalSection .container .btn-menu-toggle:hover {
+  background-color: #12ABDB;
+  color: white;
+}
 #adminPortalSection .container .adminContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
 }
 @media (min-width: 1200px) {

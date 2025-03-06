@@ -1,7 +1,17 @@
 #adminAllUsersSection .container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
+  grid-template-columns: auto;
+}
+@media (min-width: 576px) {
+  #adminAllUsersSection .container {
+    grid-template-columns: auto auto;
+  }
+}
+@media (min-width: 992px) {
+  #adminAllUsersSection .container {
+    grid-template-columns: auto auto auto;
+  }
 }
 #adminAllUsersSection .container .userContent {
   display: flex;

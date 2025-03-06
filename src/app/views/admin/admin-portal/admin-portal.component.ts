@@ -1,8 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-
-
 @Component({
   selector: 'app-admin-portal',
   imports: [RouterLink, RouterOutlet, RouterLinkActive],
@@ -10,13 +8,19 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } fr
   styleUrl: './admin-portal.component.scss'
 })
 export class AdminPortalComponent implements OnInit {
-  private router = inject(Router)
+  private router = inject(Router);
   private activeRoute = inject(ActivatedRoute);
-  
+
+  isMenuOpen: boolean = false;
+
   ngOnInit() {
     const userId = this.activeRoute.snapshot.params['userId'];
     if (userId) {
       this.router.navigate([`/admin-portal/${userId}/all-newsletters`]);
     }
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

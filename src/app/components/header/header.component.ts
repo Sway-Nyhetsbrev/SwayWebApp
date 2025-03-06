@@ -11,12 +11,15 @@ import { UserService } from '../../services/user.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   authService = inject(AuthService);
   userService = inject(UserService);
   router = inject(Router);
   user = signal<User | null>(null);
+  
+  // Variabel för att spåra om fullskärmsmenyn är öppen
+  isMenuOpen: boolean = false;
 
   ngOnInit() {
     this.checkLoginStatus();
@@ -50,5 +53,9 @@ export class HeaderComponent implements OnInit{
     this.authService.logout();
     this.router.navigate(['']);
     this.checkLoginStatus();
+  }
+  
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 }

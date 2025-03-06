@@ -1,24 +1,71 @@
 <section id="adminPortalSection">
-    <div class="container">
-        <aside class="adminNavigationContent">
-            <ul class="nav nav-pills">
-                <li class="nav-item">
-                    <a [routerLink]="['./all-users/search-user']" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Search User</a>
-                </li>
-                <li class="nav-item">
-                    <a [routerLink]="['./all-newsletters/search-newsletter']" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">Search Newsletter</a>
-                </li>
-                <li class="nav-item">
-                    <a [routerLink]="['./all-newsletters']" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">All Newsletters</a>
-                </li>
-                <li class="nav-item">
-                    <a [routerLink]="['./all-users']" routerLinkActive="active" class="nav-link btn btn-menu" aria-current="page">All Users</a>
-                </li>
-            </ul>
-        </aside>
+  <div class="container">
+    <button class="btn btn-menu-toggle d-block d-sm-none" (click)="toggleMenu()">Settings</button>
 
-        <div class="adminContent">
-            <router-outlet/>
-        </div>
+    <aside class="adminNavigationContent desktop-menu d-none d-sm-flex">
+      <ul class="nav nav-pills">
+        <li class="nav-item">
+          <a [routerLink]="['./all-users/search-user']" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            Search User
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [routerLink]="['./all-newsletters/search-newsletter']" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            Search Newsletter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [routerLink]="['./all-newsletters']" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            All Newsletters
+          </a>
+        </li>
+        <li class="nav-item">
+          <a [routerLink]="['./all-users']" routerLinkActive="active" 
+             class="nav-link btn btn-menu" aria-current="page">
+            All Users
+          </a>
+        </li>
+      </ul>
+    </aside>
+
+     @if(isMenuOpen) {
+      <div class="adminNavigationContent overlay-menu d-sm-none" >
+        <button class="close-button" (click)="toggleMenu()">X</button>
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a [routerLink]="['./all-users/search-user']" routerLinkActive="active" 
+               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
+              Search User
+            </a>
+          </li>
+          <li class="nav-item">
+            <a [routerLink]="['./all-newsletters/search-newsletter']" routerLinkActive="active" 
+               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
+              Search Newsletter
+            </a>
+          </li>
+          <li class="nav-item">
+            <a [routerLink]="['./all-newsletters']" routerLinkActive="active" 
+               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
+              All Newsletters
+            </a>
+          </li>
+          <li class="nav-item">
+            <a [routerLink]="['./all-users']" routerLinkActive="active" 
+               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
+              All Users
+            </a>
+          </li>
+        </ul>
+      </div>
+     }
+
+
+    <div class="adminContent">
+      <router-outlet></router-outlet>
     </div>
+  </div>
 </section>
