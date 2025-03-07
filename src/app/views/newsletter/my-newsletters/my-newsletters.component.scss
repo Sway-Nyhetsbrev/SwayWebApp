@@ -1,5 +1,5 @@
 #myNewsletters {
-    padding: 50px;
+    padding-top: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,7 +7,7 @@
     text-align: center;
 
     h2 {
-        padding-bottom: 30px;
+        padding-bottom: 20px;
         font-style: italic;
         text-shadow:#12ABDB 1px 1px 2px;
     }
@@ -27,8 +27,8 @@
         }
 
         .myNewslettersShowcase {
-            width: 350px;
-            height: 250px;
+            width: 250px;
+            height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -41,7 +41,12 @@
             background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
             box-shadow: 0px 0px 10px 2px rgba(89, 88, 88, 0.525);
             overflow: hidden;
-                
+            
+            @media(min-width: 768px) {
+                width: 350px;
+                height: 250px;
+            }
+
             &:hover {
                 border: 2px solid #12ABDB;
                 background-image: linear-gradient(to bottom, white, #0070AD);
@@ -57,7 +62,7 @@
 
             img {
                 border-radius: 8px;
-                height: 200px;
+                height: 150px;
             }
         }
 
