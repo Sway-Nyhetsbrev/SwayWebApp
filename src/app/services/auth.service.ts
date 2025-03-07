@@ -19,7 +19,7 @@ export class AuthService {
       auth: {
         clientId: '24a98435-464a-4df8-8a2c-6a9e0bde2611',
         authority: 'https://login.microsoftonline.com/76057efc-d10d-4c1f-a7b2-f9dfbf130080',
-        redirectUri: 'http://localhost:4200'
+        redirectUri: 'http://localhost:4200/signin-microsoft'
       }
     };
 
@@ -31,31 +31,29 @@ export class AuthService {
     });
   }
 
-  // Logga in användaren och hämta användardata från backend eller skapa användaren
   async login(): Promise<void> {
-    const response: AuthenticationResult = await this.msalInstance.loginPopup({ scopes: ['User.Read'] });
+    const response: AuthenticationResult = await this.msalInstance.loginPopup({
+      scopes: ['User.Read'],
+      prompt: 'select_account'
+    });
     console.log(response);
     const userEmail = response.account.username;
     const userName = response.account.name;
-  
+
     try {
       if (userEmail) {
-        // Försök att hämta användaren
         const data = await this.userService.getOneUser(userEmail).toPromise().catch((error: HttpErrorResponse) => {
           if (error.status === 404) {
-            // Hantera 404-fel, användaren finns inte
             console.log('User not found, creating new user...');
             return null;
           } else {
-            // Hantera andra typer av fel (t.ex. serverfel)
             console.error('An error occurred while fetching the user:', error);
-            throw error;  // Kasta om felet för att hantera det på annat sätt
+            throw error;
           }
         });
-  
-        if (data !== null) {
-          this.loggedUser.set(data!);
-          // Spara användardata i localStorage
+
+        if (data != null) {
+          this.loggedUser.set(data);
           localStorage.setItem('loggedUser', JSON.stringify(data));
           this.router.navigate(['/latest-newsletter']);
         } else {
@@ -63,7 +61,6 @@ export class AuthService {
           const createdUser = await this.userService.createUser(user).toPromise();
           if (createdUser) {
             this.loggedUser.set(createdUser);
-            // Spara användardata i localStorage
             localStorage.setItem('loggedUser', JSON.stringify(createdUser));
             this.router.navigate(['/latest-newsletter']);
           }
@@ -73,28 +70,18 @@ export class AuthService {
       console.error('Login error:', error);
     }
   }
-  // Logga ut användaren
+
   logout() {
-    // Logga ut användaren via en popup
-    this.msalInstance.getAllAccounts().forEach(account => {
-      this.msalInstance.logoutPopup({
-        account: account,
-        postLogoutRedirectUri: 'http://localhost:4200'  // Redirect URL efter utloggning
-      }).then(() => {
-        // Rensa användardata från lagring
-        localStorage.removeItem('loggedUser');
-        sessionStorage.clear();
-        
-      }).catch(error => {
-        console.error('Logout failed', error);
-      });
-    });
+    localStorage.removeItem('loggedUser');
+    sessionStorage.clear();
+    this.loggedUser.set(null);
+    window.location.href = 'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=http://localhost:4200';
   }
-  // Hämta den autentiserade användaren
+
   getAccount() {
     return this.msalInstance.getAllAccounts()[0] || null;
   }
-  // Hämta användardata (senaste användaren)
+
   getLoggedUser(): User | null {
     if (!this.loggedUser()) {
       const storedUser = localStorage.getItem('loggedUser');
@@ -108,11 +95,9 @@ export class AuthService {
     }
     return this.loggedUser();
   }
-  // Hämta åtkomsttoken
+
   getAccessToken(): Promise<string> {
-    const request = {
-      scopes: ['User.Read']
-    };
+    const request = { scopes: ['User.Read'] };
 
     return this.msalInstance.acquireTokenSilent(request).then((response) => {
       return response.accessToken;
