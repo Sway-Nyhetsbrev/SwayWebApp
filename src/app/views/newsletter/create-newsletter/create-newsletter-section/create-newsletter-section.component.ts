@@ -37,15 +37,11 @@ export class CreateNewsletterSectionComponent{
 
   @ViewChild(QuillEditorComponent) quillEditor?: QuillEditorComponent;
 
-  // Tar emot sektion från föräldern
   @Input() section: newsletterSection = { content: "", newsletterSectionImages: [], newsletterSectionVideos: [] };
-
-  // Event för att skicka ändringar till föräldern
   @Output() save = new EventEmitter<newsletterSection>();
   
   saveSection() {
     if (this.quillEditor?.quillEditor) {
-      // Spara endast HTML-innehållet från Quill-editorn
       this.section.content = this.quillEditor.quillEditor.root.innerHTML;
       this.save.emit(this.section);
       this.isSaving = true;    
@@ -55,10 +51,9 @@ export class CreateNewsletterSectionComponent{
     }
   }
 
-  // Konfiguration för Quill-editorn
   editorModules = {
     toolbar: {
-      container: '#toolbar', // Egen toolbar-container
+      container: '#toolbar',
       handlers: {
         customImage: () => this.openPixabayImageSearch(),
         customVideo: () => this.openPixabayVideoSearch(),
@@ -96,7 +91,6 @@ export class CreateNewsletterSectionComponent{
   }
 
   insertImage(pixabayImageUrl: string) {
-    // Hämta bilden från Pixabay som en blob
     fetch(pixabayImageUrl)
       .then(response => {
         if (!response.ok) {
@@ -105,13 +99,10 @@ export class CreateNewsletterSectionComponent{
         return response.blob();
       })
       .then(blob => {
-        // Ladda upp bloben till din blobcontainer
         this.fileService.createAndUploadSectionImage(blob).subscribe({
           next: (savedBlobUrl: string) => {
             console.log('Saved blob URL:', savedBlobUrl);
-            // Spara den permanenta URL:en i din sektion
             this.section.newsletterSectionImages.push({ url: savedBlobUrl, altText: 'Uploaded Image' });
-            // Infoga bilden i Quill-editorn med den permanenta URL:en
             const quill = this.quillEditor?.quillEditor;
             const range = quill?.getSelection(true);
             if (range && quill) {
@@ -145,7 +136,6 @@ export class CreateNewsletterSectionComponent{
       this.section.newsletterSectionVideos = [];
     }
     
-    // Lägger till video med thumbnail till sektionen
     this.section.newsletterSectionVideos.push(video);
 
     this.crd.detectChanges();

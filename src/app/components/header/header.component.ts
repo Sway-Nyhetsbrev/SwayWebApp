@@ -16,9 +16,7 @@ export class HeaderComponent implements OnInit {
   authService = inject(AuthService);
   userService = inject(UserService);
   router = inject(Router);
-  user = signal<User | null>(null);
-  
-  // Variabel för att spåra om fullskärmsmenyn är öppen
+  user = signal<User | null>(null);  
   isMenuOpen: boolean = false;
 
   ngOnInit() {

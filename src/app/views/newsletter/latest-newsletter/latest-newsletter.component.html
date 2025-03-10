@@ -1,27 +1,26 @@
-
-    <section id="newsletterSection">
-        <div class="container">
-            @if(latestNewsletter()) {
-            <iframe
-                [src]="latestNewsletter()" 
-                width="100%" 
-                frameborder="0" 
-                title="Latest Newsletter"
-                class="newsletter-iframe" 
-            ></iframe>
-            }
-            @if (isFetching() && !statusMessage) {
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            }
-            
-            @else if (statusMessage) {
-                <div [class]="statusClass">
-                    {{statusMessage}}
-                </div>
-            }
-          </div>
-    </section>
+<section id="newsletterSection">
+    <div class="container">
+        @if(latestNewsletter()) {
+        <iframe
+            [src]="latestNewsletter()" 
+            width="100%" 
+            frameborder="0" 
+            title="Latest Newsletter"
+            class="newsletter-iframe">
+        </iframe>
+        }
+        @if (isFetching() && !statusMessage) {
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        }
+        
+        @else if (statusMessage) {
+            <div [class]="statusClass">
+                {{statusMessage}}
+            </div>
+        }
+        </div>
+</section>
 
 

@@ -21,6 +21,15 @@
   </select>
 
   <span class="ql-formats">
+    <select class="ql-color"></select>
+  </span>
+
+  <span class="ql-formats">
+    <select class="ql-background"></select>
+  </span>
+
+
+  <span class="ql-formats">
     <button class="ql-bold"></button>
   </span>
 
@@ -50,18 +59,9 @@
   </span>
 
   <span class="ql-formats">
-    <select class="ql-color"></select>
-  </span>
-
-  <span class="ql-formats">
-    <select class="ql-background"></select>
-  </span>
-
-  <span class="ql-formats">
     <button class="ql-image"></button>
   </span>
 
-  <!--custom knapp -->
   <span class="ql-formats">
     <button class="ql-customImage">
       <i class="fa-solid fa-globe"></i>
@@ -75,7 +75,6 @@
   </span>
 </div>
 
-<!-- Quill editorn använder anpassad toolbar -->
 <div id="newsletterSection">
   <quill-editor
     [ngModel]="section.content"

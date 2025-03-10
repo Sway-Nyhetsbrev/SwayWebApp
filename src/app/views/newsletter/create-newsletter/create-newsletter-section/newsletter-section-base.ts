@@ -34,26 +34,22 @@ export abstract class NewsletterSectionBase {
   showNewSection: boolean = false;
   newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
 
-  // Metod för att starta redigering av en sektion
   editSection(section: newsletterSection): void {
     this.editingSection = section;
     this.cdr.detectChanges();
   }
 
-  // Avbryt redigering
   cancelEdit(): void {
     this.editingSection = null;
     this.cdr.detectChanges();
   }
 
-  // Öppna editor för en ny sektion
   openNewSection(): void {
     this.newSection = { content: "", newsletterSectionImages: [] };
     this.showNewSection = true;
     this.cdr.detectChanges();
   }
 
-  // Avbryt att skapa en ny sektion
   cancelNewSection(): void {
     this.showNewSection = false;
     this.cdr.detectChanges();
@@ -108,7 +104,6 @@ export abstract class NewsletterSectionBase {
         });
         canvas.toBlob((blob) => {
           if (blob) {
-            // Använder FileService för att ladda upp blob och returnera URL
             this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
               next: (url) => resolve(url),
               error: (err) => reject(err)

@@ -48,7 +48,7 @@ img {
     content: 'Bebas Neue';
   }
   
-  /* För DM Sans */
+  
   [quill-editor-toolbar] .ql-font span[data-label="DM Sans"]::before {
     font-family: "DM Sans";
   }
@@ -62,8 +62,7 @@ img {
     content: 'DM Sans';
   }
   
-  /* För Inter */
-  [quill-editor-toolbar] .ql-font span[data-label="Inter"]::before {
+    [quill-editor-toolbar] .ql-font span[data-label="Inter"]::before {
     font-family: "Inter";
   }
   
@@ -76,7 +75,7 @@ img {
     content: 'Inter';
   }
   
-  /* För Poppins */
+  
   [quill-editor-toolbar] .ql-font span[data-label="Poppins"]::before {
     font-family: "Poppins";
   }
@@ -90,7 +89,7 @@ img {
     content: 'Poppins';
   }
   
-  /* För Roboto */
+  
   [quill-editor-toolbar] .ql-font span[data-label="Roboto"]::before {
     font-family: "Roboto";
   }
@@ -104,7 +103,7 @@ img {
     content: 'Roboto';
   }
   
-  /* För Roboto Mono */
+  
   [quill-editor-toolbar] .ql-font span[data-label="Roboto Mono"]::before {
     font-family: "Roboto Mono";
   }
@@ -118,7 +117,7 @@ img {
     content: 'Roboto Mono';
   }
   
-  /* För Roboto Slab */
+  
   [quill-editor-toolbar] .ql-font span[data-label="Roboto Slab"]::before {
     font-family: "Roboto Slab";
   }
@@ -132,8 +131,7 @@ img {
     content: 'Roboto Slab';
   }
   
-  /* För Oswald */
-  [quill-editor-toolbar] .ql-font span[data-label="Oswald"]::before {
+    [quill-editor-toolbar] .ql-font span[data-label="Oswald"]::before {
     font-family: "Oswald";
   }
   
@@ -154,11 +152,11 @@ img {
   }
 
 
-$toolbar-bg: white; // Bakgrundsfärg för verktygsfältet
-$icon-color: #61dafb; // Ikonfärg
-$text-color: black; // Textfärg
-$dropdown-bg: #3c4048; // Bakgrund för dropdowns
-$dropdown-text: #ffffff; // Textfärg för dropdowns
+$toolbar-bg: white; 
+$icon-color: #61dafb; 
+$text-color: black; 
+$dropdown-bg: #3c4048; 
+$dropdown-text: #ffffff; 
 
 .ql-toolbar {
     background-color: $toolbar-bg;
@@ -167,28 +165,29 @@ $dropdown-text: #ffffff; // Textfärg för dropdowns
     border-top-right-radius: 10px;
 
     .ql-formats {
-      flex-grow: 0; /* Förhindrar att toolbaren växer och tar för mycket utrymme */
-      margin: 0 !important; /* Ta bort oönskade marginaler */
-      padding: 0 !important; /* Ta bort onödiga paddings */
+      flex-grow: 0;
+      margin: 0 !important; 
+      padding: 0 !important; 
 
       .ql-picker-label {
 
         svg {
-          padding-bottom: 5px !important; /* Ta bort oönskade marginaler */
+          padding-bottom: 5px !important; 
         }    
       }
     }
+
     .ql-stroke {
-      stroke: $icon-color; // Ändra färg på ikoner
+      stroke: $icon-color; 
     }
   
     .ql-fill {
-      fill: $icon-color; // Ändra fyllnadsfärg på ikoner
+      fill: $icon-color; 
     }
   
     .ql-picker-label,
     .ql-picker-item {
-      color: $text-color; // Ändra textfärg
+      color: $text-color; 
       
     }
   
@@ -197,4 +196,4 @@ $dropdown-text: #ffffff; // Textfärg för dropdowns
       color: $dropdown-text;
       border: 1px solid ($dropdown-bg, 10%);
     }
-  }
+}

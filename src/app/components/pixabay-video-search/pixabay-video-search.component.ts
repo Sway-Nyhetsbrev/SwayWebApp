@@ -32,7 +32,6 @@ export class PixabayVideoSearchComponent {
       this.totalPages = Math.ceil(data.totalHits / perPage);
       this.currentPage = page;
   
-      // Uppdatera newsletterVideos med video och thumbnail
       this.newsletterVideos = this.videos.map((video: any) => {
         return {
           url: video.videos.large.url,
@@ -58,7 +57,6 @@ export class PixabayVideoSearchComponent {
   }
 
   selectVideo(video: any) {
-    // Skicka den valda videon till föräldern
     this.videoSelected.emit({
       url: video.videos.large.url,
       thumbnail: video.videos.large.thumbnail,

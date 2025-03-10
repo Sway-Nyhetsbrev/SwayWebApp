@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
 import { NgStyle } from '@angular/common';
@@ -49,6 +49,9 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
             console.error('Newsletter was not created!', err);
           },
         });
+          this.destroyRef.onDestroy(() => {
+            subscription.unsubscribe();
+          });
       } catch (error) {
         this.statusMessage = 'Newsletter was not created!';
         this.statusClass = 'alert alert-danger';

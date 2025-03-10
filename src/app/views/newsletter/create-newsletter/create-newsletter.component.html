@@ -27,7 +27,7 @@
           @if(newsletter()!.sections.length > 0) { 
             @for(section of newsletter()!.sections; track section) {
               @if(editingSection === section) {
-                <!-- Inline-redigering: visa editor istället för innehåll -->
+                <!-- Visa editor istället för innehåll -->
                 <app-create-newsletter-section [section]="editingSection" (save)="saveSection($event)"></app-create-newsletter-section>
                 <button type="button" class="btn btn-warning" (click)="cancelEdit()">Cancel Edit</button>
               }
