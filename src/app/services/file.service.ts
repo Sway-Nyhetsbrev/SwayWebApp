@@ -16,7 +16,7 @@ export class FileService {
     return new Observable<string>((observer) => {
       (async () => {
         try {
-                // Hämta temat från ThemeService
+          // Hämta temat från ThemeService
           const themeData = await firstValueFrom(this.themeService.getOneNewsletterTheme(theme));
 
           if (!themeData) {
@@ -39,45 +39,21 @@ export class FileService {
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
             let sectionHeight = 35;
-  
+            
             const isUrlImage = section.startsWith('https');
             const isVideoUrl = section.endsWith('.mp4');
-
+          
+            // Hantera bildsektioner
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
                 const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
                 sectionHeight += imgDims.height + 10;
-              }
-            }
-
-            if (isVideoUrl) {
-              // Lägg till en länk för videon
-              page.drawText('Video: ' + section, {
-                x: 50,
-                y: yOffset,
-                size: 12,
-                color: rgb(rTitle, gTitle, bTitle)
-              });
-              yOffset -= 20;
-              sectionHeight += 20;
-            }
-
-            if (yOffset - sectionHeight < 50) {
-              page = pdfDoc.addPage([600, 800]);
-              yOffset = 750;
-              this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-            }
-  
-            if (!isUrlImage && !isVideoUrl) {
-              page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
-              yOffset -= 20;
-            }
-  
-            if (isUrlImage) {
-              const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
-              if (embeddedImage) {
-                const imgDims = this.scaleImageToFit(embeddedImage, page.getWidth() - 100);
+                if (yOffset - sectionHeight < 50) {
+                  page = pdfDoc.addPage([600, 800]);
+                  yOffset = 750;
+                  this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
+                }
                 page.drawImage(embeddedImage, {
                   x: 50,
                   y: yOffset - imgDims.height,
@@ -85,8 +61,35 @@ export class FileService {
                   height: imgDims.height,
                 });
                 yOffset -= imgDims.height + 22;
+                continue;
               }
             }
+            
+            // Hantera videolänkar
+            if (isVideoUrl) {
+              if (yOffset - sectionHeight < 50) {
+                page = pdfDoc.addPage([600, 800]);
+                yOffset = 750;
+                this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
+              }
+              page.drawText('Video: ' + section, {
+                x: 50,
+                y: yOffset,
+                size: 12,
+                color: rgb(rTitle, gTitle, bTitle)
+              });
+              yOffset -= 20;
+              continue;
+            }
+          
+            // Hantera vanlig text (icke bild/videosektioner)
+            if (yOffset - sectionHeight < 50) {
+              page = pdfDoc.addPage([600, 800]);
+              yOffset = 750;
+              this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
+            }
+            page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
+            yOffset -= 20;
           }
   
           const pdfBytes = await pdfDoc.save();
@@ -168,12 +171,9 @@ export class FileService {
     return new Observable<string>((observer) => {
       const formData = new FormData();
 
-      // Skapa ett nytt filnamn baserat på ett unikt ID
-      const uniqueFileName = `image_${Date.now()}.jpg`;
-
-      // Skapa en Blob
+      const uniqueFileName = `image_${Date.now()}.png`;
       const fileBlob = new Blob([newsletterSectionImage], {
-        type: 'application/jpg',
+        type: 'image/png',
       });
 
       // Lägg till filen
@@ -208,12 +208,9 @@ export class FileService {
     return new Observable<string>((observer) => {
       const formData = new FormData();
 
-      // Skapa ett nytt filnamn baserat på ett unikt ID
-      const uniqueFileName = `image_${Date.now()}.jpg`;
-
-      // Skapa en Blob
+      const uniqueFileName = `image_${Date.now()}.png`;
       const fileBlob = new Blob([newsletterSection], {
-        type: 'application/jpg',
+        type: 'image/png',
       });
 
       // Lägg till filen

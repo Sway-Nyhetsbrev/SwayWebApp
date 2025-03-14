@@ -81,6 +81,7 @@
     [ngModel]="section.content"
     [modules]="editorModules"
     (ngModelChange)="section.content = $event">
+    
   </quill-editor>
 
   @if (showPixabayImageSearch) {
@@ -100,8 +101,8 @@
   }
 
   <div class="buttonContainer">
-    <button type="button" class="btn btn-success" (click)="saveSection()" [disabled]="isSaving">
-      {{isSaving ? 'Saving...' : 'Save Section'}}
+    <button type="button" class="btn btn-success" (click)="saveSection()">
+      Save Section
     </button>
   </div>
 

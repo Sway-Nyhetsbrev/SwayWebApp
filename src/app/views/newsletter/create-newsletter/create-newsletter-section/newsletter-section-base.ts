@@ -31,18 +31,26 @@ export abstract class NewsletterSectionBase {
   });
 
   editingSection: newsletterSection | null = null;
+  originalSectionContent: string | null = null;
   showNewSection: boolean = false;
   newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
 
   // Metod för att starta redigering av en sektion
   editSection(section: newsletterSection): void {
     this.editingSection = section;
+    // Spara den ursprungliga texten
+    this.originalSectionContent = section.content;
     this.cdr.detectChanges();
-  }
+}
 
-  // Avbryt redigering
+  // Avbryt redigering och återställ ursprungligt innehåll
   cancelEdit(): void {
+    if (this.editingSection && this.originalSectionContent !== null) {
+      // Återställ innehållet om det blivit tomt eller ändrats
+      this.editingSection.content = this.originalSectionContent;
+    }
     this.editingSection = null;
+    this.originalSectionContent = null;
     this.cdr.detectChanges();
   }
 
@@ -61,20 +69,39 @@ export abstract class NewsletterSectionBase {
 
   // Sparar en sektion. Om den inte finns i listan läggs den till, annars uppdateras den.
   saveSection(section: newsletterSection): void {
-    if (section.content) {
-      if (!this.newsletter()!.sections.includes(section)) {
-        this.newsletter()!.sections.push(section);
-        console.log('Ny sektion tillagd:', section);
-      } else {
-        console.log('Sektion uppdaterad:', section);
-      }
-      // Rensa redigeringsläge och stäng editorn
-      this.editingSection = null;
-      this.showNewSection = false;
+    // Extrahera ren text från innehållet
+    const plainText = section.content ? section.content.replace(/<[^>]+>/g, '').trim() : '';
+    
+    // Kontrollera om sektionen innehåller bilder eller videor
+    const hasImages = section.newsletterSectionImages && section.newsletterSectionImages.length > 0;
+    const hasVideos = section.newsletterSectionVideos && section.newsletterSectionVideos.length > 0;
+  
+    // Om sektionen inte innehåller text, bilder eller videor: visa felmeddelande
+    if (plainText.length === 0 && !hasImages && !hasVideos) {
+      console.log('Sektionen är tom och sparas inte.');
+      this.statusMessage = 'Sektionen måste innehålla innehåll.';
+      this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
-    } else {
-      console.log('Sektionen är inte fullständig.');
+      return;
     }
+  
+    // Rensa statusmeddelandet om allt är ok
+    this.statusMessage = '';
+    this.statusClass = '';
+  
+    // Om sektionen inte redan finns i listan, lägg till den; annars uppdatera
+    if (!this.newsletter()!.sections.includes(section)) {
+      this.newsletter()!.sections.push(section);
+      console.log('Ny sektion tillagd:', section);
+    } else {
+      console.log('Sektion uppdaterad:', section);
+    }
+  
+    // Rensa redigeringsläge och återställ ursprungligt innehåll
+    this.editingSection = null;
+    this.originalSectionContent = null;
+    this.showNewSection = false;
+    this.cdr.detectChanges();
   }
 
   // Tar bort en sektion från nyhetsbrevet
@@ -83,6 +110,32 @@ export abstract class NewsletterSectionBase {
     if (index !== undefined && index !== -1) {
       this.newsletter()?.sections.splice(index, 1);
       console.log('Sektion borttagen:', section);
+      this.cdr.detectChanges();
+    }
+  }
+
+  clearStatusMessage(): void {
+    const currentNewsletter = this.newsletter()!;
+    const isTitleValid = currentNewsletter.title && currentNewsletter.title.trim().length > 0;
+
+    let isReleaseDateValid = false;
+    if (typeof currentNewsletter.releaseDate === 'string') {
+      isReleaseDateValid = currentNewsletter.releaseDate.trim().length > 0;
+    } 
+    else if (currentNewsletter.releaseDate instanceof Date) {
+      isReleaseDateValid = true;
+    }
+
+    const areSectionsValid =
+      currentNewsletter.sections.length > 0 &&
+      currentNewsletter.sections.every(section => {
+        const plainText = section.content ? section.content.replace(/<[^>]+>/g, '').trim() : '';
+        return plainText.length > 0;
+      });
+    
+    if (isTitleValid && isReleaseDateValid && areSectionsValid) {
+      this.statusMessage = '';
+      this.statusClass = '';
       this.cdr.detectChanges();
     }
   }
@@ -103,12 +156,12 @@ export abstract class NewsletterSectionBase {
           backgroundColor: null,
           logging: true,
           useCORS: true,
-          scale: 4,
+          scale: 2,
           allowTaint: true,
         });
         canvas.toBlob((blob) => {
           if (blob) {
-            // Använder FileService för att ladda upp blob och returnera URL
+            // FileService för att ladda upp blob och returnera URL
             this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
               next: (url) => resolve(url),
               error: (err) => reject(err)

@@ -10,12 +10,40 @@
         <div class="form-group-content">
           <div class="form-group">
             <label for="Title" class="form-label">Title:</label>
-            <input type="text" [class]="validationClass" placeholder="Title" name="title" required [(ngModel)]="newsletter()!.title" />
+            <input
+              type="text"
+              name="title"
+              required
+              [(ngModel)]="newsletter()!.title"
+              #titleInput="ngModel"
+              [ngClass]="{'form-control': true, 'is-invalid': titleInput.invalid && (titleInput.dirty || titleInput.touched)}"
+              placeholder="Title"
+              (ngModelChange)="clearStatusMessage()"
+            />
+            @if(titleInput.invalid && (titleInput.dirty || titleInput.touched)) {
+              <div class="invalid-feedback">
+                Fältet måste fyllas i.
+              </div>
+            }
           </div>
 
           <div class="form-group" id="releaseDate">
             <label for="Release date" class="form-label">Release date:</label>
-            <input [class]="validationClass" type="date" name="releaseDate" [(ngModel)]="newsletter()!.releaseDate"/>
+            <input 
+            [class]="validationClass" 
+            type="date" 
+            name="releaseDate"
+            required 
+            [(ngModel)]="newsletter()!.releaseDate"
+            #releaseDateInput="ngModel"
+            [ngClass]="{'form-control': true, 'is-invalid': releaseDateInput.invalid && (releaseDateInput.dirty || releaseDateInput.touched)}"
+            (ngModelChange)="clearStatusMessage()"
+            />
+            @if(releaseDateInput.invalid && (releaseDateInput.dirty || releaseDateInput.touched)) {
+              <div class="invalid-feedback">
+                Fältet måste fyllas i.
+              </div>
+            }
           </div>
 
           <div class="form-group" id="theme">

@@ -13,6 +13,14 @@
   margin-top: 50px;
   width: 100%;
 }
+#newsletterSection .is-invalid {
+  border: 1px solid red;
+}
+#newsletterSection .invalid-feedback {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 0.25rem;
+}
 #newsletterSection .pixabayImageSearch {
   margin-top: 15px;
 }

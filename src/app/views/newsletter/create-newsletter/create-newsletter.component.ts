@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
-import { NgStyle } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
 import { ThemeHandlerComponent } from "../../../components/theme-handler/theme-handler.component";
 import { NewsletterSectionBase } from './create-newsletter-section/newsletter-section-base';
@@ -10,7 +10,7 @@ import { NewsletterService } from '../../../services/newsletter.service';
 @Component({
   selector: 'app-create-newsletter',
   standalone: true,
-  imports: [FormsModule, CreateNewsletterSectionComponent, NgStyle, ThemeHandlerComponent],
+  imports: [FormsModule, CreateNewsletterSectionComponent, NgStyle, ThemeHandlerComponent, NgClass],
   templateUrl: './create-newsletter.component.html',
   styleUrls: ['./create-newsletter.component.scss'],
 })
@@ -26,38 +26,53 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
       return;
     }
   
+    // Sätt användarinfo
     this.newsletter()!.userId = loggedUser.id;
     this.newsletter()!.author = loggedUser.email;
   
-    if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
-      try {
-        const subscription = this.newsletterService.createNewsletter(this.newsletter()).subscribe({
-          next: (response) => {
-            this.statusMessage = 'Newsletter was created!';
-            this.statusClass = 'alert alert-success';
-            if (response.id !== "") {
-              this.newsletter()!.id = response.id;
-              console.log('Created newsletter with ID:', this.newsletter()!.id);
-              if (this.newsletter()!.id) {
-                this.saveAsPdf(this.newsletter()!.id);
-              }
-            }
-          },
-          error: (err) => {
-            this.statusMessage = 'Newsletter was not created!';
-            this.statusClass = 'alert alert-danger';
-            console.error('Newsletter was not created!', err);
-          },
-        });
-      } catch (error) {
-        this.statusMessage = 'Newsletter was not created!';
-        this.statusClass = 'alert alert-danger';
-        console.error('Newsletter was not created!', error);
-      }
-    } else {
-      this.statusMessage = 'Please ensure the newsletter has a title, release date and at least one section!';
+    // Validera titel och releasedate
+    const { title, releaseDate, sections } = this.newsletter()!;
+    // Kontrollera att titel och releasedate är ifyllda
+    if (!title || !releaseDate) {
+      this.statusMessage = 'Fyll i titel och releasedate.';
+      this.statusClass = 'alert alert-warning';
+      // (Sätt eventuellt en flagga för att applicera rödborder i HTML:en)
+      this.cdr.detectChanges();
+      return;
+    }
+  
+    // Kontrollera att det finns minst en sektion och att varje sektion har innehåll
+    if (sections.length === 0 || sections.some(section => !section.content.trim())) {
+      this.statusMessage = 'Nyhetsbrevet måste innehålla minst en sektion med innehåll.';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
+      return;
+    }
+  
+    // Om allt är ifyllt, fortsätt med sparandet
+    try {
+      const subscription = this.newsletterService.createNewsletter(this.newsletter()).subscribe({
+        next: (response) => {
+          this.statusMessage = 'Newsletter was created!';
+          this.statusClass = 'alert alert-success';
+          if (response.id !== "") {
+            this.newsletter()!.id = response.id;
+            console.log('Created newsletter with ID:', this.newsletter()!.id);
+            if (this.newsletter()!.id) {
+              this.saveAsPdf(this.newsletter()!.id);
+            }
+          }
+        },
+        error: (err) => {
+          this.statusMessage = 'Newsletter was not created!';
+          this.statusClass = 'alert alert-danger';
+          console.error('Newsletter was not created!', err);
+        },
+      });
+    } catch (error) {
+      this.statusMessage = 'Newsletter was not created!';
+      this.statusClass = 'alert alert-danger';
+      console.error('Newsletter was not created!', error);
     }
   }
   

@@ -15,6 +15,15 @@
             width: 100%;
         }
     }
+    .is-invalid {
+        border: 1px solid red;
+      }
+      
+    .invalid-feedback {
+        color: red;
+        font-size: 0.9em;
+        margin-top: 0.25rem;
+    }
 
     .pixabayImageSearch {
         margin-top: 15px;
