@@ -45,7 +45,6 @@ export class ThemeHandlerComponent implements OnInit {
     this.themeService.createNewsletterTheme(this.newTheme).subscribe({
       next: (createdTheme) => {
         this.themes.push(createdTheme);
-        // Nollställ formuläret
         this.newTheme = {
           name: 'Default',
           backgroundStart: '#F5F5F7',
@@ -68,7 +67,6 @@ export class ThemeHandlerComponent implements OnInit {
     }
   }
 
-  // Anropas när användaren klickar på ett tema – skickar ut valt tema till föräldern
   selectTheme(theme: ThemeColors): void {
     this.themeChanged.emit(theme);
     console.log("selectTheme:", theme);

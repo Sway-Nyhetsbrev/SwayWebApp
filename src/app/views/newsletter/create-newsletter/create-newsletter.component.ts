@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreateNewsletterSectionComponent } from './create-newsletter-section/create-newsletter-section.component';
 import { NgClass, NgStyle } from '@angular/common';

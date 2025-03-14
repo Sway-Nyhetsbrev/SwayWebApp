@@ -77,7 +77,8 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
     if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
       try {
         const imageUrls = await Promise.all(
-          this.newsletter()!.sections.map(section => this.convertSectionToImage(section))
+          this.newsletter()!.sections.map(section =>
+            this.convertSectionToImage(section))
         );
   
         const pdfUrl$ = await this.fileService.createAndUploadPdf(

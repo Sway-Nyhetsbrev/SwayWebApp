@@ -10,7 +10,6 @@ export class UserService {
   httpClient = inject(HttpClient)
   users = signal<User[] | undefined>(undefined);
 
-  // Skapa användare - returnerar ett Observable
   createUser(user: User): Observable<User | undefined> {
     return this.httpClient.post<User>('https://userprovider20250119171348.azurewebsites.net/api/users/Create', user)
       .pipe(
@@ -21,12 +20,10 @@ export class UserService {
       );
   }
 
-  // Hämta en användare
   getOneUser(userEmail: string): Observable<User | null> {
     return this.httpClient.get<User>(`https://userprovider20250119171348.azurewebsites.net/api/users/GetOneUser/${userEmail}`)
   }
 
-  // Hämta alla användare
   getAllUsers() {
     return this.httpClient.get<User[]>('https://userprovider20250119171348.azurewebsites.net/api/users/GetAllUsers')
       .subscribe({
@@ -39,12 +36,10 @@ export class UserService {
       });
   }
 
-  // Uppdatera användare
   updateUser(updatedUser: UserUpdateModel): Observable<User | null> {
     return this.httpClient.put<any>(`https://userprovider20250119171348.azurewebsites.net/api/users/UpdateUser`, updatedUser)
   }
 
-  //Radera en användare
   removeUser(userEmail: string) {
     return this.httpClient.delete<User>(`https://userprovider20250119171348.azurewebsites.net/api/users/DeleteUser?userEmail=${userEmail}`)
   }

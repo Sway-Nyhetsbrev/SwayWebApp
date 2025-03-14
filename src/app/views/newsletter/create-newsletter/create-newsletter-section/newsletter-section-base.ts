@@ -35,7 +35,6 @@ export abstract class NewsletterSectionBase {
   showNewSection: boolean = false;
   newSection: newsletterSection = { content: "", newsletterSectionImages: [] };
 
-  // Metod för att starta redigering av en sektion
   editSection(section: newsletterSection): void {
     this.editingSection = section;
     // Spara den ursprungliga texten
@@ -54,14 +53,12 @@ export abstract class NewsletterSectionBase {
     this.cdr.detectChanges();
   }
 
-  // Öppna editor för en ny sektion
   openNewSection(): void {
     this.newSection = { content: "", newsletterSectionImages: [] };
     this.showNewSection = true;
     this.cdr.detectChanges();
   }
 
-  // Avbryt att skapa en ny sektion
   cancelNewSection(): void {
     this.showNewSection = false;
     this.cdr.detectChanges();

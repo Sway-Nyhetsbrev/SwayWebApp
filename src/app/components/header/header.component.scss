@@ -23,6 +23,10 @@ header {
       .signIn {
         text-align: center;
 
+        @media (max-width: 768px) {
+          display: none;
+        }
+
         .btn-signIn {
           border: 1px solid #2B0A3D;
           background-color: #0070AD;

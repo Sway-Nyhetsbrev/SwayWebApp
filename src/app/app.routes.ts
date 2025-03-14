@@ -11,6 +11,7 @@ import { AllNewslettersComponent } from './views/admin/admin-portal/all-newslett
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { UserDetailsComponent } from './views/admin/admin-portal/user-details/user-details.component';
 import { UpdateNewsletterComponent } from './views/newsletter/update-newsletter/update-newsletter.component';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -20,45 +21,52 @@ export const routes: Routes = [
   {
     path: 'latest-newsletter',
     component: LatestNewsletterComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'my-newsletters/:userId',
     component: MyNewslettersComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'newsletter-details/:userId/:newsletterId',
     component: NewsletterDetailsComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-newsletter',
     component: CreateNewsletterComponent,
+    canActivate: [AuthGuard],
   },
   {
-    // Skydda admin-portal med RoleGuard
     path: 'admin-portal/:userId',
     component: AdminPortalComponent,
     canActivate: [RoleGuard],
     children: [
-        {
-          path: 'all-newsletters',
-          component: AllNewslettersComponent,
-          children: [
-            {
-              path: 'search-newsletter',
-              component: SearchBarComponent
-            }
-          ]
-        },
-        {
-          path: 'all-users',
-          component: AllUsersComponent,
-          children: [
-            {
-              path: 'search-user',
-              component: SearchBarComponent
-            },
-          ]
-        },
+      {
+        path: 'all-newsletters',
+        component: AllNewslettersComponent,
+        canActivate: [RoleGuard], 
+        children: [
+          {
+            path: 'search-newsletter',
+            component: SearchBarComponent,
+            canActivate: [RoleGuard]
+          }
+        ]
+      },
+      {
+        path: 'all-users',
+        component: AllUsersComponent,
+        canActivate: [RoleGuard],
+        children: [
+          {
+            path: 'search-user',
+            component: SearchBarComponent,
+            canActivate: [RoleGuard]
+          },
+        ]
+      },
     ],
   },
   {

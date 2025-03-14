@@ -13,8 +13,7 @@ export class FileService {
 
   async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string): Promise<Observable<string>> {
     console.log("Skapar PDF för:", title);
-    return new Observable<string>((observer) => {
-      (async () => {
+    return new Observable<string>((observer) => { (async () => {
         try {
           // Hämta temat från ThemeService
           const themeData = await firstValueFrom(this.themeService.getOneNewsletterTheme(theme));
@@ -144,7 +143,7 @@ export class FileService {
       if (contentType.startsWith('image/jpeg') || contentType.startsWith('application/jpg')) {
         // För JPEG-bilder
         try {
-          return await pdfDoc.embedPng(imageBuffer);  // För JPEG
+          return await pdfDoc.embedPng(imageBuffer);
         } catch (error) {
           console.error('Failed to embed JPEG image:', error);
           return null;
@@ -152,7 +151,7 @@ export class FileService {
       } else if (contentType.startsWith('image/png')) {
         // För PNG-bilder
         try {
-          return await pdfDoc.embedPng(imageBuffer);  // För PNG
+          return await pdfDoc.embedPng(imageBuffer); 
         } catch (error) {
           console.error('Failed to embed PNG image:', error);
           return null;
@@ -287,20 +286,18 @@ export class FileService {
       const b =
         startColor[2] + ((endColor[2] - startColor[2]) / gradientSteps) * i;
 
-      // Justera höjden och lägg till en liten överlappning mellan stegen
       const yStart = pageHeight - (i + 1) * stepHeight;
-      const adjustedHeight = stepHeight + 1; // Lägg till 1 pixel för att säkerställa överlappning
+      const adjustedHeight = stepHeight + 1; 
 
       page.drawRectangle({
         x: 0,
         y: yStart,
         width: page.getWidth(),
-        height: adjustedHeight, // Gör rektangeln något högre
+        height: adjustedHeight, 
         color: rgb(r / 255, g / 255, b / 255),
       });
     }
 
-    // Säkerställ att den går längst ner
     const finalColor = rgb(
       endColor[0] / 255,
       endColor[1] / 255,
