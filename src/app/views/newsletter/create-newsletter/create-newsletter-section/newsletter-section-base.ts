@@ -37,15 +37,12 @@ export abstract class NewsletterSectionBase {
 
   editSection(section: newsletterSection): void {
     this.editingSection = section;
-    // Spara den ursprungliga texten
     this.originalSectionContent = section.content;
     this.cdr.detectChanges();
 }
 
-  // Avbryt redigering och återställ ursprungligt innehåll
   cancelEdit(): void {
     if (this.editingSection && this.originalSectionContent !== null) {
-      // Återställ innehållet om det blivit tomt eller ändrats
       this.editingSection.content = this.originalSectionContent;
     }
     this.editingSection = null;
@@ -64,44 +61,35 @@ export abstract class NewsletterSectionBase {
     this.cdr.detectChanges();
   }
 
-  // Sparar en sektion. Om den inte finns i listan läggs den till, annars uppdateras den.
   saveSection(section: newsletterSection): void {
-    // Extrahera ren text från innehållet
     const plainText = section.content ? section.content.replace(/<[^>]+>/g, '').trim() : '';
-    
-    // Kontrollera om sektionen innehåller bilder eller videor
     const hasImages = section.newsletterSectionImages && section.newsletterSectionImages.length > 0;
     const hasVideos = section.newsletterSectionVideos && section.newsletterSectionVideos.length > 0;
   
-    // Om sektionen inte innehåller text, bilder eller videor: visa felmeddelande
     if (plainText.length === 0 && !hasImages && !hasVideos) {
-      console.log('Sektionen är tom och sparas inte.');
-      this.statusMessage = 'Sektionen måste innehålla innehåll.';
+      this.statusMessage = "Please add content to the section!"
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return;
     }
   
-    // Rensa statusmeddelandet om allt är ok
     this.statusMessage = '';
     this.statusClass = '';
   
-    // Om sektionen inte redan finns i listan, lägg till den; annars uppdatera
     if (!this.newsletter()!.sections.includes(section)) {
       this.newsletter()!.sections.push(section);
       console.log('Ny sektion tillagd:', section);
-    } else {
+    } 
+    else {
       console.log('Sektion uppdaterad:', section);
     }
   
-    // Rensa redigeringsläge och återställ ursprungligt innehåll
     this.editingSection = null;
     this.originalSectionContent = null;
     this.showNewSection = false;
     this.cdr.detectChanges();
   }
 
-  // Tar bort en sektion från nyhetsbrevet
   removeSection(section: newsletterSection): void {
     const index = this.newsletter()?.sections.findIndex(s => s === section);
     if (index !== undefined && index !== -1) {
@@ -137,7 +125,6 @@ export abstract class NewsletterSectionBase {
     }
   }
 
-  // Konverterar en sektion till en bild-URL genom html2canvas
   convertSectionToImage(section: newsletterSection): Promise<string> {
     return new Promise(async (resolve, reject) => {
       const tempDiv = document.createElement('div');
@@ -158,7 +145,6 @@ export abstract class NewsletterSectionBase {
         });
         canvas.toBlob((blob) => {
           if (blob) {
-            // FileService för att ladda upp blob och returnera URL
             this.fileService.createAndUploadSection(blob, this.newsletter()!.id).subscribe({
               next: (url) => resolve(url),
               error: (err) => reject(err)

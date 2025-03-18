@@ -25,7 +25,7 @@ export class PixabayImageSearchComponent {
   searchImages(page: number = 1) {
     const apiKey = '48774135-ef6cff025934c628b9572ed45';
     const perPage = 20;
-    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(this.searchTerm)}&image_type=photo&page=${page}&per_page=${perPage}`;
+    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(this.searchTerm)}&page=${page}&per_page=${perPage}`;
     
     this.http.get(url).subscribe((data: any) => {
       this.images = data.hits;

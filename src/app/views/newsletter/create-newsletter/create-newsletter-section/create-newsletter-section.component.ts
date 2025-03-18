@@ -7,7 +7,9 @@ import Quill from 'quill';
 import { VideoHandler, ImageHandler } from 'ngx-quill-upload';
 import { PixabayImageSearchComponent } from '../../../../components/pixabay-image-search/pixabay-image-search.component';
 import { PixabayVideoSearchComponent } from "../../../../components/pixabay-video-search/pixabay-video-search.component";
+import ResizeModule from "@botom/quill-resize-module";
 
+Quill.register("modules/resize", ResizeModule);
 Quill.register('modules/imageHandler', ImageHandler);
 Quill.register('modules/videoHandler', VideoHandler);
 Quill.register('modules/font', {
@@ -28,6 +30,7 @@ Quill.register('modules/font', {
   templateUrl: './create-newsletter-section.component.html',
   styleUrls: ['./create-newsletter-section.component.scss'],
 })
+
 export class CreateNewsletterSectionComponent{
   private fileService = inject(FileService);
   crd = inject(ChangeDetectorRef);
@@ -57,13 +60,19 @@ export class CreateNewsletterSectionComponent{
       handlers: {
         customImage: () => this.openPixabayImageSearch(),
         customVideo: () => this.openPixabayVideoSearch(),
-      }
+      },
     },
     imageHandler: {
       upload: (file: Blob) => this.uploadSectionImage(file),
       accepts: ['png', 'jpg', 'jpeg', 'jfif'],
       allowDrop: true,
     },
+
+    resize: {
+      showToolbar: true,
+      showSize: true,
+    },
+    
   };
 
   // Hanterar uppladdning av bilder inuti Quill-editorn

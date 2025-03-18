@@ -26,30 +26,24 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
       return;
     }
   
-    // Sätt användarinfo
     this.newsletter()!.userId = loggedUser.id;
     this.newsletter()!.author = loggedUser.email;
   
-    // Validera titel och releasedate
     const { title, releaseDate, sections } = this.newsletter()!;
-    // Kontrollera att titel och releasedate är ifyllda
     if (!title || !releaseDate) {
-      this.statusMessage = 'Fyll i titel och releasedate.';
+      this.statusMessage = 'Please add a title and releasedate';
       this.statusClass = 'alert alert-warning';
-      // (Sätt eventuellt en flagga för att applicera rödborder i HTML:en)
       this.cdr.detectChanges();
       return;
     }
   
-    // Kontrollera att det finns minst en sektion och att varje sektion har innehåll
     if (sections.length === 0 || sections.some(section => !section.content.trim())) {
-      this.statusMessage = 'Nyhetsbrevet måste innehålla minst en sektion med innehåll.';
+      this.statusMessage = 'The newsletter has to contain one section';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return;
     }
   
-    // Om allt är ifyllt, fortsätt med sparandet
     try {
       const subscription = this.newsletterService.createNewsletter(this.newsletter()).subscribe({
         next: (response) => {

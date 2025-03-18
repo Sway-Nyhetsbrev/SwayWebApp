@@ -23,13 +23,16 @@
         display: grid;
         grid-template-columns: auto auto auto auto;
         margin-bottom: 20px;
-        
+
         .image-result {
             margin: 5px;
-
+            
             img {
                 transition: transform 0.3s ease-in-out;
-
+                height: 100px;
+                width: 150px;
+                object-fit: fill;
+                
                 &:hover {
                     transform: rotate(1deg);
                     box-shadow: 0px 0px 10px 5px rgba(89, 88, 88, 0.525);
