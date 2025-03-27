@@ -25,7 +25,7 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
       console.error('Användaren är inte inloggad.');
       return;
     }
-  
+    
     this.newsletter()!.userId = loggedUser.id;
     this.newsletter()!.author = loggedUser.email;
   
@@ -38,7 +38,7 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
     }
   
     if (sections.length === 0 || sections.some(section => !section.content.trim())) {
-      this.statusMessage = 'The newsletter has to contain one section';
+      this.statusMessage = 'The newsletter has to contain one section or the section is to big';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return;
@@ -49,6 +49,9 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
         next: (response) => {
           this.statusMessage = 'Newsletter was created!';
           this.statusClass = 'alert alert-success';
+          
+          console.log("Response", response);
+
           if (response.id !== "") {
             this.newsletter()!.id = response.id;
             console.log('Created newsletter with ID:', this.newsletter()!.id);
@@ -99,7 +102,7 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
         });
       } catch (error) {
         this.statusMessage = 'Error creating PDF!';
-        this.statusClass = 'alert alert-danger';
+        this.statusClass = 'alert alert-warning';
         console.error('Error creating PDF:', error);
       }
     }

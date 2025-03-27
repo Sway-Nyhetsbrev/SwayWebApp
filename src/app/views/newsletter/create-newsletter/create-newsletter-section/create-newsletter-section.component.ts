@@ -69,7 +69,7 @@ export class CreateNewsletterSectionComponent{
     },
 
     resize: {
-      showToolbar: true,
+      showToolbar: false,
       showSize: true,
     },
     

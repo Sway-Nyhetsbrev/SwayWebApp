@@ -65,7 +65,7 @@ export abstract class NewsletterSectionBase {
     const plainText = section.content ? section.content.replace(/<[^>]+>/g, '').trim() : '';
     const hasImages = section.newsletterSectionImages && section.newsletterSectionImages.length > 0;
     const hasVideos = section.newsletterSectionVideos && section.newsletterSectionVideos.length > 0;
-  
+
     if (plainText.length === 0 && !hasImages && !hasVideos) {
       this.statusMessage = "Please add content to the section!"
       this.statusClass = 'alert alert-warning';
@@ -133,8 +133,17 @@ export abstract class NewsletterSectionBase {
       tempDiv.style.top = '-9999px';
       tempDiv.style.left = '-9999px';
       tempDiv.innerHTML = section.content;
+  
       document.body.appendChild(tempDiv);
-
+  
+      const sectionHeight = tempDiv.offsetHeight;
+      const maxPageHeight = 800;
+  
+      if (sectionHeight > maxPageHeight) {
+        document.body.removeChild(tempDiv);
+        return reject(new Error("Sektionen är för stor för att få plats på en PDF-sida"));
+      }
+  
       try {
         const canvas = await html2canvas(tempDiv, {
           backgroundColor: null,
