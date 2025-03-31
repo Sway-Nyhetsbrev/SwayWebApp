@@ -18,7 +18,6 @@
             
           </li>
         }
-        <!-- Knapp för att visa formuläret för nytt tema -->
         <li class="dropdown-item create-btn" (click)="openCreateTheme()">
           Create Theme
         </li>
@@ -26,7 +25,6 @@
     }
   </div>
 
-  <!-- Sektion för att skapa ett nytt tema, visas när showCreateTheme är true -->
    @if (showCreateTheme) {
     <div class="createNewsletterThemeSection">
       <div class="mt-3">

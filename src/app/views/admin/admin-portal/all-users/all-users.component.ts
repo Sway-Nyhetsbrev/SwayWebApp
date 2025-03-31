@@ -13,8 +13,12 @@ export class AllUsersComponent implements OnInit {
   userService = inject(UserService);
   users = this.userService.users;
 
+  /* 
+   Initializes the component.
+   Fetches all users.
+  */
   ngOnInit() {
     this.userService.getAllUsers();
-    this.users()?.forEach(user => console.log(user))
+    this.users()?.forEach(user => console.log(user));
   }
 }

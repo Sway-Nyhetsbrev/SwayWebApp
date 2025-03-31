@@ -15,11 +15,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class NewsletterDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
-  newsletterService = inject(NewsletterService)
-  userService = inject(UserService)
+  newsletterService = inject(NewsletterService);
+  userService = inject(UserService);
   sanitizer = inject(DomSanitizer);
-  location = inject(Location)
-  newsletter = signal<SafeResourceUrl | null>(null)
+  location = inject(Location);
+  newsletter = signal<SafeResourceUrl | null>(null);
   newsletterId: string = "";
   userId: string = "";
   isFetching = signal(false);
@@ -28,20 +28,28 @@ export class NewsletterDetailsComponent implements OnInit {
   statusMessage: string = '';
   statusClass: string = '';
 
-  userRole = computed( () => {
+  userRole = computed(() => {
     const users = this.userService.users();
     return users?.find(u => u.id === this.userId)?.role;
-  })
+  });
 
+  /* 
+   Initializes the component.
+   Fetches all users and loads newsletter details based on route parameters.
+  */
   ngOnInit() {
     this.userService.getAllUsers();
     this.activatedRoute.params.subscribe(params => {
       this.newsletterId = params['newsletterId'];
       this.userId = params['userId'];
       this.loadNewsletterDetails();
-    })
+    });
   }
 
+  /* 
+   Loads the newsletter details.
+   Fetches the newsletter PDF and processes the response.
+  */
   loadNewsletterDetails() {
     this.isFetching.set(true);
     this.newsletterService.getOneNewsletterPdf(this.newsletterId).subscribe({
@@ -56,36 +64,44 @@ export class NewsletterDetailsComponent implements OnInit {
           this.statusClass = 'alert alert-danger';
         }
       },
-        error: (err: HttpErrorResponse) => {
-          console.error('Error fetching newsletter:', err);
-          
-          if (err.status === 404) {
-            this.statusMessage = 'Newsletter not found (404).';
-            this.statusClass = 'alert alert-warning';
-          } else if (err.status === 400) {
-            this.statusMessage = 'Bad request (400). Please check your request.';
-            this.statusClass = 'alert alert-danger';
-          } else {
-            this.statusMessage = 'An unexpected error occurred.';
-            this.statusClass = 'alert alert-danger';
-          }
-        },
-        complete: () => {
-          this.isFetching.set(false);
+      error: (err: HttpErrorResponse) => {
+        console.error('Error fetching newsletter:', err);
+        if (err.status === 404) {
+          this.statusMessage = 'Newsletter not found (404).';
+          this.statusClass = 'alert alert-warning';
+        } 
+        else if (err.status === 400) {
+          this.statusMessage = 'Bad request (400). Please check your request.';
+          this.statusClass = 'alert alert-danger';
+        } 
+        else {
+          this.statusMessage = 'An unexpected error occurred.';
+          this.statusClass = 'alert alert-danger';
         }
-      });;
+      },
+      complete: () => {
+        this.isFetching.set(false);
+      }
+    });
   }
 
+  /* 
+   Prepares to delete the newsletter.
+   Sets the removal status and displays a confirmation message.
+  */
   loadDeleteNewsletterDetails() {
     this.isRemoving.set(true);
     if (this.newsletterId) {
-      this.statusMessage = (
-        'Are you sure that you want to remove this newsletter?' 
-      );
-      this.statusClass = 'alert alert-primary'
+      this.statusMessage = 'Are you sure that you want to remove this newsletter?';
+      this.statusClass = 'alert alert-primary';
     }
   }
 
+  /* 
+   Deletes the newsletter.
+   Calls the service to remove the newsletter and its associated PDF blob.
+   Displays success or error messages based on the response.
+  */
   deleteNewsletter() {
     this.newsletterService.removeNewsletter(this.newsletterId).subscribe({
       error: (err) => {
@@ -104,7 +120,7 @@ export class NewsletterDetailsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to remove newsletter', err);
-        this.statusMessage = 'Failed to remove newsletterPdf!';
+        this.statusMessage = 'Failed to remove newsletter PDF!';
         this.statusClass = 'alert alert-danger';
       },
       complete: () => {
@@ -115,6 +131,9 @@ export class NewsletterDetailsComponent implements OnInit {
     });
   }
 
+  /* 
+   Navigates back to the previous page.
+  */
   goBack() {
     this.location.back();
   }

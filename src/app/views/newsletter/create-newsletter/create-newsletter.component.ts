@@ -19,10 +19,15 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
   private authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
 
+  /* 
+   * Saves the newsletter.
+   * Checks if the user is logged in, validates the newsletter title, release date, and sections.
+   * If valid, creates the newsletter and triggers PDF generation.
+   */
   async saveNewsletter() {
     const loggedUser = this.authService.getLoggedUser();
     if (!loggedUser) {
-      console.error('Användaren är inte inloggad.');
+      console.error('User is not logged in.');
       return;
     }
     
@@ -31,7 +36,7 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
   
     const { title, releaseDate, sections } = this.newsletter()!;
     if (!title || !releaseDate) {
-      this.statusMessage = 'Please add a title and releasedate';
+      this.statusMessage = 'Please add a title and release date';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return;
@@ -78,8 +83,12 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
     }
   }
   
+  /* 
+   * Generates a PDF from the newsletter.
+   * Converts each section to an image and uploads the resulting PDF.
+   */
   async saveAsPdf(newsletterId: string) {
-    console.log("saveAsPdf anropas för id:", newsletterId);
+    console.log("saveAsPdf is called for id:", newsletterId);
     if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
       try {
         const imageUrls = await Promise.all(
@@ -113,6 +122,10 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
     }
   }
 
+  /* 
+   * Handles theme changes.
+   * Updates the newsletter theme and triggers change detection.
+   */
   onThemeChanged(theme: any) {
     this.newsletter()!.theme = theme;
     this.cdr.detectChanges();

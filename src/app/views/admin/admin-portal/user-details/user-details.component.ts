@@ -15,7 +15,7 @@ import { AuthService } from '../../../../services/auth.service';
 export class UserDetailsComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   userService = inject(UserService);
-  authService = inject(AuthService)
+  authService = inject(AuthService);
   loggedUserId = signal("");
   userId: string = '';
   user = signal<User | null>(null);
@@ -27,12 +27,16 @@ export class UserDetailsComponent implements OnInit {
   statusMessage: string = '';
   statusClass: string = '';
 
+  /* 
+   Initializes the component.
+   Fetches all users, retrieves the logged user, and loads user details based on route parameters.
+   */
   ngOnInit() {
     this.userService.getAllUsers();
     const loggedUser = this.authService.getLoggedUser();
     if (loggedUser) {
-      this.loggedUserId.set(loggedUser.id)
-      console.log(loggedUser)
+      this.loggedUserId.set(loggedUser.id);
+      console.log(loggedUser);
     }
     this.activatedRoute.params.subscribe((params) => {
       this.userId = params['userId'];
@@ -40,6 +44,10 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
+  /* 
+   Loads the details of a user.
+   Retrieves the user email from the list of users and subscribes to the service to get user details.
+  */
   loadUserDetails() {
     this.isFetching.set(true);
     const users = this.userService.users();
@@ -47,10 +55,8 @@ export class UserDetailsComponent implements OnInit {
 
     if (!userEmail) {
       console.error('User email is undefined. Cannot fetch user details.');
-      this.statusMessage = (
-        'Failed to fetch user details: Invalid user email.'
-      );
-      this.statusClass = 'alert alert-danger'
+      this.statusMessage = 'Failed to fetch user details: Invalid user email.';
+      this.statusClass = 'alert alert-danger';
       this.isFetching.set(false);
       return;
     }
@@ -61,8 +67,8 @@ export class UserDetailsComponent implements OnInit {
       },
       error: (err) => {
         console.error('ERROR :: userDetailsComponent :: loadUserDetails', err);
-        this.statusMessage = ('Failed to fetch user details!');
-        this.statusClass = 'alert alert-danger'
+        this.statusMessage = 'Failed to fetch user details!';
+        this.statusClass = 'alert alert-danger';
       },
       complete: () => {
         this.isFetching.set(false);
@@ -72,6 +78,10 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
+  /* 
+   Prepares the update process for a user.
+   Checks if the logged user is not updating their own profile and sets the entered role.
+  */
   loadUpdateDetails() {
     this.isUpdateing.set(true);
     if (this.user()?.id != this.loggedUserId()) {
@@ -79,28 +89,31 @@ export class UserDetailsComponent implements OnInit {
       if (currentUser && currentUser.role) {
         this.enteredRole = currentUser.role.role;
       }
+    } else {
+      this.statusMessage = "You can't update your own profile!";
+      this.statusClass = 'alert alert-warning';
     }
-    else {
-      this.statusMessage = ("You can't update your own profile!");
-      this.statusClass = 'alert alert-warning'
-    }
-
   }
 
+  /* 
+   Prepares the removal process for a user.
+   Checks if the logged user is not removing their own profile and sets a confirmation message.
+  */
   loadRemoveDetails() {
     this.isRemoving.set(true);
     if (this.user()?.id != this.loggedUserId()) {
-      this.statusMessage = (
-        'Are you sure that you want to remove ' + this.user()?.email + '?' 
-      );
-      this.statusClass = 'alert alert-primary'
-    }
-    else {
-      this.statusMessage = ("You can't remove your own profile!");
-      this.statusClass = 'alert alert-warning'
+      this.statusMessage = 'Are you sure that you want to remove ' + this.user()?.email + '?';
+      this.statusClass = 'alert alert-primary';
+    } else {
+      this.statusMessage = "You can't remove your own profile!";
+      this.statusClass = 'alert alert-warning';
     }
   }
 
+  /* 
+   Updates the user information.
+   Checks if a new role is entered and calls the service to update the user.
+  */
   updateUser() {
     const currentUser = this.user();
     if (!currentUser) {
@@ -108,11 +121,11 @@ export class UserDetailsComponent implements OnInit {
       return;
     }
     if (currentUser.role?.role == this.enteredRole) {
-      this.statusMessage = ('Change to a new role!');
-      this.statusClass = 'alert alert-warning'
+      this.statusMessage = 'Change to a new role!';
+      this.statusClass = 'alert alert-warning';
       return;
     }
-    console.log("Entered role:", this.enteredRole)
+    console.log("Entered role:", this.enteredRole);
     const updatedUser: UserUpdateModel = {
       email: currentUser.email,
       userName: currentUser.userName,
@@ -126,17 +139,21 @@ export class UserDetailsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to update user', err);
-        this.statusMessage = ("Failed to update user!")
-        this.statusClass = 'alert alert-danger'
+        this.statusMessage = 'Failed to update user!';
+        this.statusClass = 'alert alert-danger';
       },
       complete: () => {
         this.isUpdateing.set(false);
-        this.statusMessage = ("User was updated successfully!");
-        this.statusClass = 'alert alert-success'
+        this.statusMessage = 'User was updated successfully!';
+        this.statusClass = 'alert alert-success';
       },
     });
   }
 
+  /* 
+   Removes the user.
+   Calls the service to remove the user by email and displays success or error messages.
+  */
   removeUser() {
     const userEmail = this.user()?.email;
   
@@ -167,6 +184,9 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
+  /* 
+   Navigates back to the previous page.
+  */
   goBack() {
     this.location.back();
   }

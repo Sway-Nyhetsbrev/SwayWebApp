@@ -14,7 +14,6 @@ export class ThemeHandlerComponent implements OnInit {
   showCreateTheme = false;
   dropdownOpen = false;
   
-  // Skickar ut valt tema till föräldern
   @Output() themeChanged = new EventEmitter<ThemeColors>();
 
   themes: ThemeColors[] = [];

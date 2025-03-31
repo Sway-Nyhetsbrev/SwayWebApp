@@ -11,15 +11,19 @@ export class FileService {
   private httpClient = inject(HttpClient);
   private themeService = inject(ThemeService);
 
+  /* 
+   Creates a PDF from the provided title, sections, and theme,
+   then uploads the PDF and returns an observable with the file URL.
+  */
   async createAndUploadPdf(title: string, sections: string[], theme: string, newsletterId: string): Promise<Observable<string>> {
-    console.log("Skapar PDF för:", title);
-    return new Observable<string>((observer) => { (async () => {
+    console.log("Creating PDF for:", title);
+    return new Observable<string>((observer) => {(async () => {
         try {
-          // Hämta temat från ThemeService
+          // Retrieve the theme from ThemeService
           const themeData = await firstValueFrom(this.themeService.getOneNewsletterTheme(theme));
 
           if (!themeData) {
-            observer.error('Kunde inte hämta tema från ThemeService');
+            observer.error('Failed to retrieve theme from ThemeService');
             return;
           }
 
@@ -27,22 +31,22 @@ export class FileService {
           const pdfDoc = await PDFDocument.create();
           let page = pdfDoc.addPage([600, 800]);
           let yOffset = 750;
-  
+
           const gradientSteps = 100;
-  
+
           this.addGradientToPage(page, backgroundStart, backgroundEnd, gradientSteps);
-  
+
           const [rTitle, gTitle, bTitle] = this.hexToRgb(textColor).map((val) => val / 255);
           page.drawText(title, { x: 50, y: 770, size: 24, color: rgb(rTitle, gTitle, bTitle) });
-  
+
           for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
             let sectionHeight = 35;
-            
+
             const isUrlImage = section.startsWith('https');
             const isVideoUrl = section.endsWith('.mp4');
-          
-            // Hantera bildsektioner
+
+            // Handle image sections
             if (isUrlImage) {
               const embeddedImage = await this.embedImageFromUrl(section, pdfDoc);
               if (embeddedImage) {
@@ -63,8 +67,8 @@ export class FileService {
                 continue;
               }
             }
-            
-            // Hantera videolänkar
+
+            // Handle video links
             if (isVideoUrl) {
               if (yOffset - sectionHeight < 50) {
                 page = pdfDoc.addPage([600, 800]);
@@ -75,13 +79,13 @@ export class FileService {
                 x: 50,
                 y: yOffset,
                 size: 12,
-                color: rgb(rTitle, gTitle, bTitle)
+                color: rgb(rTitle, gTitle, bTitle),
               });
               yOffset -= 20;
               continue;
             }
-          
-            // Hantera vanlig text (icke bild/videosektioner)
+
+            // Handle regular text (non image/video sections)
             if (yOffset - sectionHeight < 50) {
               page = pdfDoc.addPage([600, 800]);
               yOffset = 750;
@@ -90,7 +94,7 @@ export class FileService {
             page.drawText(section, { x: 50, y: yOffset, size: 12, color: rgb(rTitle, gTitle, bTitle) });
             yOffset -= 20;
           }
-  
+
           const pdfBytes = await pdfDoc.save();
           const formData = new FormData();
           const fileBlob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -98,20 +102,21 @@ export class FileService {
           formData.append('file', fileBlob, fileName);
           formData.append('newsletterId', newsletterId);
           console.log('HTTP POST request sent for:', fileName);
-  
+
           this.httpClient.post('http://localhost:7126/api/Upload?containerName=newsletterpdf', formData).subscribe({
             next: (response) => {
               const fileUrl = response ? (response as any).filePath : '';
               if (fileUrl) {
                 observer.next(fileUrl);
                 observer.complete();
-              } else {
+              } 
+              else {
                 observer.error('Error uploading PDF');
               }
             },
             error: (err) => {
               observer.error('Error uploading PDF');
-            }
+            },
           });
         } catch (error) {
           observer.error('Error generating PDF');
@@ -120,28 +125,32 @@ export class FileService {
     });
   }
 
+  /* 
+   Embeds an image from a URL into the PDF document.
+   Validates the content type and returns the embedded image or null.
+  */
   async embedImageFromUrl(imageUrl: string, pdfDoc: PDFDocument): Promise<PDFImage | null> {
     try {
       const response = await fetch(imageUrl);
       console.log("FileService::embedImageFromUrl-Response:", response);
-  
-      // Kontrollera om det är en bild
+
+      // Check if the resource is an image
       const contentType = response.headers.get('Content-Type');
       console.log("FileService::embedImageFromUrl-contentType:", contentType);
-  
-      // Tillåt både image/jpeg och application/jpg
+
+      // Allow both image/jpeg and application/jpg
       if (!contentType || (!contentType.startsWith('image/jpeg') && !contentType.startsWith('image/png') && !contentType.startsWith('application/jpg'))) {
         console.error('Not a valid image type. Expected JPEG or PNG.');
         return null;
       }
-  
-      // Hämta bildens byte-array
+
+      // Retrieve the image byte array
       const imageBuffer = await response.arrayBuffer();
       console.log('Image Buffer:', imageBuffer);
-  
-      // Kontrollera att vi har en korrekt JPEG eller PNG och försök att läsa in den korrekt
+
+      // Ensure proper JPEG or PNG and attempt to embed accordingly
       if (contentType.startsWith('image/jpeg') || contentType.startsWith('application/jpg')) {
-        // För JPEG-bilder
+        // For JPEG images
         try {
           return await pdfDoc.embedPng(imageBuffer);
         } catch (error) {
@@ -149,15 +158,15 @@ export class FileService {
           return null;
         }
       } else if (contentType.startsWith('image/png')) {
-        // För PNG-bilder
+        // For PNG images
         try {
-          return await pdfDoc.embedPng(imageBuffer); 
+          return await pdfDoc.embedPng(imageBuffer);
         } catch (error) {
           console.error('Failed to embed PNG image:', error);
           return null;
         }
       }
-  
+
       console.error('Unsupported image format');
       return null;
     } catch (error) {
@@ -166,6 +175,10 @@ export class FileService {
     }
   }
 
+  /* 
+   Creates and uploads a section image.
+   Converts the image blob into a file and uploads it, returning an observable with the file URL.
+  */
   createAndUploadSectionImage(newsletterSectionImage: BlobPart): Observable<string> {
     return new Observable<string>((observer) => {
       const formData = new FormData();
@@ -175,13 +188,13 @@ export class FileService {
         type: 'image/png',
       });
 
-      // Lägg till filen
+      // Append the file
       formData.append('file', fileBlob, uniqueFileName);
 
       console.log('Uploading file:', uniqueFileName);
 
       this.httpClient
-        .post('http://localhost:7126/api/Upload?containerName=newsletterimages',formData)
+        .post('http://localhost:7126/api/Upload?containerName=newsletterimages', formData)
         .subscribe({
           next: (response) => {
             console.log('Server response:', response);
@@ -203,6 +216,11 @@ export class FileService {
     });
   }
   
+  /* 
+   Creates and uploads a section.
+   Converts the section blob into a file, appends the newsletterId,
+   uploads it, and returns an observable with the file URL.
+  */
   createAndUploadSection(newsletterSection: BlobPart, newsletterId: string): Observable<string> {
     return new Observable<string>((observer) => {
       const formData = new FormData();
@@ -212,22 +230,18 @@ export class FileService {
         type: 'image/png',
       });
 
-      // Lägg till filen
+      // Append the file and newsletterId
       formData.append('file', fileBlob, uniqueFileName);
       formData.append('newsletterId', newsletterId);
       
       console.log('Uploading file:', uniqueFileName);
       
       this.httpClient
-        .post(
-          'http://localhost:7126/api/Upload?containerName=newslettersections',
-          formData
-        )
+        .post('http://localhost:7126/api/Upload?containerName=newslettersections', formData)
         .subscribe({
           next: (response) => {
             console.log('Server response:', response);
-
-            // Kontrollera om servern skickar tillbaka en korrekt filväg
+            // Check if the server returns a valid file path
             const fileUrl = response ? (response as any).filePath : '';
             if (fileUrl) {
               console.log('Uploaded image URL:', fileUrl);
@@ -246,26 +260,34 @@ export class FileService {
     });
   }
 
+  /* 
+   Scales the embedded image to fit within the maximum width.
+   Returns the new width and height for the image.
+  */
   private scaleImageToFit(
     embeddedImage: any,
     maxWidth: number
   ): { width: number; height: number } {
     const imgWidth = embeddedImage.width;
     const imgHeight = embeddedImage.height;
-  
+
     if (!imgWidth || !imgHeight) {
       console.error('Invalid image dimensions:', embeddedImage);
       return { width: 0, height: 0 };
     }
-  
+
     if (imgWidth > maxWidth) {
       const scaleFactor = maxWidth / imgWidth;
       return { width: maxWidth, height: imgHeight * scaleFactor };
     }
-  
+
     return { width: imgWidth, height: imgHeight };
   }
 
+  /* 
+   Adds a gradient to the PDF page.
+   Draws multiple rectangles with gradually changing colors from backgroundStart to backgroundEnd.
+  */
   private addGradientToPage(
     page: any,
     backgroundStart: string,
@@ -279,12 +301,9 @@ export class FileService {
     const stepHeight = pageHeight / gradientSteps;
 
     for (let i = 0; i < gradientSteps; i++) {
-      const r =
-        startColor[0] + ((endColor[0] - startColor[0]) / gradientSteps) * i;
-      const g =
-        startColor[1] + ((endColor[1] - startColor[1]) / gradientSteps) * i;
-      const b =
-        startColor[2] + ((endColor[2] - startColor[2]) / gradientSteps) * i;
+      const r = startColor[0] + ((endColor[0] - startColor[0]) / gradientSteps) * i;
+      const g = startColor[1] + ((endColor[1] - startColor[1]) / gradientSteps) * i;
+      const b = startColor[2] + ((endColor[2] - startColor[2]) / gradientSteps) * i;
 
       const yStart = pageHeight - (i + 1) * stepHeight;
       const adjustedHeight = stepHeight + 1; 
@@ -298,11 +317,7 @@ export class FileService {
       });
     }
 
-    const finalColor = rgb(
-      endColor[0] / 255,
-      endColor[1] / 255,
-      endColor[2] / 255
-    );
+    const finalColor = rgb(endColor[0] / 255, endColor[1] / 255, endColor[2] / 255);
     page.drawRectangle({
       x: 0,
       y: 0,
@@ -312,6 +327,10 @@ export class FileService {
     });
   }
 
+  /* 
+   Converts a hexadecimal color string to an RGB array.
+   Returns an array with the red, green, and blue values, or defaults to black if invalid.
+  */
   private hexToRgb(hex: string): number[] {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
@@ -320,6 +339,6 @@ export class FileService {
           parseInt(result[2], 16),
           parseInt(result[3], 16),
         ]
-      : [0, 0, 0]; // Default till svart om ogiltig hex
+      : [0, 0, 0]; // Default to black if hex is invalid
   }
 }

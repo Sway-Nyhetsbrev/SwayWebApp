@@ -9,9 +9,9 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   templateUrl: './all-newsletters.component.html',
   styleUrl: './all-newsletters.component.scss'
 })
-export class AllNewslettersComponent implements OnInit{
-  newsletterService = inject(NewsletterService)
-  newsletters = signal<newsletter[] | undefined>(undefined)
+export class AllNewslettersComponent implements OnInit {
+  newsletterService = inject(NewsletterService);
+  newsletters = signal<newsletter[] | undefined>(undefined);
   userId = input.required<string>();
   isFetching = signal(false);
   statusMessage: string = '';
@@ -22,10 +22,18 @@ export class AllNewslettersComponent implements OnInit{
   totalNewsletters = 0;
   totalPages = 0;
 
+  /* 
+   Initializes the component.
+   Loads the newsletters for the current page.
+  */
   ngOnInit() {
     this.loadNewsletters(this.currentPage);
   }
 
+  /* 
+   Loads newsletters for a given page.
+   Fetches newsletters from the service and updates pagination details.
+  */
   loadNewsletters(page: number) {
     this.isFetching.set(true);
     this.newsletterService.getAllNewsletters(page, this.pageSize).subscribe({
@@ -34,15 +42,15 @@ export class AllNewslettersComponent implements OnInit{
 
         if (response && Array.isArray(response.newsletters)) {
           this.newsletters.set(response.newsletters);
-          console.log("Newsletters",this.newsletters())
+          console.log("Newsletters", this.newsletters());
           this.totalNewsletters = response.totalCount;
           this.totalPages = Math.ceil(this.totalNewsletters / this.pageSize);
-  
+
           console.log('Total newsletters:', this.totalNewsletters);
           console.log('Total pages:', this.totalPages);
-  
-          this.currentNewsletters = response.newsletters; 
-  
+
+          this.currentNewsletters = response.newsletters;
+
           console.log("User newsletters (current page):", this.currentNewsletters);
           if (this.currentNewsletters.length === 0) {
             this.statusMessage = "No newsletters available";
@@ -59,18 +67,26 @@ export class AllNewslettersComponent implements OnInit{
         this.statusClass = 'alert alert-danger';
       },
       complete: () => {
-        this.isFetching.set(false)
+        this.isFetching.set(false);
       },
     });
   }
 
+  /* 
+   Advances to the next page if available.
+   Increments the current page and loads newsletters for that page.
+  */
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.loadNewsletters(this.currentPage);
     }
   }
-  
+
+  /* 
+   Returns to the previous page if available.
+   Decrements the current page and loads newsletters for that page.
+  */
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;

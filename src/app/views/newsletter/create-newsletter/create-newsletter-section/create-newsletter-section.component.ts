@@ -31,7 +31,7 @@ Quill.register('modules/font', {
   styleUrls: ['./create-newsletter-section.component.scss'],
 })
 
-export class CreateNewsletterSectionComponent{
+export class CreateNewsletterSectionComponent {
   private fileService = inject(FileService);
   crd = inject(ChangeDetectorRef);
   isSaving = false;
@@ -42,7 +42,11 @@ export class CreateNewsletterSectionComponent{
 
   @Input() section: newsletterSection = { content: "", newsletterSectionImages: [], newsletterSectionVideos: [] };
   @Output() save = new EventEmitter<newsletterSection>();
-  
+
+  /* 
+    Saves the current newsletter section.
+    Retrieves content from the Quill editor and emits the updated section.
+  */
   saveSection() {
     if (this.quillEditor?.quillEditor) {
       this.section.content = this.quillEditor.quillEditor.root.innerHTML;
@@ -67,15 +71,17 @@ export class CreateNewsletterSectionComponent{
       accepts: ['png', 'jpg', 'jpeg', 'jfif'],
       allowDrop: true,
     },
-
     resize: {
       showToolbar: false,
       showSize: true,
     },
-    
   };
 
-  // Hanterar uppladdning av bilder inuti Quill-editorn
+  /* 
+   Handles uploading an image inside the Quill editor.
+   Uploads the image file to the server and appends it to the newsletter section images.
+   Returns a promise that resolves with the URL of the uploaded image.
+  */
   private uploadSectionImage(file: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       this.fileService.createAndUploadSectionImage(file).subscribe({
@@ -89,21 +95,32 @@ export class CreateNewsletterSectionComponent{
     });
   }
 
+  /* 
+   Opens the Pixabay image search modal.
+  */
   openPixabayImageSearch() {
     this.showPixabayImageSearch = true;
     this.crd.detectChanges();
   }
 
+  /* 
+   Opens the Pixabay video search modal.
+  */
   openPixabayVideoSearch() {
     this.showPixabayVideoSearch = true;
     this.crd.detectChanges();
   }
 
+  /* 
+   Inserts an image from Pixabay into the Quill editor.
+   Fetches the image from the provided URL, uploads it to the server,
+   and then inserts the image into the editor at the current cursor position.
+  */
   insertImage(pixabayImageUrl: string) {
     fetch(pixabayImageUrl)
       .then(response => {
         if (!response.ok) {
-          throw new Error('Kunde inte hämta bilden från Pixabay');
+          throw new Error('Could not fetch the image from Pixabay');
         }
         return response.blob();
       })
@@ -122,15 +139,19 @@ export class CreateNewsletterSectionComponent{
             }
           },
           error: (err) => {
-            console.error('Fel vid uppladdning av bild:', err);
+            console.error('Error uploading image:', err);
           }
         });
       })
       .catch(error => {
-        console.error('Fel vid hämtning av Pixabay-bild som blob:', error);
+        console.error('Error fetching Pixabay image as blob:', error);
       });
   }
 
+  /* 
+   Inserts a video into the Quill editor and updates the newsletter section.
+   Inserts the video embed at the current cursor position and stores the video data.
+  */
   insertVideo(video: any) {
     const quill = this.quillEditor?.quillEditor;
     const range = quill?.getSelection(true);
@@ -146,20 +167,29 @@ export class CreateNewsletterSectionComponent{
     }
     
     this.section.newsletterSectionVideos.push(video);
-
     this.crd.detectChanges();
   }
   
+  /* 
+   Closes the Pixabay image search modal.
+  */
   handleImageClose() {
     this.showPixabayImageSearch = false;
     this.crd.detectChanges();
   }
 
+  /* 
+   Closes the Pixabay video search modal.
+  */
   handleVideoClose() {
     this.showPixabayVideoSearch = false;
     this.crd.detectChanges();
   }
 
+  /* 
+   Handles the event when a video is selected from the Pixabay video search.
+   Constructs a video data object and inserts the video into the editor.
+  */
   handleVideoSelected(video: any) {
     const videoData = {
       url: video.url,

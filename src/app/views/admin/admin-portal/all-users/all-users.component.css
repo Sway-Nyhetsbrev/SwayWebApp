@@ -2,6 +2,7 @@
   display: grid;
   gap: 15px;
   grid-template-columns: auto;
+  margin-bottom: 20px;
 }
 @media (min-width: 576px) {
   #adminAllUsersSection .container {

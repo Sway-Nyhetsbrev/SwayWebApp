@@ -20,6 +20,10 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
   newsletterService = inject(NewsletterService);
   newsletterId = "";
 
+  /* 
+   Initializes the component.
+   Subscribes to route parameters and loads newsletter details.
+  */
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
       this.newsletterId = params['newsletterId'];
@@ -27,6 +31,10 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
     });
   }
   
+  /* 
+   Loads the details of the newsletter.
+   Formats the release date and sets the newsletter data.
+  */
   loadNewsletterDetails() {
     const datePipe = new DatePipe('en-US');
     const subscription = this.newsletterService.getOneNewsletter(this.newsletterId).subscribe({
@@ -49,12 +57,18 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
     });
   }
   
+  /* 
+   Updates the newsletter.
+   Validates the newsletter and its sections before sending the update.
+   If successful, triggers the PDF update.
+  */
   async updateNewsletter() {
     if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
-      // Pre-validera sektionerna innan vi skickar uppdateringen
+      // Pre-validate the sections before sending the update
       const sectionsValid = await this.validateSections();
+
       if (!sectionsValid) {
-        // Om någon sektion är för stor avbryts uppdateringen
+        // If any section is too large, abort the update
         return;
       }
 
@@ -80,6 +94,10 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
     }
   }
   
+  /* 
+   Updates the newsletter as a PDF.
+   Converts newsletter sections to images and uploads the resulting PDF.
+  */
   async updateAsPdf(newsletterId: string) {
     if (this.newsletter()!.title && this.newsletter()!.sections.length > 0) {
       try {
@@ -111,6 +129,10 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
     }
   }
   
+  /* 
+   Handles theme changes.
+   Updates the newsletter theme and triggers change detection.
+  */
   onThemeChanged(theme: any) {
     this.newsletter()!.theme = theme;
     this.cdr.detectChanges();

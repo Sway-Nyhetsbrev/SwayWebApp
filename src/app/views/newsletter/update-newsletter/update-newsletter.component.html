@@ -45,13 +45,11 @@
               @for(section of newsletter()!.sections; track section) {
                 <div class="innerSectionContent">
                   @if(editingSection === section) {
-                    <!-- Visa editor istället för innehåll -->
                     <app-create-newsletter-section [section]="editingSection" (save)="saveSection($event)"></app-create-newsletter-section>
                     <button type="button" class="btn btn-warning" (click)="cancelEdit()">Cancel Edit</button>
                   }
     
                   @else {
-                    <!-- Visa sektionens innehåll -->
                     <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
                     </div>
                     <div class="buttonContent">
@@ -74,7 +72,6 @@
             }
   
             @if(showNewSection) {
-              <!-- Editor för en ny sektion -->
               <app-create-newsletter-section [section]="newSection" (save)="saveSection($event)"></app-create-newsletter-section>
               <button type="button" class="btn btn-warning" (click)="cancelNewSection()">Close Section</button>
             }

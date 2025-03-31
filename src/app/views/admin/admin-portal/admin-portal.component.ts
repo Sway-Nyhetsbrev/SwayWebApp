@@ -13,6 +13,10 @@ export class AdminPortalComponent implements OnInit {
 
   isMenuOpen: boolean = false;
 
+  /* 
+   Initializes the component.
+   Retrieves the userId from the route parameters and navigates to the default admin portal route.
+  */
   ngOnInit() {
     const userId = this.activeRoute.snapshot.params['userId'];
     if (userId) {
@@ -20,6 +24,10 @@ export class AdminPortalComponent implements OnInit {
     }
   }
 
+  /* 
+   Toggles the menu state.
+   Opens or closes the admin portal menu.
+  */
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }

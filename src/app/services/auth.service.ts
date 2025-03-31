@@ -14,6 +14,10 @@ export class AuthService {
   userService = inject(UserService);
   router = inject(Router);
 
+  /* 
+   Initializes the AuthService.
+   Configures and initializes the MSAL instance.
+  */
   constructor() {
     const msalConfig = {
       auth: {
@@ -31,6 +35,12 @@ export class AuthService {
     });
   }
 
+  /* 
+   Initiates login using a popup.
+   Retrieves the user email and name from the authentication result.
+   Fetches the user from the server or creates a new user if not found.
+   Stores the logged user in local storage and navigates to '/latest-newsletter'.
+  */
   async login(): Promise<void> {
     const response: AuthenticationResult = await this.msalInstance.loginPopup({
       scopes: ['User.Read'],
@@ -71,6 +81,11 @@ export class AuthService {
     }
   }
 
+  /* 
+   Logs out the current user.
+   Clears local storage and session storage, resets the loggedUser signal,
+   and redirects to the Microsoft logout URL.
+  */
   logout() {
     localStorage.removeItem('loggedUser');
     sessionStorage.clear();
@@ -78,10 +93,17 @@ export class AuthService {
     window.location.href = 'https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=http://localhost:4200';
   }
 
+  /* 
+   Retrieves the first account from the MSAL instance.
+  */
   getAccount() {
     return this.msalInstance.getAllAccounts()[0] || null;
   }
 
+  /* 
+   Returns the logged user from the signal.
+   If not available, retrieves it from local storage.
+  */
   getLoggedUser(): User | null {
     if (!this.loggedUser()) {
       const storedUser = localStorage.getItem('loggedUser');
@@ -96,6 +118,10 @@ export class AuthService {
     return this.loggedUser();
   }
 
+  /* 
+   Retrieves an access token silently using MSAL.
+   Returns a promise that resolves with the access token.
+  */
   getAccessToken(): Promise<string> {
     const request = { scopes: ['User.Read'] };
 
