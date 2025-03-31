@@ -39,6 +39,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'update-newsletter/:newsletterId',
+    component: UpdateNewsletterComponent,
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'admin-portal/:userId',
     component: AdminPortalComponent,
     canActivate: [RoleGuard],
@@ -72,11 +77,6 @@ export const routes: Routes = [
   {
     path: 'user-details/:userId',
     component: UserDetailsComponent,
-    canActivate: [RoleGuard]
-  },
-  {
-    path: 'update-newsletter/:newsletterId',
-    component: UpdateNewsletterComponent,
     canActivate: [RoleGuard]
   }
 ];

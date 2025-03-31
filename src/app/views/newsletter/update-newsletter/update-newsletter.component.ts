@@ -51,6 +51,13 @@ export class UpdateNewsletterComponent extends NewsletterSectionBase implements 
   
   async updateNewsletter() {
     if (this.newsletter()!.title && this.newsletter()!.releaseDate) {
+      // Pre-validera sektionerna innan vi skickar uppdateringen
+      const sectionsValid = await this.validateSections();
+      if (!sectionsValid) {
+        // Om någon sektion är för stor avbryts uppdateringen
+        return;
+      }
+
       try {
         const subscription = this.newsletterService.updateNewsletter(this.newsletter()).subscribe({
           next: (response) => {

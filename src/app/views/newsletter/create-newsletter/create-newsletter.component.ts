@@ -18,7 +18,7 @@ import { NewsletterService } from '../../../services/newsletter.service';
 export class CreateNewsletterComponent extends NewsletterSectionBase {
   private authService = inject(AuthService);
   private newsletterService = inject(NewsletterService);
-  
+
   async saveNewsletter() {
     const loggedUser = this.authService.getLoggedUser();
     if (!loggedUser) {
@@ -38,9 +38,14 @@ export class CreateNewsletterComponent extends NewsletterSectionBase {
     }
   
     if (sections.length === 0 || sections.some(section => !section.content.trim())) {
-      this.statusMessage = 'The newsletter has to contain one section or the section is to big';
+      this.statusMessage = 'Please add at least one section with content!';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
+      return;
+    }
+    
+    const sectionsValid = await this.validateSections();
+    if (!sectionsValid) {
       return;
     }
   

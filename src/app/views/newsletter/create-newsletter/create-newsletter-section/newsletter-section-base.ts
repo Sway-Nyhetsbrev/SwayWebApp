@@ -39,7 +39,7 @@ export abstract class NewsletterSectionBase {
     this.editingSection = section;
     this.originalSectionContent = section.content;
     this.cdr.detectChanges();
-}
+  }
 
   cancelEdit(): void {
     if (this.editingSection && this.originalSectionContent !== null) {
@@ -67,23 +67,22 @@ export abstract class NewsletterSectionBase {
     const hasVideos = section.newsletterSectionVideos && section.newsletterSectionVideos.length > 0;
 
     if (plainText.length === 0 && !hasImages && !hasVideos) {
-      this.statusMessage = "Please add content to the section!"
+      this.statusMessage = "Please add content to the section!";
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return;
     }
-  
+
     this.statusMessage = '';
     this.statusClass = '';
-  
+
     if (!this.newsletter()!.sections.includes(section)) {
       this.newsletter()!.sections.push(section);
       console.log('Ny sektion tillagd:', section);
-    } 
-    else {
+    } else {
       console.log('Sektion uppdaterad:', section);
     }
-  
+
     this.editingSection = null;
     this.originalSectionContent = null;
     this.showNewSection = false;
@@ -106,8 +105,7 @@ export abstract class NewsletterSectionBase {
     let isReleaseDateValid = false;
     if (typeof currentNewsletter.releaseDate === 'string') {
       isReleaseDateValid = currentNewsletter.releaseDate.trim().length > 0;
-    } 
-    else if (currentNewsletter.releaseDate instanceof Date) {
+    } else if (currentNewsletter.releaseDate instanceof Date) {
       isReleaseDateValid = true;
     }
 
@@ -117,7 +115,7 @@ export abstract class NewsletterSectionBase {
         const plainText = section.content ? section.content.replace(/<[^>]+>/g, '').trim() : '';
         return plainText.length > 0;
       });
-    
+
     if (isTitleValid && isReleaseDateValid && areSectionsValid) {
       this.statusMessage = '';
       this.statusClass = '';
@@ -125,25 +123,59 @@ export abstract class NewsletterSectionBase {
     }
   }
 
-  convertSectionToImage(section: newsletterSection): Promise<string> {
-    return new Promise(async (resolve, reject) => {
+  private checkSectionHeight(section: newsletterSection): Promise<void> {
+    return new Promise((resolve, reject) => {
       const tempDiv = document.createElement('div');
       tempDiv.style.width = '800px';
       tempDiv.style.position = 'absolute';
       tempDiv.style.top = '-9999px';
       tempDiv.style.left = '-9999px';
       tempDiv.innerHTML = section.content;
-  
       document.body.appendChild(tempDiv);
   
       const sectionHeight = tempDiv.offsetHeight;
       const maxPageHeight = 800;
   
-      if (sectionHeight > maxPageHeight) {
-        document.body.removeChild(tempDiv);
-        return reject(new Error("Sektionen är för stor för att få plats på en PDF-sida"));
-      }
+      document.body.removeChild(tempDiv);
   
+      if (sectionHeight > maxPageHeight) {
+        return reject(new Error("One or more section are to big!"));
+      }
+      resolve();
+    });
+  }
+
+  async validateSections(): Promise<boolean> {
+    try {
+      await Promise.all(
+        this.newsletter()!.sections.map(section => this.checkSectionHeight(section))
+      );
+      return true;
+    } catch (error) {
+      this.statusMessage = 'One or more sections are to big!';
+      this.statusClass = 'alert alert-warning';
+      this.cdr.detectChanges();
+      return false;
+    }
+  }
+
+  convertSectionToImage(section: newsletterSection): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.checkSectionHeight(section);
+      } 
+      catch (error) {
+        return reject(error);
+      }
+
+      const tempDiv = document.createElement('div');
+      tempDiv.style.width = '800px';
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.left = '-9999px';
+      tempDiv.innerHTML = section.content;
+      document.body.appendChild(tempDiv);
+
       try {
         const canvas = await html2canvas(tempDiv, {
           backgroundColor: null,
