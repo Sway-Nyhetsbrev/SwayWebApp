@@ -21,16 +21,22 @@
                  flex-direction: column;
                  justify-content: center;  
 
-                .innerSectionContent{
-                    margin: 20px;
-                    border: 2px solid red;
-                    border-radius: 10px;  
-                    padding: 5px;
-
-                    h1 {
-                        margin-top: 30px;
+                 .innerSectionContent {
+                    position: relative;
+                    margin-bottom: 1rem;
+                    padding: 1rem;
+                  
+                    &.not-selected {
+                      border: 2px solid red;
                     }
-                }
+                  
+                    &.selected {
+                      border: 2px solid green;
+                      background-color: green;
+                    }
+
+
+                  }
 
                 .btn-primary {
                     text-align: center;

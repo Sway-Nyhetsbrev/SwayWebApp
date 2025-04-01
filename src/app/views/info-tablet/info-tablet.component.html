@@ -1,43 +1,40 @@
 <section id="infoTablet">
-    <div class="container">
-    
-        <h2>Publish Newsletter</h2>
-    
-        @if(newsletter()) {
-          <form (ngSubmit)="publishNewsletter()"
-          [ngStyle]="{
-            'background': 'linear-gradient(90deg, ' + newsletter()?.theme?.backgroundStart + ', ' + newsletter()?.theme?.backgroundEnd + ')',
-            'color': newsletter()?.theme?.textColor
-          }">
-            <div id="newsletter-content">
-              <div class="sectionContent">
-                @if(newsletter()!.sections.length > 0) { 
-                  @for(section of newsletter()!.sections; track section) {
-                    <div class="innerSectionContent">
-                        <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)">
-                        </div>                                           
-                    </div>
-                    @if (!sectionChecked) {
-                        <button class="btn btn-primary" type="button" (onclick)="sectionsToSend()">Check</button>
-                    }
-                    @else {
-                        <button class="btn btn-success" type="button" (onclick)="sectionsToSend()"></button>
-                    }
-                  }
-                }
-      
-                <button class="btn btn-success" type="submit">
-                  Publish Newsletter
-                </button>
-                @if(statusMessage) {
-                  <div [class]="statusClass" role="alert">
-                    {{ statusMessage }}
-                  </div>
-                }
+  <div class="container">
+    <h2>Publish Newsletter</h2>
+    @if(newsletter()) {
+      <form (ngSubmit)="publishNewsletter()"
+            [ngStyle]="{
+              'background': 'linear-gradient(90deg, ' + newsletter()?.theme?.backgroundStart + ', ' + newsletter()?.theme?.backgroundEnd + ')',
+              'color': newsletter()?.theme?.textColor
+            }">
+        <div id="newsletter-content">
+          <div class="sectionContent">
+            @if(newsletter()!.sections.length > 0) {
+              @for(section of newsletter()!.sections; track section) {
+                <div class="innerSectionContent"
+                     [ngClass]="{
+                       'selected': selectedSections[newsletter()!.sections.indexOf(section)],
+                       'not-selected': !selectedSections[newsletter()!.sections.indexOf(section)]
+                     }">
+                  <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)"></div>
+                  <button type="button" 
+                          class="btn"
+                          [ngClass]="selectedSections[newsletter()!.sections.indexOf(section)] ? 'btn-primary' : 'btn-success'"
+                          (click)="toggleSection(newsletter()!.sections.indexOf(section))">
+                    {{ selectedSections[newsletter()!.sections.indexOf(section)] ? 'Saved' : 'Save' }}
+                  </button>
+                </div>
+              }
+            }
+            <button class="btn btn-success" type="submit">Publish Newsletter</button>
+            @if(statusMessage) {
+              <div [class]="statusClass" role="alert">
+                {{ statusMessage }}
               </div>
-            </div>
-    
-        </form>
-        }
-      </div>
+            }
+          </div>
+        </div>
+      </form>
+    }
+  </div>
 </section>
