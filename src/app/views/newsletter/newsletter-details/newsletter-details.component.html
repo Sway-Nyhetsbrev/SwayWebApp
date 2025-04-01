@@ -5,19 +5,19 @@
         <div class="adminNavigationContent">
             <ul class="nav nav-pills">
                 <li class="nav-item">
-                <a 
-                    [routerLink]="['/update-newsletter', newsletterId]" 
-                    class="btn btn-warning" 
-                    aria-current="page">
-                    Update Newsletter
-                </a>
+                    <a [routerLink]="['/publish-newsletter', newsletterId]" class="btn btn-primary" aria-current="page">
+                        Publish
+                    </a>
                 </li>
                 <li class="nav-item">
-                <a
-                    (click)="loadDeleteNewsletterDetails()"
-                    class="btn btn-danger"
-                    aria-current="page">
-                    Delete Newsletter</a>
+                    <a [routerLink]="['/update-newsletter', newsletterId]" class="btn btn-warning" aria-current="page">
+                        Update Newsletter
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a (click)="loadDeleteNewsletterDetails()" class="btn btn-danger" aria-current="page">
+                        Delete Newsletter
+                    </a>
                 </li>
                 <button (click)="goBack()" class="btn btn-success" aria-current="page">
                 <i class="fa-solid fa-arrow-rotate-left"></i>

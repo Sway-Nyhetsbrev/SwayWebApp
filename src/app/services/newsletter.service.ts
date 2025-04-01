@@ -51,4 +51,14 @@ private httpClient = inject(HttpClient);
   removeNewsletterBlob(newsletterId: string) {
     return this.httpClient.delete<string>(`http://localhost:7126/api/DeleteNewsletterFile?newsletterId=${newsletterId}`, { responseType: 'text' as 'json' });
   }
+
+  publishNewsletter(newsletter: any): Observable<any>  {
+    return this.httpClient.post<newsletter>('https://localhost:7264/api/Newsletter/create', newsletter)
+     //return this.httpClient.post<newsletter>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/create', newsletter)
+  }
+
+  //fetchNewsletterSections(newsletter: any): Observable<any>  {
+    //return this.httpClient.get<any>('https://localhost:7264/api/Newsletter/create', newsletter)
+    // return this.httpClient.get<any>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/create', newsletter)
+  //}
 }

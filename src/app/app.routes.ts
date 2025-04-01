@@ -12,6 +12,7 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { UserDetailsComponent } from './views/admin/admin-portal/user-details/user-details.component';
 import { UpdateNewsletterComponent } from './views/newsletter/update-newsletter/update-newsletter.component';
 import { AuthGuard } from './guards/auth.guard';
+import { InfoTabletComponent } from './views/info-tablet/info-tablet.component';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,11 @@ export const routes: Routes = [
   {
     path: 'update-newsletter/:newsletterId',
     component: UpdateNewsletterComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'publish-newsletter/:newsletterId',
+    component: InfoTabletComponent,
     canActivate: [AuthGuard]
   },
   {

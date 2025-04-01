@@ -190,7 +190,7 @@ export abstract class NewsletterSectionBase {
       );
       return true;
     } catch (error) {
-      this.statusMessage = 'One section is too big!';
+      this.statusMessage = 'The section is too big!';
       this.statusClass = 'alert alert-warning';
       this.cdr.detectChanges();
       return false;
