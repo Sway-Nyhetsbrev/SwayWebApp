@@ -72,6 +72,17 @@ export class AllNewslettersComponent implements OnInit {
     });
   }
 
+  getFirstImage(newsletter: any): any {
+    if (newsletter.sections && newsletter.sections.length) {
+      for (const section of newsletter.sections) {
+        if (section.newsletterSectionImages && section.newsletterSectionImages.length) {
+          return section.newsletterSectionImages[0];
+        }
+      }
+    }
+    return null;
+  }
+
   /* 
    Advances to the next page if available.
    Increments the current page and loads newsletters for that page.
