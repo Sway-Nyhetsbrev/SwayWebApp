@@ -1,0 +1,40 @@
+#infoTablet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+#infoTablet .container {
+  max-width: 850px;
+}
+#infoTablet .container h2 {
+  padding-bottom: 20px;
+  font-style: italic;
+  text-shadow: #12ABDB 1px 1px 2px;
+  text-align: center;
+}
+#infoTablet .container #newsletter-content .sectionContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#infoTablet .container #newsletter-content .sectionContent .innerSectionContent {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
+  border-radius: 10px;
+  border: 2px solid #0070AD;
+}
+#infoTablet .container #newsletter-content .sectionContent .innerSectionContent.selected {
+  border: 2px solid green;
+  background-color: green;
+}
+#infoTablet .container #newsletter-content .sectionContent .innerSectionContent:hover {
+  border: 2px solid #12ABDB;
+}
+#infoTablet .container #newsletter-content .sectionContent .btn-primary {
+  text-align: center;
+  margin: 0px 20px 0px 20px;
+}

@@ -57,8 +57,8 @@ private httpClient = inject(HttpClient);
      //return this.httpClient.post<newsletter>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/create', newsletter)
   }
 
-  //fetchNewsletterSections(newsletter: any): Observable<any>  {
-    //return this.httpClient.get<any>('https://localhost:7264/api/Newsletter/create', newsletter)
-    // return this.httpClient.get<any>('https://newsletterprovider20250119174340.azurewebsites.net/api/Newsletter/create', newsletter)
-  //}
+  fetchNewsletterSections(newsletterId: string)  {
+    return this.httpClient.get<any>(`http://localhost:7126/api/FetchNewsletterSections?newsletterId=${newsletterId}`)
+     
+  }
 }

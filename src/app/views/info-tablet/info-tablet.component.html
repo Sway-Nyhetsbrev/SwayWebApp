@@ -2,26 +2,18 @@
   <div class="container">
     <h2>Publish Newsletter</h2>
     @if(newsletter()) {
-      <form (ngSubmit)="publishNewsletter()"
-            [ngStyle]="{
-              'background': 'linear-gradient(90deg, ' + newsletter()?.theme?.backgroundStart + ', ' + newsletter()?.theme?.backgroundEnd + ')',
-              'color': newsletter()?.theme?.textColor
-            }">
+      <form (ngSubmit)="publishNewsletter()">
         <div id="newsletter-content">
           <div class="sectionContent">
-            @if(newsletter()!.sections.length > 0) {
-              @for(section of newsletter()!.sections; track section) {
-                <div class="innerSectionContent"
-                     [ngClass]="{
-                       'selected': selectedSections[newsletter()!.sections.indexOf(section)],
-                       'not-selected': !selectedSections[newsletter()!.sections.indexOf(section)]
-                     }">
-                  <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(section.content)"></div>
+            @if(selectedSections.length > 0) {
+              @for(imageUri of selectedSections; track imageUri) {
+                <div class="innerSectionContent" [ngClass]="{'selected': savedSections[selectedSections.indexOf(imageUri)]}">
+                  <img src="{{imageUri}}" alt="Sektionsbild" />
                   <button type="button" 
                           class="btn"
-                          [ngClass]="selectedSections[newsletter()!.sections.indexOf(section)] ? 'btn-primary' : 'btn-success'"
-                          (click)="toggleSection(newsletter()!.sections.indexOf(section))">
-                    {{ selectedSections[newsletter()!.sections.indexOf(section)] ? 'Saved' : 'Save' }}
+                          [ngClass]="savedSections[selectedSections.indexOf(imageUri)] ? 'btn-primary' : 'btn-success'"
+                          (click)="toggleSection(selectedSections.indexOf(imageUri))">
+                    {{ savedSections[selectedSections.indexOf(imageUri)] ? 'Saved' : 'Save'}}
                   </button>
                 </div>
               }

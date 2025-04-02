@@ -1,13 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NewsletterService } from '../../services/newsletter.service';
-import { DatePipe, NgClass, NgStyle } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { NewsletterSectionBase } from '../newsletter/create-newsletter/create-newsletter-section/newsletter-section-base';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-info-tablet',
-  imports: [FormsModule, NgStyle, NgClass],
+  imports: [FormsModule, NgClass],
   templateUrl: './info-tablet.component.html',
   styleUrl: './info-tablet.component.scss'
 })
@@ -15,7 +15,8 @@ export class InfoTabletComponent extends NewsletterSectionBase implements OnInit
   activatedRoute = inject(ActivatedRoute);
   newsletterService = inject(NewsletterService);
   newsletterId = "";
-  selectedSections: boolean[] = [];
+  selectedSections: string[] = [];
+  savedSections: boolean[] = [];
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params) => {
@@ -25,17 +26,11 @@ export class InfoTabletComponent extends NewsletterSectionBase implements OnInit
   }
 
   loadNewsletterDetails() {
-    const datePipe = new DatePipe('en-US');
-    const subscription = this.newsletterService.getOneNewsletter(this.newsletterId).subscribe({
+    const subscription = this.newsletterService.fetchNewsletterSections(this.newsletterId).subscribe({
       next: (response) => {
-        if (response.releaseDate) {
-          const formattedDate = datePipe.transform(response.releaseDate, 'yyyy-MM-dd');
-          if (formattedDate) {
-            response.releaseDate = formattedDate;
-          }
-        }
-        this.selectedSections = response.sections.map(() => false);
-        this.newsletter.set(response);
+        console.log("newsletterSection response", response);
+        this.selectedSections = response;
+        this.savedSections = new Array(response.length).fill(false);
       },
       error: (error) => {
         this.statusMessage = 'Unable to load newsletter!';
@@ -49,8 +44,7 @@ export class InfoTabletComponent extends NewsletterSectionBase implements OnInit
   }
 
   toggleSection(index: number) {
-    this.selectedSections[index] = !this.selectedSections[index];
-    console.log("Section", index, "toggled:", this.selectedSections[index]);
+    this.savedSections[index] = !this.savedSections[index];
   }
 
   async publishNewsletter() {

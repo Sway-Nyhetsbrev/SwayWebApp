@@ -6,7 +6,7 @@
     
     .container {
         max-width: 850px;
-        
+
         h2 {
             padding-bottom: 20px;
             font-style: italic;
@@ -15,35 +15,35 @@
         }
 
         #newsletter-content {
-              
+
             .sectionContent {
                  display: flex;
                  flex-direction: column;
                  justify-content: center;  
 
                  .innerSectionContent {
-                    position: relative;
+                    display: flex;
+                    flex-direction: column;
                     margin-bottom: 1rem;
                     padding: 1rem;
-                  
-                    &.not-selected {
-                      border: 2px solid red;
-                    }
+                    background-image: linear-gradient(to bottom, white, rgba(89, 88, 88, 0.525));
+                    border-radius: 10px;
+                    border: 2px solid #0070AD;
                   
                     &.selected {
                       border: 2px solid green;
                       background-color: green;
                     }
 
+                    &:hover {
+                        border: 2px solid #12ABDB;
+                    }
 
-                  }
+                }
 
                 .btn-primary {
                     text-align: center;
                     margin: 0px 20px 0px 20px;
-                }
-                .btn-success {
-                    margin: 20px;
                 }
             }
         }
