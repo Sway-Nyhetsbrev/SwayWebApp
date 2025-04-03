@@ -1,0 +1,28 @@
+<app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>  
+
+<section id="globalSearchSection">
+    @if(isLoading) {
+        <div>Seaching...</div>
+    }
+    
+    @if(!isLoading && foundNewsletters.length === 0 && !isLoading && foundUsers.length === 0) {
+        <div>{{ statusMessage }}</div>
+    }
+    <section class="results-section">
+        @for(newsletter of foundNewsletters; track newsletter) {
+            <a [routerLink]="['/newsletter-details', userId(), newsletter.id]">
+                <div class="result-item">
+                    <h4>{{ newsletter.title }}</h4>
+                </div>
+            </a>
+        }
+        @for(user of foundUsers; track user) {
+            <a [routerLink]="'/user-details/' + userId()">
+                <div class="result-item">
+                    <h4>{{ user.userName }}</h4>
+                    <p>{{ user.email }}</p>
+                </div>
+            </a>
+        }
+      </section>
+</section>

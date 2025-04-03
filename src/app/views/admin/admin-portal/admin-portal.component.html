@@ -5,15 +5,9 @@
     <aside class="adminNavigationContent desktop-menu d-none d-sm-flex">
       <ul class="nav nav-pills">
         <li class="nav-item">
-          <a [routerLink]="['./all-users/search-user']" routerLinkActive="active" 
+          <a [routerLink]="['./global-search']" routerLinkActive="active" 
              class="nav-link btn btn-menu" aria-current="page">
-            Search User
-          </a>
-        </li>
-        <li class="nav-item">
-          <a [routerLink]="['./all-newsletters/search-newsletter']" routerLinkActive="active" 
-             class="nav-link btn btn-menu" aria-current="page">
-            Search Newsletter
+            Search
           </a>
         </li>
         <li class="nav-item">
@@ -36,16 +30,10 @@
         <button class="close-button" (click)="toggleMenu()">X</button>
         <ul class="nav nav-pills">
           <li class="nav-item">
-            <a [routerLink]="['./all-users/search-user']" routerLinkActive="active" 
-               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
-              Search User
-            </a>
-          </li>
-          <li class="nav-item">
-            <a [routerLink]="['./all-newsletters/search-newsletter']" routerLinkActive="active" 
-               class="nav-link btn btn-menu" (click)="toggleMenu()" aria-current="page">
-              Search Newsletter
-            </a>
+            <a [routerLink]="['./global-search']" routerLinkActive="active" 
+            class="nav-link btn btn-menu" aria-current="page">
+           Search
+          </a>
           </li>
           <li class="nav-item">
             <a [routerLink]="['./all-newsletters']" routerLinkActive="active" 

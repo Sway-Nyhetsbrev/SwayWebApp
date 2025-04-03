@@ -12,10 +12,10 @@
                     <a [routerLink]="['/newsletter-details', userId(), newsletter.id]">
                         <h4>{{newsletter.title}}</h4>        
                         @if(getFirstImage(newsletter); as image) {
-                            <ng-container>
-                              <img [src]="image.url" [alt]="image.altText">
-                            </ng-container>
-                          }
+                          <ng-container>
+                            <img [src]="image.url" [alt]="image.altText">
+                          </ng-container>
+                        }
                     </a>        
                 </div>
             }

@@ -13,6 +13,7 @@ import { UserDetailsComponent } from './views/admin/admin-portal/user-details/us
 import { UpdateNewsletterComponent } from './views/newsletter/update-newsletter/update-newsletter.component';
 import { AuthGuard } from './guards/auth.guard';
 import { InfoTabletComponent } from './views/info-tablet/info-tablet.component';
+import { GlobalSearchComponent } from './components/global-search/global-search.component';
 
 export const routes: Routes = [
   {
@@ -57,26 +58,17 @@ export const routes: Routes = [
       {
         path: 'all-newsletters',
         component: AllNewslettersComponent,
-        canActivate: [RoleGuard], 
-        children: [
-          {
-            path: 'search-newsletter',
-            component: SearchBarComponent,
-            canActivate: [RoleGuard]
-          }
-        ]
+        canActivate: [RoleGuard]
       },
       {
         path: 'all-users',
         component: AllUsersComponent,
-        canActivate: [RoleGuard],
-        children: [
-          {
-            path: 'search-user',
-            component: SearchBarComponent,
-            canActivate: [RoleGuard]
-          },
-        ]
+        canActivate: [RoleGuard]
+      },
+      {
+        path: 'global-search',
+        component: GlobalSearchComponent,
+        canActivate: [RoleGuard]
       },
     ],
   },
