@@ -9,7 +9,8 @@
         display: grid;
         grid-template-columns: auto;
         gap: 15px;
-
+        padding-bottom: 20px;
+        
         @media(min-width: 576px) {
             grid-template-columns: auto auto;
         }

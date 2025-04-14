@@ -10,9 +10,9 @@
                 <div class="innerSectionContent" [ngClass]="{'selected': savedSections[selectedSections.indexOf(imageUri)]}">
                   <img src="{{imageUri}}" alt="Sektionsbild" />
                   <button type="button" 
-                          class="btn"
-                          [ngClass]="savedSections[selectedSections.indexOf(imageUri)] ? 'btn-danger' : 'btn-success'"
-                          (click)="toggleSection(selectedSections.indexOf(imageUri))">
+                    class="btn"
+                    [ngClass]="savedSections[selectedSections.indexOf(imageUri)] ? 'btn-danger' : 'btn-success'"
+                    (click)="toggleSection(selectedSections.indexOf(imageUri))">
                     {{ savedSections[selectedSections.indexOf(imageUri)] ? 'Remove' : 'Add'}}
                   </button>
                 </div>
