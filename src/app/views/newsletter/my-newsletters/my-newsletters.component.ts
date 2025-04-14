@@ -26,8 +26,8 @@ export class MyNewslettersComponent implements OnInit {
   totalPages = 0;
 
   userName = computed(() => {
-    const users = this.userService.users();
-    return users?.find(u => u.id === this.userId())?.userName || users?.find(u => u.id === this.userId())?.email;
+      const users = this.userService.users();  
+      return users?.find(u => u.id === this.userId())?.userName || users?.find(u => u.id === this.userId())?.email;
   });
 
   /* 
@@ -35,8 +35,11 @@ export class MyNewslettersComponent implements OnInit {
    Loads all users and fetches newsletters for the current user.
   */
   ngOnInit() {
-    this.userService.getAllUsers();
-    this.loadNewsletters(this.userId(), this.currentPage);
+    this.isFetching.set(true);
+    setTimeout(() => {
+      this.userService.getAllUsers();
+      this.loadNewsletters(this.userId(), this.currentPage);
+    }, 1500);      
   }
 
   /* 
