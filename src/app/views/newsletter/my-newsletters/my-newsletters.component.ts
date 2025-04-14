@@ -36,6 +36,7 @@ export class MyNewslettersComponent implements OnInit {
   */
   ngOnInit() {
     this.isFetching.set(true);
+    this.statusMessage = '';
     setTimeout(() => {
       this.userService.getAllUsers();
       this.loadNewsletters(this.userId(), this.currentPage);
